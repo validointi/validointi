@@ -1,12 +1,17 @@
-import { enableProdMode } from '@angular/core';
-import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
+import { CommonModule } from '@angular/common';
+import { Component, OnInit } from '@angular/core';
+import { bootstrapApplication } from '@angular/platform-browser';
 
-import { AppModule } from './app/app.module';
-import { environment } from './environments/environment';
+@Component({
+  selector: 'app-root',
+  standalone: true,
+  imports: [CommonModule],
+  template: `Standalone`,
+})
+export class AppComponent implements OnInit {
+  constructor() {}
 
-if (environment.production) {
-  enableProdMode();
+  ngOnInit(): void {}
 }
 
-platformBrowserDynamic().bootstrapModule(AppModule)
-  .catch(err => console.error(err));
+bootstrapApplication(AppComponent).catch(console.error);
