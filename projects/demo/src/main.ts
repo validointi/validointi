@@ -1,12 +1,13 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, importProvidersFrom, OnInit } from '@angular/core';
 import { bootstrapApplication } from '@angular/platform-browser';
+import { RouterModule, Routes } from '@angular/router';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule],
-  template: `Standalone`,
+  imports: [CommonModule, RouterModule],
+  template: `<router-outlet></router-outlet>`,
 })
 export class AppComponent implements OnInit {
   constructor() {}
@@ -14,4 +15,19 @@ export class AppComponent implements OnInit {
   ngOnInit(): void {}
 }
 
-bootstrapApplication(AppComponent).catch(console.error);
+
+const APP_ROUTES = [{
+  path: '',
+  pathMatch: 'full',
+  redirectTo: 'home'
+},
+{
+path: 'home',
+loadComponent: () => import('./app/home/home.component').then(c => c.HomeComponent)
+
+}] as Routes;
+
+bootstrapApplication(AppComponent,{
+  providers:[
+  importProvidersFrom(RouterModule.forRoot(APP_ROUTES))]
+}).catch(console.error);
