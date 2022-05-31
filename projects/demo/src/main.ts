@@ -15,19 +15,24 @@ export class AppComponent implements OnInit {
   ngOnInit(): void {}
 }
 
+const APP_ROUTES = [
+  {
+    path: '',
+    pathMatch: 'full',
+    redirectTo: 'home',
+  },
+  {
+    path: 'home',
+    loadComponent: () =>
+      import('./app/home.component').then((c) => c.HomeComponent),
+  },
+  {
+    path: 'about',
+    loadComponent: () =>
+      import('./app/about.component').then((c) => c.AboutComponent),
+  },
+] as Routes;
 
-const APP_ROUTES = [{
-  path: '',
-  pathMatch: 'full',
-  redirectTo: 'home'
-},
-{
-path: 'home',
-loadComponent: () => import('./app/home/home.component').then(c => c.HomeComponent)
-
-}] as Routes;
-
-bootstrapApplication(AppComponent,{
-  providers:[
-  importProvidersFrom(RouterModule.forRoot(APP_ROUTES))]
+bootstrapApplication(AppComponent, {
+  providers: [importProvidersFrom(RouterModule.forRoot(APP_ROUTES))],
 }).catch(console.error);
