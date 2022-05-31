@@ -15,7 +15,7 @@ export class AppComponent implements OnInit {
   ngOnInit(): void {}
 }
 
-const APP_ROUTES: Routes = [
+const rootRoutes: Routes = [
   {
     path: '',
     pathMatch: 'full',
@@ -34,5 +34,5 @@ const APP_ROUTES: Routes = [
 ];
 
 bootstrapApplication(AppComponent, {
-  providers: [importProvidersFrom(RouterModule.forRoot(APP_ROUTES))],
+  providers: [importProvidersFrom(RouterModule.forRoot(rootRoutes))],
 }).catch(console.error);
