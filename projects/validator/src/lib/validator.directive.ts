@@ -3,7 +3,7 @@ import { create } from 'vest';
 
 
 @Directive({
-  selector: '[libValidator]',
+  selector: '[validate]',
   standalone: true
 })
 export class ValidatorDirective {
