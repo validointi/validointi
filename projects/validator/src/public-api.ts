@@ -11,9 +11,12 @@ export interface Model {
     [key:string]: any;
 }
 
+export type ValidationFormatter = (data:Model,errors:string|string[]) => string
+
 export interface ValidationErrors {
-    [key: keyof Model]: undefined | string | string[]
+    [key: keyof Model]: undefined | string | string[] | ValidationFormatter
 }
+
 
 export type ValidationId = string
 
