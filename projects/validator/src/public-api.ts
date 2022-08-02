@@ -17,8 +17,8 @@ export interface ValidationErrors {
     [key: keyof Model]: undefined | string | string[] | ValidationFormatter
 }
 
-
 export type ValidationId = string
+
 
 export interface Validator {
     (data:Model,id:ValidationId) : ValidationErrors
