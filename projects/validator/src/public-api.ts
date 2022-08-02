@@ -21,5 +21,5 @@ export type ValidationId = string
 
 
 export interface Validator {
-    (data:Model,id:ValidationId) : ValidationErrors
+    (data:Model,id:ValidationId) : Promise<ValidationErrors>
 }
