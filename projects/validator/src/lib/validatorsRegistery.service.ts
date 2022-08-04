@@ -9,7 +9,10 @@ import {  Injectable } from '@angular/core';
 export class ValidatorRegisteryService {
     #registery = new Map<ValidationId,Validator>()
 
-    registerValidator = (name:ValidationId,fn:Validator) => this.#registery.set(name,fn);
+    registerValidator = (name:ValidationId,fn:Validator) => {
+        this.#registery.set(name,fn);
+        return this.getValidationFn(name)
+    }
 
     getValidationFn = (name:ValidationId) => (data:Model) => {
         const fn = this.#registery.get(name)
