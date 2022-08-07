@@ -6,9 +6,9 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test:lib": "jest --config ./projects/validator/jest.config.js",
-    "test:app": "jest --config ./projects/demo/jest.config.js",
-    "test": "npm run test:lib && npm run test:showcase"
+    "test:lib": "jest --config --passWithNoTests ./projects/validator/jest.config.js",
+    "test:app": "jest --config --passWithNoTests ./projects/demo/jest.config.js",
+    "test": "npm run test:lib && npm run test:app"
   },
   "private": true,
   "dependencies": {
