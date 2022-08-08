@@ -1,0 +1,17 @@
+name: Main flow with test
+on: push
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - name: npm install and npm run build
+        run: |
+          npm i
+      - name: test
+        run: |
+          npx ng build --project validator
+          npm test -- --no-watch --no-progress --browsers=ChromeHeadlessCI
