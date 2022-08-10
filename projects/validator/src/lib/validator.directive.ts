@@ -7,11 +7,11 @@ import { debounceTime, tap } from 'rxjs';
 
 
 @Directive({
-  selector: 'form[ValidationId]',
+  selector: 'form[validationId]',
   standalone: true
 })
 export class ValidatorDirective implements OnInit, OnDestroy {
-  @Input() ValidationId: ValidationId = '';
+  @Input() validationId: ValidationId = '';
   #validatorFn?: Validator<any>
   #vr = inject(ValidatorRegistryService);
   #form = inject(NgForm)
@@ -34,7 +34,7 @@ export class ValidatorDirective implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.#validatorFn = this.#vr.getValidator(this.ValidationId);
+    this.#validatorFn = this.#vr.getValidator(this.validationId);
   }
 
 }
