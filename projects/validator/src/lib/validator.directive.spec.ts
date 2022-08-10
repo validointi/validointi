@@ -5,7 +5,7 @@ import { ValidatorDirective } from './validator.directive';
 import { ValidatorRegistryService } from './validatorsRegistry.service';
 
 @Component({
-  template: '<form ValidationId="testdata"></form>',
+  template: '<form validationId="testdata"></form>',
   standalone: true,
   imports: [ValidatorDirective, FormsModule],
 })
