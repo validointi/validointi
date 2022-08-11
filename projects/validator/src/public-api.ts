@@ -5,4 +5,5 @@
 
 export { ValidatorRegistryService } from './lib/validatorsRegistry.service';
 //TODO: make sure we export this as _tyes_
-export  { Model, ValidationErrors, ValidationFormatter, ValidationId } from './lib/validator.types';
+export { Model, ValidationErrors, ValidationFormatter, ValidationId } from './lib/validator.types';
+export { ValidatorDirective } from './lib/validator.directive';
