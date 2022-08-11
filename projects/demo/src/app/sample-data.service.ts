@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject} from '@angular/core';
 import { of } from 'rxjs';
 import { ValidationErrors, ValidatorRegistryService } from 'validator';
 import { create, only, enforce, warn, test } from 'vest';
@@ -23,8 +23,8 @@ const inMemoryDb = new Map<string, SampleData>();
 export class SampleDataService {
   getById = (id: string) => of(inMemoryDb.get(id));
   getAll = () => of(Array.from(inMemoryDb.values()));
-
-  validate = this.vr.registerValidator('sample-data', validateSampleData);
+  #vr = inject(ValidatorRegistryService);
+  validate = this.#vr.registerValidator('sample-data', validateSampleData);
 
   save = (data: SampleData) => {
     if (!isEmpty(this.validate(data))) {
@@ -32,9 +32,6 @@ export class SampleDataService {
     }
     inMemoryDb.set(data.id, data);
   }
-
-
-  constructor(private vr: ValidatorRegistryService) { }
 }
 
 const year = 365 * 24 * 60 * 60 * 1000
