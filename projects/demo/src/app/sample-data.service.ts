@@ -4,7 +4,7 @@ import { ValidationErrors, ValidatorRegistryService } from 'validator';
 import { create, only, enforce, warn, test } from 'vest';
 
 
-interface SampleData {
+export interface SampleData {
   id: string;
   name: string;
   dob: Date;
@@ -14,7 +14,14 @@ interface SampleData {
 }
 
 const inMemoryDb = new Map<string, SampleData>();
-
+inMemoryDb.set('1', {
+  id: '1',
+  name: 'Sander',
+  dob: new Date(1980, 1, 1),
+  password: '1234',
+  confirm: '1234',
+  email: 'none@oyb.eu'
+})
 
 
 @Injectable({

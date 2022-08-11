@@ -1,3 +1,56 @@
-<form action="">
+<ng-container  *ngIf="data$ |async as data">
+<form  validationId="sample-data" #form>
+  <input
+    type="hidden"
+    name="id"
+    [(ngModel)]="data.id"
+  >
+  <label>
+    <span>Name</span>
+    <input
+      type="text"
+      name="name"
+      placeholder="Your name"
+      [(ngModel)]="data.name"
+    />
+  </label>
+  <label>
+    <span>Email</span>
+    <input
+      type="email"
+      name="email"
+      placeholder="Your email"
+      [(ngModel)]="data.email"
+    />
+  </label>
+  <label>
+    <span>Date of Birth</span>
+    <input
+      type="date"
+      name="dob"
+      placeholder="Your date of birth"
+      [(ngModel)]="data.dob"
+    >
+  </label>
+  <label>
+    <span>Password</span>
+    <input
+      type="password"
+      name="password"
+      placeholder="Your password"
+      [(ngModel)]="data.password"
+    >
+  </label>
+  <label>
+    <span>Confirm password</span>
+    <input
+      type="password"
+      name="confirm"
+      placeholder="Your password again"
+      [(ngModel)]="data.confirm"
+    >
+  </label>
+  <input type="submit" value="Submit" [disabled]="form ['isInvalid']">
+  <button type="reset">Reset</button>
 
 </form>

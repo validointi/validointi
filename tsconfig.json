@@ -23,6 +23,8 @@
       "es2020",
       "dom"
     ],
+    "allowJs": true,
+    "allowSyntheticDefaultImports": true,
     "paths": {
       "validator": [
         "dist/validator/validator",
