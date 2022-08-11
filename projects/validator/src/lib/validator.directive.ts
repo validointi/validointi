@@ -2,7 +2,7 @@ import { Directive, inject, Input, OnDestroy, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { debounceTime, tap } from 'rxjs';
 import { ValidationId, Validator } from './validator.types';
-import { ValidatorRegistryService } from './validatorsRegistry.service';
+import { ValidatorRegistryService } from 'validator';
 
 
 @Directive({
