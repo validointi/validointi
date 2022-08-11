@@ -1,7 +1,6 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ValidatorRegistryService } from 'validator';
-import { ValidatorDirective } from 'projects/validator/src/lib/validator.directive';
+import { ValidatorDirective } from 'validator';
 import { FormsModule } from '@angular/forms';
 import { SampleDataService } from '../sample-data.service';
 
