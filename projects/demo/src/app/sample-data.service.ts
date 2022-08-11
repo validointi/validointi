@@ -23,8 +23,8 @@ const inMemoryDb = new Map<string, SampleData>();
 export class SampleDataService {
   getById = (id: string) => of(inMemoryDb.get(id));
   getAll = () => of(Array.from(inMemoryDb.values()));
-  vr = inject(ValidatorRegistryService);
-  validate = this.vr.registerValidator('sample-data', validateSampleData);
+  #vr = inject(ValidatorRegistryService);
+  validate = this.#vr.registerValidator('sample-data', validateSampleData);
 
   save = (data: SampleData) => {
     if (!isEmpty(this.validate(data))) {
