@@ -10,13 +10,11 @@ export class ValidatorRegistryService {
 
   registerValidator = <T extends Object>(name: ValidationId, fn: Validator<T>) => {
     this.#registery.set(name, fn)
-    console.log(`[ValidatorRegisterService] registered validator "${name}"`)
     return this.getValidator(name);
   };
 
   getValidator = (name: ValidationId) => {
     const fn = this.#registery.get(name)
-    console.log(name,fn)
     if (!fn) {
       throw new Error(`No validator found with name "${name}"`);
     }

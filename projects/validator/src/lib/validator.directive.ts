@@ -21,7 +21,7 @@ export class ValidatorDirective implements OnInit, OnDestroy {
     tap(model => {
       const errors = this.#validatorFn?.(model);
       errors && Object.entries(errors).forEach(([key, value]) => {
-        this.#form.controls[key].setErrors(value);
+        this.#form.controls[key]?.setErrors(value);
       })
     })
   ).subscribe()
