@@ -6,8 +6,8 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test:lib": "jest --config --passWithNoTests ./projects/validator/jest.config.js",
-    "test:app": "jest --config --passWithNoTests ./projects/demo/jest.config.js",
+    "test:lib": "npx ng test --project validator",
+    "test:app": "npx ng test --project demo",
     "test": "npm run test:lib && npm run test:app"
   },
   "private": true,
@@ -26,6 +26,7 @@
     "zone.js": "~0.11.4"
   },
   "devDependencies": {
+    "@angular-builders/jest": "^14.0.0",
     "@angular-devkit/build-angular": "^14.1.1",
     "@angular/cli": "^14.1.1",
     "@angular/compiler-cli": "^14.1.1",
