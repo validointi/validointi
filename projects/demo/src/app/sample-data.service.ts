@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { of } from 'rxjs';
 import { ValidationErrors, ValidatorRegistryService } from 'validator';
 import { create, only, enforce, warn, test } from 'vest';
@@ -30,8 +30,9 @@ inMemoryDb.set('1', {
 export class SampleDataService {
   getById = (id: string) => of(inMemoryDb.get(id));
   getAll = () => of(Array.from(inMemoryDb.values()));
+  #vr = inject(ValidatorRegistryService)
 
-  validate = this.vr.registerValidator('sample-data', validateSampleData);
+  validate = this.#vr.registerValidator('sample-data', validateSampleData);
 
   save = (data: SampleData) => {
     if (!isEmpty(this.validate(data))) {
@@ -39,9 +40,6 @@ export class SampleDataService {
     }
     inMemoryDb.set(data.id, data);
   }
-
-
-  constructor(private vr: ValidatorRegistryService) { }
 }
 
 const year = 365 * 24 * 60 * 60 * 1000
@@ -55,12 +53,14 @@ const suite = create((data: SampleData = {} as SampleData) => {
   });
 
   test("dob", "must be older as 18", () => {
-    enforce(data.dob.getTime()).lessThanOrEquals(new Date(Date.now() - 18 * year).getTime());
+    const dob=new Date(data.dob)
+    enforce(dob.getTime()).lessThanOrEquals(new Date(Date.now() - 18 * year).getTime());
   })
 
   test("dob", "Older then 80, are you sure?", () => {
     warn();
-    enforce(data.dob.getTime()).lessThanOrEquals(new Date(Date.now() - 80 * year).getTime());
+    const dob=new Date(data.dob)
+    enforce(dob.getTime()).lessThanOrEquals(new Date(Date.now() - 80 * year).getTime());
   })
 
   test("password", "Password is required", () => {

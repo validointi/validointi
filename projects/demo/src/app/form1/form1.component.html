@@ -1,5 +1,5 @@
 <ng-container  *ngIf="data$ |async as data">
-<form  validationId="sample-data" #form="ngForm">
+<form  validationId="sample-data" (ngSubmit)="submit(data)" #form="ngForm">
   <input
     type="hidden"
     name="id"
@@ -29,7 +29,8 @@
       type="date"
       name="dob"
       placeholder="Your date of birth"
-      [(ngModel)]="data.dob"
+      [ngModel]="data.dob | date:'yyyy-MM-dd'"
+      (ngModel)="data.dob = $any($event).target.valueAsDate"
     >
   </label>
   <label>

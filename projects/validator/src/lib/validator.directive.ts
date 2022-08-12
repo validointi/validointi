@@ -24,6 +24,8 @@ export class ValidatorDirective implements OnInit, OnDestroy {
       const errors = await this.#validatorFn?.(model);
       if (errors) {
         Object.entries(errors).forEach(([key, value]) => {
+          const formVal= this.#form.controls[key].getRawValue();;
+          console.log({ key, value, formVal });
           this.#form.controls[key]?.setErrors({ [key]: value });
         });
       }
