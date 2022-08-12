@@ -10,5 +10,10 @@
   },
   "exclude": [
     "**/*.spec.ts"
-  ]
+  ],
+  "paths": {
+    "validator": [
+      "./src/index.ts"
+    ]
+  }
 }

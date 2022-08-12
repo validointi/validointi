@@ -1,1 +1,11 @@
-/* You can add global styles to this file, and also import other style files */
+/*
+TODO: figure out why the local install of openprops breaks
+For now, just use the CDN version
+*/
+
+/* the props */
+@import "https://unpkg.com/open-props";
+
+/* optional imports that use the props */
+@import "https://unpkg.com/open-props/normalize.min.css";
+@import "https://unpkg.com/open-props/buttons.min.css";

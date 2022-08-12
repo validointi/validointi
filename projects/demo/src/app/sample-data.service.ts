@@ -1,10 +1,10 @@
-import { Injectable, inject} from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { of } from 'rxjs';
 import { ValidationErrors, ValidatorRegistryService } from 'validator';
 import { create, only, enforce, warn, test } from 'vest';
 
 
-interface SampleData {
+export interface SampleData {
   id: string;
   name: string;
   dob: Date;
@@ -14,7 +14,14 @@ interface SampleData {
 }
 
 const inMemoryDb = new Map<string, SampleData>();
-
+inMemoryDb.set('1', {
+  id: '1',
+  name: 'Sander',
+  dob: new Date(1980, 1, 1),
+  password: '1234',
+  confirm: '1234',
+  email: 'none@oyb.eu'
+})
 
 
 @Injectable({
@@ -23,7 +30,8 @@ const inMemoryDb = new Map<string, SampleData>();
 export class SampleDataService {
   getById = (id: string) => of(inMemoryDb.get(id));
   getAll = () => of(Array.from(inMemoryDb.values()));
-  #vr = inject(ValidatorRegistryService);
+  #vr = inject(ValidatorRegistryService)
+
   validate = this.#vr.registerValidator('sample-data', validateSampleData);
 
   save = (data: SampleData) => {
@@ -45,12 +53,14 @@ const suite = create((data: SampleData = {} as SampleData) => {
   });
 
   test("dob", "must be older as 18", () => {
-    enforce(data.dob.getTime()).lessThanOrEquals(new Date(Date.now() - 18 * year).getTime());
+    const dob=new Date(data.dob)
+    enforce(dob.getTime()).lessThanOrEquals(new Date(Date.now() - 18 * year).getTime());
   })
 
   test("dob", "Older then 80, are you sure?", () => {
     warn();
-    enforce(data.dob.getTime()).lessThanOrEquals(new Date(Date.now() - 80 * year).getTime());
+    const dob=new Date(data.dob)
+    enforce(dob.getTime()).lessThanOrEquals(new Date(Date.now() - 80 * year).getTime());
   })
 
   test("password", "Password is required", () => {
