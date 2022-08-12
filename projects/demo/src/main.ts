@@ -1,7 +1,7 @@
 import { importProvidersFrom, OnInit } from '@angular/core';
 import { bootstrapApplication } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
-import { AppComponent } from './app/AppComponent';
+import { AppComponent } from './app/app.component';
 import { rootRoutes } from './app/root.routes';
 
 bootstrapApplication(AppComponent, {
