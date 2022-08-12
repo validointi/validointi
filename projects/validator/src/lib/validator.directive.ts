@@ -20,11 +20,13 @@ export class ValidatorDirective implements OnInit, OnDestroy {
 
   #unsubscribe = this.#form?.valueChanges?.pipe(
     debounceTime(10), // dont fire too often
-    tap(model => {
-      const errors = this.#validatorFn?.(model);
-      errors && Object.entries(errors).forEach(([key, value]) => {
-        this.#form.controls[key]?.setErrors(value);
-      })
+    tap(async model => {
+      const errors = await this.#validatorFn?.(model);
+      if (errors) {
+        Object.entries(errors).forEach(([key, value]) => {
+          this.#form.controls[key]?.setErrors({ [key]: value });
+        });
+      }
     })
   ).subscribe()
 
