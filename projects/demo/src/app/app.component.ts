@@ -9,31 +9,37 @@ import { RouterModule } from '@angular/router';
   template: `
     <header>
       <nav>
-        <ol>
-          <li><a routerLink="home">Home</a></li>
-          <li><a routerLink="about">About</a></li>
-          <li><a routerLink="form1">Form1</a></li>
-        </ol>
+       <a routerLink="home">Home</a>
+       <a routerLink="about">About</a>
+       <a routerLink="form1">Form1</a>
       </nav>
     </header>
-    <router-outlet></router-outlet>
+    <main>
+      <router-outlet></router-outlet>
+    </main>
   `,
   styles: [
     `
-      header nav {
+    header {
+      margin: var(--size-3)
+    }
+    header>nav {
         display: flex;
         flex-direction: row;
-        justify-content: space-between;
         align-items: center;
-      }
-      header nav ol {
-        padding-inline-start: unset;
-      }
-      header nav ol li {
-        display: inline-block;
-        margin-left: var(--size-5);
-      }
+        gap: 1em;
+    }
+    a {
+      color: var(--blue-6);
+      text-decoration: none;
+      background-color: var(--blue-0);
+      border: 1px solid var(--blue-1);
+      text-shadow: 0 1px 0 var(--blue-2);
+    }
+    a:hover {
+      background-color: var(--blue-1);
+    }
     `,
   ],
 })
-export class AppComponent {}
+export class AppComponent { }
