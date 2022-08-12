@@ -1,7 +1,7 @@
-import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ValidatorDirective } from 'validator';
+import { Component, inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { ValidatorDirective } from 'validator';
 import { SampleDataService } from '../sample-data.service';
 
 @Component({
