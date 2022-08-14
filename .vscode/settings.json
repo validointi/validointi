@@ -13,6 +13,5 @@
     "statusBar.foreground": "#e7e7e7",
     "statusBarItem.hoverBackground": "#b64e9b",
     "statusBarItem.remoteBackground": "#943d7d",
-    "statusBarItem.remoteForeground": "#e7e7e7"
   }
 }
