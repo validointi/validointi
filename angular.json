@@ -27,7 +27,8 @@
         "test": {
           "builder": "@angular-builders/jest:run",
           "options": {
-            "passWithNoTests": true
+            "passWithNoTests": true,
+            "tsConfig": "tsconfig.spec.json"
           }
         }
       }
@@ -56,7 +57,9 @@
               "projects/demo/src/assets"
             ],
             "stylePreprocessorOptions": {
-              "includePaths": ["../node_modules/"]
+              "includePaths": [
+                "../node_modules/"
+              ]
             },
             "styles": [
               "projects/demo/src/styles.css"
