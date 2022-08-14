@@ -34,8 +34,10 @@ export class SampleDataService {
 
   validate = this.#vr.registerValidator('sample-data', validateSampleData);
 
-  save = (data: SampleData) => {
-    if (!isEmpty(this.validate(data))) {
+  save = async (data: SampleData) => {
+    const validationResult = await this.validate(data);
+    if (!isEmpty(validationResult)) {
+      console.dir(validationResult);
       throw new Error(`can't save invalid data`);
     }
     inMemoryDb.set(data.id, data);

@@ -1,21 +1,25 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { map, Observable } from 'rxjs';
 import { ValidatorDirective } from 'validator';
 import { SampleData, SampleDataService } from '../sample-data.service';
+import { ValidationErrorHookUpDirective } from './ValidationErrorHookUp.directive';
 
 @Component({
   selector: 'app-form1',
   standalone: true,
-  imports: [CommonModule, ValidatorDirective, FormsModule],
+  imports: [CommonModule, ValidatorDirective, FormsModule, ValidationErrorHookUpDirective],
   templateUrl: './form1.component.html',
   styleUrls: ['./form1.component.css']
 })
-export class Form1Component  {
-  #sd = inject(SampleDataService);
-  data$ = this.#sd.getById('1');
+export class Form1Component {
+  #sds = inject(SampleDataService);
+  data$ = this.#sds.getById('1')
 
-  submit(data:SampleData) {
-    this.#sd.save(data);
+  submit(data: SampleData) {
+    this.#sds.save(data).catch(e => {
+      console.log('this should be impossible, as the form is validated, but anyway, there is an error while saving the data!', e)
+    });
   }
 }
