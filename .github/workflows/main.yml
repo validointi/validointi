@@ -1,4 +1,4 @@
-name: Install, Lint and Test
+name: Main flow with test
 on: push
 jobs:
   build:
@@ -8,12 +8,11 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 16
-      - uses: google/wireit@setup-github-actions-caching/v1
-      - name: 👷 install
+      - name: npm install and npm run build
         run: |
-          npm ci
+          npm i
       - name: 🕵️‍♂️ lint our lib
-        run: |
+        run: /
           npm run lint:lib
       - name: 🧪 test
         run: |
