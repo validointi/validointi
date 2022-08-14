@@ -6,6 +6,7 @@ import { ValidatorRegistryService } from './validatorsRegistry.service';
 
 
 @Directive({
+  // eslint-disable-next-line @angular-eslint/directive-selector
   selector: 'form[validationId]',
   standalone: true
 })

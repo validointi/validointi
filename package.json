@@ -9,36 +9,72 @@
     "build:lib": "wireit",
     "test:lib": "wireit",
     "test:app": "wireit",
-    "test": "wireit"
+    "test": "wireit",
+    "lint:lib": "wireit"
   },
   "wireit": {
     "build:lib": {
       "command": "ng build --project validator --configuration production",
-      "output": ["dist/validator/**/*.*"],
-      "files": ["projects/validator/src/**/*.*", "projects/validator/package.json", "projects/validator/tsconfig.lib.prod.json","angular.json"]
+      "output": [
+        "dist/validator/**/*.*"
+      ],
+      "files": [
+        "projects/validator/src/**/*.*",
+        "projects/validator/package.json",
+        "projects/validator/tsconfig.lib.prod.json",
+        "angular.json"
+      ]
     },
     "build:demo": {
       "command": "ng build --project demo --configuration production --delete-output-path",
-      "output": ["dist/demo/**/*.*"],
-      "files": ["projects/demo/src/**/*.*", "projects/demo/package.json", "projects/demo/tsconfig.app.json","angular.json"],
-      "dependencies": ["build:lib"]
+      "output": [
+        "dist/demo/**/*.*"
+      ],
+      "files": [
+        "projects/demo/src/**/*.*",
+        "projects/demo/package.json",
+        "projects/demo/tsconfig.app.json",
+        "angular.json"
+      ],
+      "dependencies": [
+        "build:lib"
+      ]
     },
     "build": {
-      "dependencies": ["build:lib", "build:demo"]
+      "dependencies": [
+        "build:lib",
+        "build:demo"
+      ]
     },
     "test:lib": {
       "command": "ng test --project validator"
     },
     "test:app": {
       "command": "ng test --project demo",
-      "dependencies": ["build:lib"]
+      "dependencies": [
+        "build:lib"
+      ]
     },
     "test": {
-      "dependencies": ["test:lib", "test:app"]
+      "dependencies": [
+        "test:lib",
+        "test:app"
+      ]
+    },
+    "lint:lib": {
+      "command": "ng lint --project validator",
+      "files": [
+        "**/*.ts",
+        ".eslintignore",
+        ".eslintrc.cjs"
+      ],
+      "output": []
     },
     "start": {
       "command": "ng serve --project demo",
-      "dependencies": ["build:lib"],
+      "dependencies": [
+        "build:lib"
+      ],
       "/**": "The server cmd is actually not supported by wire-it yet, one it is, the start command will restart the server if there is a lib update **/",
       "server": true
     }
@@ -63,10 +99,18 @@
   "devDependencies": {
     "@angular-builders/jest": "^14.0.0",
     "@angular-devkit/build-angular": "^14.1.2",
+    "@angular-eslint/builder": "14.0.2",
+    "@angular-eslint/eslint-plugin": "14.0.2",
+    "@angular-eslint/eslint-plugin-template": "14.0.2",
+    "@angular-eslint/schematics": "14.0.2",
+    "@angular-eslint/template-parser": "14.0.2",
     "@angular/cli": "^14.1.2",
     "@angular/compiler-cli": "^14.1.2",
     "@types/jest": "^28.1.6",
     "@types/node": "^18.7.3",
+    "@typescript-eslint/eslint-plugin": "5.29.0",
+    "@typescript-eslint/parser": "5.29.0",
+    "eslint": "^8.18.0",
     "jasmine-core": "~4.3.0",
     "jest": "^28.1.3",
     "jest-preset-angular": "^12.2.0",
