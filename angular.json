@@ -30,6 +30,17 @@
             "passWithNoTests": true,
             "tsConfig": "tsconfig.spec.json"
           }
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "cache": true,
+            "cacheLocation": ".eslintcache",
+            "lintFilePatterns": [
+              "projects/validator/**/*.ts",
+              "projects/validator/**/*.html"
+            ]
+          }
         }
       }
     },
