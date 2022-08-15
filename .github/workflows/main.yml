@@ -8,6 +8,7 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 16
+      - uses: google/wireit@setup-github-actions-caching/v1
       - name: npm install and npm run build
         run: |
           npm i
