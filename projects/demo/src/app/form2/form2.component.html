@@ -1,0 +1,18 @@
+<form #form="ngForm">
+  <ng-container *ngIf="starwars$ | async as starwars; else loading">
+    <label>
+      <span>Select a starwars</span>
+      <select name="starwars" [(ngModel)]="model.starwars">
+        <option>This is not a starwars figure</option>
+        <option *ngFor="let item of starwars">{{ item.name }}</option>
+      </select>
+    </label>
+    <label>
+      <span>Some other thing here</span>
+      <input type="text" name="name" placeholder="Your name" />
+    </label>
+  </ng-container>
+  <button (click)="clickIt()">Submit data</button>
+</form>
+
+<ng-template #loading> LOADING DATA </ng-template>

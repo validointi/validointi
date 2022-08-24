@@ -11,6 +11,7 @@ import { RouterModule } from '@angular/router';
        <a routerLink="home">Home</a>
        <a routerLink="about">About</a>
        <a routerLink="form1">Form1</a>
+       <a routerLink="form2">Form2</a>
       </nav>
     </header>
     <main>
