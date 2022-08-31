@@ -1,18 +1,30 @@
-<form #form="ngForm">
+<ng-container *ngIf="data$ | async as data">
   <ng-container *ngIf="starwars$ | async as starwars; else loading">
-    <label>
-      <span>Select a starwars</span>
-      <select name="starwars" [(ngModel)]="model.starwars">
-        <option>This is not a starwars figure</option>
-        <option *ngFor="let item of starwars">{{ item.name }}</option>
-      </select>
-    </label>
-    <label>
-      <span>Some other thing here</span>
-      <input type="text" name="name" placeholder="Your name" />
-    </label>
+    <form
+      (ngSubmit)="submit($any(data))"
+      #form="ngForm"
+      validationId="sample-data2"
+    >
+      <input type="hidden" name="id" [(ngModel)]="data.id" />
+      <label>
+        <span>Select a starwars</span>
+        <select name="name" [(ngModel)]="data.name">
+          <option value="">This is not a starwars figure</option>
+          <option *ngFor="let item of starwars">{{ item.name }}</option>
+        </select>
+      </label>
+      <label>
+        <span>Some other thing here</span>
+        <input
+          type="email"
+          name="email"
+          placeholder="Your email"
+          [(ngModel)]="data.email"
+        />
+      </label>
+      <input type="submit" value="Submit" [disabled]="form.invalid" />
+      <button type="reset">Reset</button>
+    </form>
   </ng-container>
-  <button (click)="clickIt()">Submit data</button>
-</form>
-
+</ng-container>
 <ng-template #loading> LOADING DATA </ng-template>

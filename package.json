@@ -62,7 +62,7 @@
       ]
     },
     "lint:lib": {
-      "command": "ng lint --project validator",
+      "command": "ng lint --project validator --fix",
       "files": [
         "**/*.ts",
         ".eslintignore",
