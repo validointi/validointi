@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { of } from 'rxjs';
 import { ValidationErrors, ValidatorRegistryService } from 'validator';
-import { create, only, enforce, warn, test } from 'vest';
+import { create, enforce, test, warn } from 'vest';
 
 export interface SampleData {
   id: string;
@@ -12,14 +12,14 @@ export interface SampleData {
   email: string;
 }
 
-const inMemoryDb = new Map<string, SampleData>();
+const inMemoryDb = new Map<string, Partial<SampleData>>();
 inMemoryDb.set('1', {
   id: '1',
   name: 'Sander',
   dob: new Date(1980, 1, 1),
   password: '1234',
   confirm: '1234',
-  email: 'none@oyb.eu',
+  email: '',
 });
 
 @Injectable({
@@ -32,16 +32,15 @@ export class SampleDataService {
 
   validate = this.#vr.registerValidator('sample-data', validateSampleData);
 
-  save = async (data: SampleData) => {
+  save = async (data: Partial<SampleData>) => {
     const validationResult = await this.validate(data);
     if (!isEmpty(validationResult)) {
       console.dir(validationResult);
       throw new Error(`can't save invalid data`);
     }
-    inMemoryDb.set(data.id, data);
+    inMemoryDb.set(data.id as string, data);
   };
 }
-
 const year = 365 * 24 * 60 * 60 * 1000;
 const suite = create((data: SampleData = {} as SampleData) => {
   test('id', 'id is required', () => {
@@ -84,7 +83,6 @@ const suite = create((data: SampleData = {} as SampleData) => {
     enforce(data.confirm).equals(data.password);
   });
 });
-
 async function validateSampleData(data: SampleData): Promise<ValidationErrors> {
   const errors = await suite(data).getErrors();
   return Object.entries(errors).reduce((acc, [key, err]) => {

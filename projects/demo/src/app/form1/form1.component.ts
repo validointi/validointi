@@ -3,7 +3,7 @@ import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { map, Observable } from 'rxjs';
 import { ValidatorDirective } from 'validator';
-import { SampleData, SampleDataService } from '../sample-data.service';
+import { SampleData, SampleDataService } from './sample-data.service';
 import { ValidationErrorHookUpDirective } from './validationErrorHookUp.directive';
 
 @Component({
@@ -25,7 +25,7 @@ export class Form1Component {
   submit(data: SampleData) {
     this.#sds
       .save(data)
-      .catch((e) => {
+      .catch((e): void => {
         console.error(
           'this should be impossible, as the form is validated, but anyway, there is an error while saving the data!',
           e
