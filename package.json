@@ -14,14 +14,14 @@
   },
   "wireit": {
     "build:lib": {
-      "command": "ng build --project validator --configuration production",
+      "command": "ng build --project @se-ng/validate --configuration production",
       "output": [
-        "dist/validator/**/*.*"
+        "dist/validate/**/*.*"
       ],
       "files": [
-        "projects/validator/src/**/*.*",
-        "projects/validator/package.json",
-        "projects/validator/tsconfig.lib.prod.json",
+        "projects/se-ng/validate/src/**/*.*",
+        "projects/se-ng/validate/package.json",
+        "projects/se-ng/validate/tsconfig.lib.prod.json",
         "angular.json"
       ]
     },
@@ -47,7 +47,7 @@
       ]
     },
     "test:lib": {
-      "command": "ng test --project validator"
+      "command": "ng test --project @se-ng/validate"
     },
     "test:app": {
       "command": "ng test --project demo",
@@ -62,7 +62,7 @@
       ]
     },
     "lint:lib": {
-      "command": "ng lint --project validator --fix",
+      "command": "ng lint --project @se-ng/validate --fix",
       "files": [
         "**/*.ts",
         ".eslintignore",
@@ -81,14 +81,14 @@
   },
   "private": true,
   "dependencies": {
-    "@angular/animations": "^14.1.2",
-    "@angular/common": "^14.1.2",
-    "@angular/compiler": "^14.1.2",
-    "@angular/core": "^14.1.2",
-    "@angular/forms": "^14.1.2",
-    "@angular/platform-browser": "^14.1.2",
-    "@angular/platform-browser-dynamic": "^14.1.2",
-    "@angular/router": "^14.1.2",
+    "@angular/animations": "^14.2.0",
+    "@angular/common": "^14.2.0",
+    "@angular/compiler": "^14.2.0",
+    "@angular/core": "^14.2.0",
+    "@angular/forms": "^14.2.0",
+    "@angular/platform-browser": "^14.2.0",
+    "@angular/platform-browser-dynamic": "^14.2.0",
+    "@angular/router": "^14.2.0",
     "open-props": "^1.4.12",
     "rxjs": "~7.5.6",
     "tslib": "^2.4.0",
@@ -98,14 +98,14 @@
   },
   "devDependencies": {
     "@angular-builders/jest": "^14.0.0",
-    "@angular-devkit/build-angular": "^14.1.2",
-    "@angular-eslint/builder": "14.0.2",
-    "@angular-eslint/eslint-plugin": "14.0.2",
-    "@angular-eslint/eslint-plugin-template": "14.0.2",
-    "@angular-eslint/schematics": "14.0.2",
-    "@angular-eslint/template-parser": "14.0.2",
-    "@angular/cli": "^14.1.2",
-    "@angular/compiler-cli": "^14.1.2",
+    "@angular-devkit/build-angular": "^14.2.1",
+    "@angular-eslint/builder": "14.0.3",
+    "@angular-eslint/eslint-plugin": "14.0.3",
+    "@angular-eslint/eslint-plugin-template": "14.0.3",
+    "@angular-eslint/schematics": "14.0.3",
+    "@angular-eslint/template-parser": "14.0.3",
+    "@angular/cli": "^14.2.1",
+    "@angular/compiler-cli": "^14.2.0",
     "@types/jest": "^28.1.6",
     "@types/node": "^18.7.3",
     "@typescript-eslint/eslint-plugin": "5.29.0",
