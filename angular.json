@@ -129,8 +129,8 @@
             "cache": true,
             "cacheLocation": ".eslintcache",
             "lintFilePatterns": [
-              "projects/se-ng/validator/**/*.ts",
-              "projects/se-ng/validator/**/*.html"
+              "projects/se-ng/validate/**/*.ts",
+              "projects/se-ng/validate/**/*.html"
             ]
           }
         }

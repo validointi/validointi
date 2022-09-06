@@ -16,12 +16,12 @@
     "build:lib": {
       "command": "ng build --project @se-ng/validate --configuration production",
       "output": [
-        "dist/validator/**/*.*"
+        "dist/validate/**/*.*"
       ],
       "files": [
-        "projects/se-ng/validator/src/**/*.*",
-        "projects/se-ng/validator/package.json",
-        "projects/se-ng/validator/tsconfig.lib.prod.json",
+        "projects/se-ng/validate/src/**/*.*",
+        "projects/se-ng/validate/package.json",
+        "projects/se-ng/validate/tsconfig.lib.prod.json",
         "angular.json"
       ]
     },

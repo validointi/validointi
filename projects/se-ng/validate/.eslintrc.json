@@ -1,5 +1,5 @@
 {
-  "extends": "../../.eslintrc.json",
+  "extends": "../../../.eslintrc.json",
   "ignorePatterns": [
     "!**/*"
   ],
@@ -10,8 +10,8 @@
       ],
       "parserOptions": {
         "project": [
-          "projects/validator/tsconfig.lib.json",
-          "projects/validator/tsconfig.spec.json"
+          "projects/se-ng/validate/tsconfig.lib.json",
+          "projects/se-ng/validate/tsconfig.spec.json"
         ],
         "createDefaultProgram": true
       },

@@ -1,6 +1,6 @@
 {
   "name": "@se-ng/validate",
-  "version": "0.0.1",
+  "version": "0.0.0-alpha.1",
   "description": "Model driven validation for Angular template forms",
   "peerDependencies": {
     "@angular/common": "^14.1.0",

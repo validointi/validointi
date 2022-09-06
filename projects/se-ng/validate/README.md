@@ -1,4 +1,4 @@
-# Validator
+# Validate
 
 This is a library to help you validate your template driven forms.
 Its currently in ALPHA, use at yor own risk.
@@ -9,7 +9,7 @@ The reason its still in alpha is because we are still extending the functionalit
 To install this library, run:
 
 ```bash
-$ npm install @se-ng/validator@alpha --save
+$ npm install @se-ng/validate@alpha --save
 ```
 
 ## Using it in your project.
