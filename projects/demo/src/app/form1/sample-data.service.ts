@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
+import { ValidationErrors, ValidatorRegistryService } from '@se-ng/validate';
 import { of } from 'rxjs';
-import { ValidationErrors, ValidatorRegistryService } from 'validator';
 import { create, enforce, test, warn } from 'vest';
 
 export interface SampleData {

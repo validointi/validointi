@@ -3,47 +3,6 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "validator": {
-      "projectType": "library",
-      "root": "projects/validator",
-      "sourceRoot": "projects/validator/src",
-      "prefix": "lib",
-      "architect": {
-        "build": {
-          "builder": "@angular-devkit/build-angular:ng-packagr",
-          "options": {
-            "project": "projects/validator/ng-package.json"
-          },
-          "configurations": {
-            "production": {
-              "tsConfig": "projects/validator/tsconfig.lib.prod.json"
-            },
-            "development": {
-              "tsConfig": "projects/validator/tsconfig.lib.json"
-            }
-          },
-          "defaultConfiguration": "production"
-        },
-        "test": {
-          "builder": "@angular-builders/jest:run",
-          "options": {
-            "passWithNoTests": true,
-            "tsConfig": "tsconfig.spec.json"
-          }
-        },
-        "lint": {
-          "builder": "@angular-eslint/builder:lint",
-          "options": {
-            "cache": true,
-            "cacheLocation": ".eslintcache",
-            "lintFilePatterns": [
-              "projects/validator/**/*.ts",
-              "projects/validator/**/*.html"
-            ]
-          }
-        }
-      }
-    },
     "demo": {
       "projectType": "application",
       "schematics": {
@@ -132,6 +91,47 @@
           "builder": "@angular-builders/jest:run",
           "options": {
             "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "@se-ng/validate": {
+      "projectType": "library",
+      "root": "projects/se-ng/validate",
+      "sourceRoot": "projects/se-ng/validate/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "options": {
+            "project": "projects/se-ng/validate/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/se-ng/validate/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/se-ng/validate/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular-builders/jest:run",
+          "options": {
+            "passWithNoTests": true,
+            "tsConfig": "tsconfig.spec.json"
+          }
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "cache": true,
+            "cacheLocation": ".eslintcache",
+            "lintFilePatterns": [
+              "projects/se-ng/validator/**/*.ts",
+              "projects/se-ng/validator/**/*.html"
+            ]
           }
         }
       }
