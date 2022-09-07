@@ -19,16 +19,15 @@
     "importHelpers": true,
     "target": "es2020",
     "module": "es2020",
-    "lib": [
-      "es2020",
-      "dom"
-    ],
+    "lib": ["es2020", "dom"],
     "allowJs": true,
     "allowSyntheticDefaultImports": true,
     "paths": {
-      "validator": [
-        "dist/validator/validator",
-        "dist/validator"
+      "@se-ng/validate": [
+        "dist/se-ng/validate"
+      ],
+      "@se-ng/validate/*": [
+        "dist/se-ng/validate/*"
       ]
     }
   },
