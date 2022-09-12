@@ -1,5 +1,5 @@
-import React from "react";
 import clsx from "clsx";
+import React from "react";
 import styles from "./styles.module.css";
 
 type FeatureItem = {
@@ -11,15 +11,12 @@ type FeatureItem = {
 const FeatureList: FeatureItem[] = [
   {
     title: "Easy to Use",
-    Svg: require("@site/static/img/undraw_docusaurus_mountain.svg").default,
+    Svg: require("@site/static/img/undraw_check_boxes_re_v40f.svg").default,
     description: <>Easly hockup Angular Forms with Vest, Joi and many more</>,
   },
-  // {
-  //   title: "",
-  // },
   {
     title: "Powered by Angular",
-    Svg: require("@site/static/img/angular.svg").default,
+    Svg: require("@site/static/img/undraw_done_re_oak4.svg").default,
     description: <>Use model validation as you never have done before</>,
   },
 ];

@@ -12,7 +12,7 @@ export class ValidationErrorHookUpDirective implements OnDestroy {
 
   #sub = this.#model.statusChanges
     ?.pipe(
-      tap((status) => {
+      tap(() => {
         const errors = this.#model.control.errors;
         if (errors) {
           Object.entries(errors).forEach(([key, value]) => {
