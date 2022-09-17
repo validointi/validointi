@@ -10,8 +10,7 @@
     "test:lib": "wireit",
     "test:app": "wireit",
     "test": "wireit",
-    "lint:lib": "wireit",
-    "docs:serve": "wireit"
+    "lint:lib": "wireit"
   },
   "wireit": {
     "build:lib": {
@@ -76,11 +75,6 @@
       "dependencies": [
         "build:lib"
       ],
-      "/**": "The server cmd is actually not supported by wire-it yet, one it is, the start command will restart the server if there is a lib update **/",
-      "server": true
-    },
-    "docs:serve": {
-      "command": "cd website && npm start",
       "/**": "The server cmd is actually not supported by wire-it yet, one it is, the start command will restart the server if there is a lib update **/",
       "server": true
     }
