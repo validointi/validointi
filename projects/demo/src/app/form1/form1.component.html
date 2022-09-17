@@ -5,15 +5,15 @@
     #form="ngForm"
   >
     <input type="hidden" name="id" [(ngModel)]="data.id" />
-    <label>
+    <label for="name">
       <span>Name</span>
-      <input
-        type="text"
-        name="name"
-        placeholder="Your name"
-        [(ngModel)]="data.name"
-      />
     </label>
+    <input
+      type="text"
+      name="name"
+      placeholder="Your name"
+      [(ngModel)]="data.name"
+    />
     <label>
       <span>Email</span>
       <input
