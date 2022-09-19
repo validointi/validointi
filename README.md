@@ -1,4 +1,4 @@
-# Validionti
+# Validointi
 
 
 ![logo](assets/logo.ico)
