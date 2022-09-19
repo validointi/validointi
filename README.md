@@ -1,6 +1,7 @@
 # Validionti
 
 
-![logo](assets/logo.svg)
+![logo](assets/logo.ico)
+
 
 ## We finsish the validation debate
