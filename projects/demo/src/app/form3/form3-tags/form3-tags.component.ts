@@ -1,12 +1,11 @@
-import { Component, inject, Input, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, inject, Input, OnInit, ViewChild } from '@angular/core';
 import { FormsModule, NgForm, NgModel } from '@angular/forms';
 import { ValidationErrorHookUpDirective } from '../../form1/validationErrorHookUp.directive';
 
 @Component({
   selector: 'label[tag][index]',
   standalone: true,
-  imports: [CommonModule, FormsModule, ValidationErrorHookUpDirective],
+  imports: [FormsModule, ValidationErrorHookUpDirective],
   template: `
       <span>Tag-{{index}}</span>
       <input
@@ -21,7 +20,6 @@ import { ValidationErrorHookUpDirective } from '../../form1/validationErrorHookU
     display: label;
   }
   `],
-  encapsulation: ViewEncapsulation.Emulated,
 })
 export class Form3TagsComponent implements OnInit {
   @Input() tag?: string;
@@ -44,5 +42,4 @@ export class Form3TagsComponent implements OnInit {
      */
     this.form.addControl(this.ngModel);
   }
-
 }
