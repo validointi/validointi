@@ -1,11 +1,16 @@
-/*
-TODO: figure out why the local install of openprops breaks
-For now, just use the CDN version
-*/
 
 /* the props */
-@import "https://unpkg.com/open-props";
+@import "open-props";
 
 /* optional imports that use the props */
-@import "https://unpkg.com/open-props/normalize.min.css";
-@import "https://unpkg.com/open-props/buttons.min.css";
+@import "open-props/normalize.min.css";
+@import "open-props/buttons.min.css";
+
+
+.ng-invalid.ng-touched:focus {
+  outline-color: var(--red-5);
+  background-color: inherit;
+}
+.ng-invalid.ng-touched:not(form) {
+  background-color: var(--red-2)
+}

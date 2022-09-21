@@ -1,0 +1,130 @@
+<p>form3 works!</p>
+<ng-container *ngIf="data$ | async as data">
+  <form
+    validationId="sample-data"
+    (ngSubmit)="submit($any(data))"
+    #form="ngForm"
+    [validateOnFieldChanges]="false"
+  >
+    <input
+      type="hidden"
+      name="id"
+      [(ngModel)]="data.id"
+    />
+    <label for="name">
+      <span>Name</span>
+    </label>
+    <input
+      type="text"
+      name="name"
+      placeholder="Your name"
+      [(ngModel)]="data.name"
+    />
+    <label>
+      <span>Email</span>
+      <input
+        type="email"
+        name="email"
+        placeholder="Your email"
+        [(ngModel)]="data.email"
+      />
+    </label>
+    <label>
+      <span>Date of Birth</span>
+      <input
+        type="date"
+        name="dob"
+        placeholder="Your date of birth"
+        [ngModel]="data.dob | date: 'yyyy-MM-dd'"
+        (ngModel)="data.dob = $any($event).target.valueAsDate"
+      />
+    </label>
+    <label>
+      <span>Password</span>
+      <input
+        type="password"
+        name="password"
+        placeholder="Your password"
+        [(ngModel)]="data.password"
+      />
+    </label>
+    <label>
+      <span>Confirm password</span>
+      <input
+        type="password"
+        name="confirm"
+        placeholder="Your password again"
+        [(ngModel)]="data.confirm"
+      />
+    </label>
+    <fieldset>
+      <legend>Address</legend>
+      <label>
+        <span>Street</span>
+        <input
+          type="text"
+          name="address.street"
+          placeholder="Your street"
+          [(ngModel)]="data.address.street"
+        />
+      </label>
+      <label>
+        <span>City</span>
+        <input
+          type="text"
+          name="address.city"
+          placeholder="Your city"
+          [(ngModel)]="data.address.city"
+        />
+      </label>
+      <label>
+        <span>State</span>
+        <input
+          type="text"
+          name="address.state"
+          placeholder="Your state"
+          [(ngModel)]="data.address.state"
+        />
+      </label>
+      <label>
+        <span>Zip</span>
+        <input
+          type="text"
+          name="address.zip"
+          placeholder="Your zip"
+          [(ngModel)]="data.address.zip"
+        />
+      </label>
+    </fieldset>
+    <fieldset>
+      <legend>tags <button
+          type="button"
+          (click)="data.tags.push('')"
+        >add</button></legend>
+      <label
+        *ngFor="let tag of data.tags; let index = index"
+        [tag]="tag"
+        [index]="index"
+      >
+      </label>
+
+    </fieldset>
+    <input
+      type="submit"
+      value="Submit"
+      [disabled]="form.invalid"
+    />
+    <button
+      type="button"
+      (click)="clear(data,form, $event)"
+    >force Validation</button>
+    <button
+      type="reset"
+      (click)="clear(data, form, $event)"
+    >Empty all fields</button>
+    <button
+      type="button"
+      (click)="reset(data,form)"
+    >Reset to initial values</button>
+  </form>
+</ng-container>

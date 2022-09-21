@@ -26,4 +26,9 @@ export const rootRoutes: Routes = [
     loadComponent: () =>
       import('./form2/form2.component').then((c) => c.Form2Component),
   },
+  {
+    path: 'form3',
+    loadComponent: () =>
+      import('./form3/form3.component').then((c) => c.Form3Component),
+  },
 ];
