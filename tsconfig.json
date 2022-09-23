@@ -23,11 +23,11 @@
     "allowJs": true,
     "allowSyntheticDefaultImports": true,
     "paths": {
-      "@se-ng/validate": [
-        "dist/se-ng/validate"
+      "@validointi/core": [
+        "dist/validointi/core"
       ],
-      "@se-ng/validate/*": [
-        "dist/se-ng/validate/*"
+      "@validointi/*": [
+        "dist/validointi/core/*"
       ]
     }
   },

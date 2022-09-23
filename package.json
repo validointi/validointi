@@ -14,14 +14,14 @@
   },
   "wireit": {
     "build:lib": {
-      "command": "ng build --project @se-ng/validate --configuration production",
+      "command": "ng build --project validointi --configuration production",
       "output": [
         "dist/validate/**/*.*"
       ],
       "files": [
-        "projects/se-ng/validate/src/**/*.*",
-        "projects/se-ng/validate/package.json",
-        "projects/se-ng/validate/tsconfig.lib.prod.json",
+        "projects/validointi/core/src/**/*.*",
+        "projects/validointi/core/package.json",
+        "projects/validointi/core/tsconfig.lib.prod.json",
         "angular.json"
       ]
     },
@@ -47,7 +47,7 @@
       ]
     },
     "test:lib": {
-      "command": "ng test --project @se-ng/validate"
+      "command": "ng test --project validointi"
     },
     "test:app": {
       "command": "ng test --project demo",
@@ -62,7 +62,7 @@
       ]
     },
     "lint:lib": {
-      "command": "ng lint --project @se-ng/validate --fix",
+      "command": "ng lint --project validointi --fix",
       "files": [
         "**/*.ts",
         ".eslintignore",
