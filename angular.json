@@ -8,6 +8,14 @@
       "schematics": {
         "@schematics/angular:application": {
           "strict": true
+        },
+        "@schematics/angular:component": {
+          "style": "css",
+          "inlineStyle": false,
+          "inlineTemplate": true,
+          "changeDetection": "OnPush",
+          "skipTests": true,
+          "standalone": true
         }
       },
       "root": "projects/demo",

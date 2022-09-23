@@ -27,6 +27,7 @@
         name="email"
         placeholder="Your email"
         [(ngModel)]="data.email"
+        required
       />
     </label>
     <label>
@@ -116,7 +117,7 @@
     />
     <button
       type="button"
-      (click)="clear(data,form, $event)"
+      (click)="force(data,form, $event)"
     >force Validation</button>
     <button
       type="reset"

@@ -1,6 +1,6 @@
 import { Directive, inject, Input, OnDestroy, OnInit } from '@angular/core';
-import { NgForm } from '@angular/forms';
-import { asyncScheduler, BehaviorSubject, debounceTime, EMPTY, merge, observeOn, of, ReplaySubject, switchMap, tap } from 'rxjs';
+import { AbstractControl, AsyncValidatorFn, NgForm, ValidatorFn,ValidationErrors } from '@angular/forms';
+import { asyncScheduler, BehaviorSubject, debounceTime, EMPTY, merge, observeOn, of, ReplaySubject, switchMap, take, tap } from 'rxjs';
 import { ObjectFromRawFormValue } from './ObjectFromRawFormValue';
 import { ValidationId, Validator } from './validator.types';
 import { ValidatorRegistryService } from './validatorsRegistry.service';
@@ -12,7 +12,7 @@ import { ValidatorRegistryService } from './validatorsRegistry.service';
   standalone: true
 })
 export class ValidatorDirective implements OnInit, OnDestroy {
-  #init = new ReplaySubject<void>(1);
+  #refresh = new ReplaySubject<void>(1);
   @Input() validationId: ValidationId = '';
   #validateOnFieldChanges$ = new BehaviorSubject(false);;
   @Input() set validateOnFieldChanges(value: boolean | '') {
@@ -28,7 +28,7 @@ export class ValidatorDirective implements OnInit, OnDestroy {
   #fullFormValidation = (this.#form?.valueChanges || EMPTY).pipe(
     debounceTime(10), // dont fire too often
     tap(async model => {
-      console.log(model,ObjectFromRawFormValue(model));
+      console.log(model, ObjectFromRawFormValue(model));
       const errors = await this.#validatorFn?.(ObjectFromRawFormValue(model));
       if (errors) {
         Object.entries(errors).forEach(([key, value]) => {
@@ -46,23 +46,30 @@ export class ValidatorDirective implements OnInit, OnDestroy {
 
   // TODO: this works, but if there are changes ti the form, new/removed fields are not taken in account.
   /** subscribe to each model separate, when your validations are too slow otherwise. */
-  #perControlValidation = this.#init.pipe(
+  #perControlValidation = this.#refresh.pipe(
     observeOn(asyncScheduler),
     switchMap(() => of(Array.from(Object.entries(this.#form?.controls)))),
-    switchMap(model => merge(...model.map(([fieldName, control]) => control.valueChanges.pipe(
-      debounceTime(10), // dont fire too often
-      switchMap((newValue) => this.#validatorFn?.(ObjectFromRawFormValue(control.root.getRawValue()), fieldName) || EMPTY),
-      tap(errors => {
-        const fieldErrors = errors?.[fieldName];
-        if (fieldErrors) {
-          control.setErrors({ [fieldName]: fieldErrors });
+    take(1),
+    tap(controls => {
+      controls.forEach(([key, control]) => {
+        const validatorFn: AsyncValidatorFn = async (ctrl: AbstractControl) => {
+          const currentFormData = ObjectFromRawFormValue(control.root.getRawValue())
+          const errs = this.#validatorFn?.(currentFormData, key);
+          if (!errs) {
+            return null; //WTF? why is this not undefined?
+          }
+          return errs && Object.entries(errs).reduce((acc, [fieldname, err]) => ({ ...acc, [fieldname]: err }), {} as ValidationErrors);
         }
-      })
-    ))))
+        if (!control.hasAsyncValidator(validatorFn)) {
+          control.setAsyncValidators(validatorFn);
+        }
+        console.log('added validator to control', key);
+      });
+    })
   )
 
 
-  #unsubscribe = this.#init.pipe(
+  #unsubscribe = this.#refresh.pipe(
     switchMap(() => this.#validateOnFieldChanges$),
     switchMap(validateOnFieldChanges => validateOnFieldChanges ?
       this.#perControlValidation :
@@ -79,8 +86,7 @@ export class ValidatorDirective implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.#validatorFn = this.#vr.getValidator(this.validationId);
-    this.#init.next();
-    this.#init.complete();
+    this.#refresh.next();
   }
 
 }

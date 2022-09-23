@@ -36,8 +36,16 @@ export class Form3Component {
       .then(() => console.info('Yes!'));
   }
 
+  async force(data: SampleData, form: NgForm, ev: Event) {
+    form.control.updateValueAndValidity();
+    form.control.clearAsyncValidators();
+    form.control.clearValidators();
+    form.control.markAllAsTouched();
+    ev.preventDefault();
+  }
+
   async clear(data: SampleData, form: NgForm, ev: Event) {
-    // clearObject(data);
+    clearObject(data);
     const rawData = form.control.getRawValue();
     console.table(rawData);
     form.control.clearAsyncValidators();
