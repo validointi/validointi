@@ -9,7 +9,7 @@ The reason its still in alpha is because we are still extending the functionalit
 To install this library, run:
 
 ```bash
-$ npm install @se-ng/validate@alpha --save
+$ npm install validointi@alpha --save
 ```
 
 ## Using it in your project.

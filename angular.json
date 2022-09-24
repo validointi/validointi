@@ -95,23 +95,23 @@
         }
       }
     },
-    "@se-ng/validate": {
+    "validointi": {
       "projectType": "library",
-      "root": "projects/se-ng/validate",
-      "sourceRoot": "projects/se-ng/validate/src",
+      "root": "projects/validointi/core",
+      "sourceRoot": "projects/validointi/core/src",
       "prefix": "lib",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:ng-packagr",
           "options": {
-            "project": "projects/se-ng/validate/ng-package.json"
+            "project": "projects/validointi/core/ng-package.json"
           },
           "configurations": {
             "production": {
-              "tsConfig": "projects/se-ng/validate/tsconfig.lib.prod.json"
+              "tsConfig": "projects/validointi/core/tsconfig.lib.prod.json"
             },
             "development": {
-              "tsConfig": "projects/se-ng/validate/tsconfig.lib.json"
+              "tsConfig": "projects/validointi/core/tsconfig.lib.json"
             }
           },
           "defaultConfiguration": "production"
@@ -129,8 +129,8 @@
             "cache": true,
             "cacheLocation": ".eslintcache",
             "lintFilePatterns": [
-              "projects/se-ng/validate/**/*.ts",
-              "projects/se-ng/validate/**/*.html"
+              "projects/validointi/core/**/*.ts",
+              "projects/validointi/core/**/*.html"
             ]
           }
         }
