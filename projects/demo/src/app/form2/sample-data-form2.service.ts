@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { ValidationErrors, ValidatorRegistryService } from '@se-ng/validate';
+import { ValidationErrors, ValidatorRegistryService } from '@validointi/core';
 import { of } from 'rxjs';
 import { create, enforce, test } from 'vest';
 import promisify from 'vest/promisify';
