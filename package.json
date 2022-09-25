@@ -12,7 +12,8 @@
     "test:app": "wireit",
     "test": "wireit",
     "lint:lib": "wireit",
-    "hooks:pre-commit": "node hooks/pre-commit.js"
+    "hooks:pre-commit": "node hooks/pre-commit.js",
+    "prepare": "husky install"
   },
   "wireit": {
     "build:lib": {
