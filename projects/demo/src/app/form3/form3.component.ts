@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
-import { ValidatorDirective } from '@se-ng/validate';
+import { ValidatorDirective } from '@validointi/core';
 import { firstValueFrom } from 'rxjs';
 import { SampleData, SampleDataService } from '../form1/sample-data.service';
 import { ValidationErrorHookUpDirective } from '../form1/validationErrorHookUp.directive';

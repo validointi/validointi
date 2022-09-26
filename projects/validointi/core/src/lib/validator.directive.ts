@@ -44,7 +44,7 @@ export class ValidatorDirective implements OnInit, OnDestroy {
     })
   )
 
-  // TODO: this works, but if there are changes ti the form, new/removed fields are not taken in account.
+  // TODO: this works, but if there are changes in the form, new/removed fields are not taken in account.
   /** subscribe to each model separate, when your validations are too slow otherwise. */
   #perControlValidation = this.#refresh.pipe(
     observeOn(asyncScheduler),
