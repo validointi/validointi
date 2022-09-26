@@ -118,7 +118,7 @@ describe('Object from raw form value', () => {
       "7": "h",
       "8": "i",
       "9": "j",
-    }; //?
+    };
     const result = ObjectFromRawFormValue(sample) as string[];
     const expected = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j'];
     expect(result).toEqual(expected);
@@ -137,12 +137,22 @@ describe('Object from raw form value', () => {
       "1.name": 'Jeffrey',
       "1.email": ''
     };
-    const result = ObjectFromRawFormValue(sample) as { name: string, email: string }[]; //?
+    const result = ObjectFromRawFormValue(sample) as { name: string, email: string }[];
     const expected = [
       { name: 'Sander', email: '' },
       { name: 'Jeffrey', email: '' }
     ];
     expect(result).toEqual(expected);
-    })
+  })
+
+  it('Should error when there is an empty path', () => {
+    const sample = {
+      // apparently this is a valid key for an object.
+      "": "Sander",
+    };
+    // but we are not going to support it.
+    expect(() => ObjectFromRawFormValue(sample)).toThrowError();
+  })
+
 
 });

@@ -16,6 +16,9 @@ export const ObjectFromRawFormValue = (model: { [path: string]: any; }): {} | []
   /** if we start of with numberic values, we should build an array, otherwise an object */
   const initialValue = Array.isArray(objFromPath(firstPath)) ? [] : {}; //?
   return entries.reduce((acc, [key, value]) => {
+    if (key === '') {
+      throw new Error('[@validointi] Empty names in a form are not supported');
+    }
     return mergeObjects(acc, objFromPath(key, value));
   }, initialValue);
 }
