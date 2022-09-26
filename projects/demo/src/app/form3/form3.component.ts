@@ -37,10 +37,10 @@ export class Form3Component {
   }
 
   async force(data: SampleData, form: NgForm, ev: Event) {
-    form.control.updateValueAndValidity();
     form.control.clearAsyncValidators();
     form.control.clearValidators();
     form.control.markAllAsTouched();
+    form.control.updateValueAndValidity();
     ev.preventDefault();
   }
 
@@ -58,9 +58,9 @@ export class Form3Component {
     const original = await firstValueFrom(this.#sds.getById('1'));
     data.tags.length = 0;
     merge(data, original);
+    form.control.markAllAsTouched();
     form.control.clearAsyncValidators();
     form.control.clearValidators();
-    form.control.markAllAsTouched();
   }
 }
 

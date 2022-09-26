@@ -4,7 +4,7 @@
     validationId="sample-data"
     (ngSubmit)="submit($any(data))"
     #form="ngForm"
-    [validateOnFieldChanges]="true"
+    [validateOnFieldChanges]="false"
   >
     <input
       type="hidden"
@@ -27,7 +27,6 @@
         name="email"
         placeholder="Your email"
         [(ngModel)]="data.email"
-        required
       />
     </label>
     <label>

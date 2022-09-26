@@ -116,7 +116,7 @@ const suite = create((data: SampleData = {} as SampleData, field?: string) => {
   });
 
   const tags = data.tags || [];
-  for (let [ index, value ] of tags.entries()) {
+  for (let [index, value] of tags.entries()) {
     test(`tags[${index}]`, 'tag is required', () => {
       enforce(value).isNotEmpty();
     });
