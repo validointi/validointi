@@ -6,10 +6,18 @@ import { objFromPath } from './objFromPath';
  * @param model is the value as returned from `FromGroup.getRawValue()`
  * @returns an object where all the paths are converted and merged into a single object
  */
-export const ObjectFromRawFormValue = (model: { [path: string]: any; }): {} => {
-  return Object.entries(model).reduce((acc, [key, value]) => {
+export const ObjectFromRawFormValue = (model: { [path: string]: any; }): {} | [] | undefined => {
+  const entries = Object.entries(model)
+  if (entries.length === 0) {
+    /** return undefined as we don't know what the caller would expect otherwise.  */
+    return
+  }
+  const firstPath = entries[0]?.[0]; //?
+  /** if we start of with numberic values, we should build an array, otherwise an object */
+  const initialValue = Array.isArray(objFromPath(firstPath)) ? [] : {}; //?
+  return entries.reduce((acc, [key, value]) => {
     return mergeObjects(acc, objFromPath(key, value));
-  }, {});
+  }, initialValue);
 }
 
 /**

@@ -35,7 +35,6 @@ const sample = {
   "nestArray[3][0][0].a.b": "c",
   "nestArray[3][0][1].a.b": "c",
   "nestArray[3][0][3].a.b": "c",
-
 }
 
 const result = ObjectFromRawFormValue(sample) as typeof expected;
@@ -106,5 +105,44 @@ describe('Object from raw form value', () => {
   it('result should match expected', () => {
     expect(result).toEqual(expected);
   });
+
+  it('should work with an top level array', () => {
+    const sample = {
+      "[0]": "a",
+      "1": "b",
+      "[2]": "c",
+      "3": "d",
+      "4": "e",
+      "5": "f",
+      "6": "g",
+      "7": "h",
+      "8": "i",
+      "9": "j",
+    }; //?
+    const result = ObjectFromRawFormValue(sample) as string[];
+    const expected = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j'];
+    expect(result).toEqual(expected);
+  });
+
+  it('should return undefined when an empty object is handed over', () => {
+    const sample = {};
+    const result = ObjectFromRawFormValue(sample);
+    expect(result).toBeUndefined();
+  })
+
+  it('should handle an array of objects', () => {
+    const sample = {
+      "0.name": "Sander",
+      "0.email": "",
+      "1.name": 'Jeffrey',
+      "1.email": ''
+    };
+    const result = ObjectFromRawFormValue(sample) as { name: string, email: string }[]; //?
+    const expected = [
+      { name: 'Sander', email: '' },
+      { name: 'Jeffrey', email: '' }
+    ];
+    expect(result).toEqual(expected);
+    })
 
 });
