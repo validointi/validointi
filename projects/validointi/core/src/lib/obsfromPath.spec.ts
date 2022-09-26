@@ -19,7 +19,10 @@ describe('Objects from path', () => {
   it('should create an array from a path with only a number', () => {
     expect(objFromPath('0', 2)).toEqual([2]);
   })
-  it('should create an sparce array from a path with only a number', () => {
+  it('should create an sparse array from a path with only a number', () => {
     expect(objFromPath('2', 3)).toEqual([, , 3]);
+  })
+  it('should create an sparse array with object from a path that starts with a number', () => {
+    expect(objFromPath('[1].a.b', 'c')).toEqual([, { a: { b: 'c' } }]);
   })
 })
