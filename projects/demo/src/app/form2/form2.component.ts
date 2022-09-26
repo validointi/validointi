@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { ValidatorDirective } from '@se-ng/validate';
+import { ValidatorDirective } from '@validointi/core';
 import { map } from 'rxjs/operators';
 import { ValidationErrorHookUpDirective } from '../form1/validationErrorHookUp.directive';
 import { SampleDataForm2Service, StarwarsDTO, SampleData } from './sample-data-form2.service';

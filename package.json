@@ -1,6 +1,7 @@
 {
   "name": "validate-validaton",
   "version": "0.0.0",
+  "type": "module",
   "scripts": {
     "ng": "ng",
     "start": "wireit",
@@ -10,18 +11,20 @@
     "test:lib": "wireit",
     "test:app": "wireit",
     "test": "wireit",
-    "lint:lib": "wireit"
+    "lint:lib": "wireit",
+    "hooks:pre-commit": "node hooks/pre-commit.js",
+    "prepare": "husky install"
   },
   "wireit": {
     "build:lib": {
-      "command": "ng build --project @se-ng/validate --configuration production",
+      "command": "ng build --project validointi --configuration production",
       "output": [
         "dist/validate/**/*.*"
       ],
       "files": [
-        "projects/se-ng/validate/src/**/*.*",
-        "projects/se-ng/validate/package.json",
-        "projects/se-ng/validate/tsconfig.lib.prod.json",
+        "projects/validointi/core/src/**/*.*",
+        "projects/validointi/core/package.json",
+        "projects/validointi/core/tsconfig.lib.prod.json",
         "angular.json"
       ]
     },
@@ -47,7 +50,7 @@
       ]
     },
     "test:lib": {
-      "command": "ng test --project @se-ng/validate"
+      "command": "ng test --project validointi"
     },
     "test:app": {
       "command": "ng test --project demo",
@@ -62,7 +65,7 @@
       ]
     },
     "lint:lib": {
-      "command": "ng lint --project @se-ng/validate --fix",
+      "command": "ng lint --project validointi --fix",
       "files": [
         "**/*.ts",
         ".eslintignore",
@@ -97,25 +100,39 @@
     "zone.js": "~0.11.8"
   },
   "devDependencies": {
-    "@angular-builders/jest": "^14.0.1",
-    "@angular-devkit/build-angular": "^14.2.3",
-    "@angular-eslint/builder": "14.1.1",
-    "@angular-eslint/eslint-plugin": "14.1.1",
-    "@angular-eslint/eslint-plugin-template": "14.1.1",
-    "@angular-eslint/schematics": "14.1.1",
-    "@angular-eslint/template-parser": "14.1.1",
-    "@angular/cli": "^14.2.3",
-    "@angular/compiler-cli": "^14.2.2",
-    "@types/jest": "^28.1.3",
-    "@types/node": "^18.7.18",
-    "@typescript-eslint/eslint-plugin": "5.38.0",
-    "@typescript-eslint/parser": "5.38.0",
-    "eslint": "^8.23.1",
-    "jasmine-core": "~4.4.0",
+    "@angular-builders/jest": "^14.0.0",
+    "@angular-devkit/build-angular": "^14.2.1",
+    "@angular-eslint/builder": "14.0.3",
+    "@angular-eslint/eslint-plugin": "14.0.3",
+    "@angular-eslint/eslint-plugin-template": "14.0.3",
+    "@angular-eslint/schematics": "14.0.3",
+    "@angular-eslint/template-parser": "14.0.3",
+    "@angular/cli": "^14.2.1",
+    "@angular/compiler-cli": "^14.2.0",
+    "@types/jest": "^28.1.6",
+    "@types/node": "^18.7.3",
+    "@typescript-eslint/eslint-plugin": "5.29.0",
+    "@typescript-eslint/parser": "5.29.0",
+    "eslint": "^8.18.0",
+    "jasmine-core": "~4.3.0",
     "jest": "^28.1.3",
-    "jest-preset-angular": "^12.2.2",
-    "ng-packagr": "^14.2.1",
+    "jest-preset-angular": "^12.2.0",
+    "ng-packagr": "^14.1.0",
     "ts-jest": "^28.0.7",
-    "typescript": "~4.8.3"
+    "typescript": "~4.7.4"
+  },
+  "husky": {
+    "hooks": {
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
+      "pre-commit": "npm run hooks:pre-commit && lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{json,ts}": [
+      "prettier --write"
+    ],
+    "*.{ts}": [
+      "eslint --fix --cache"
+    ]
   }
 }

@@ -1,0 +1,38 @@
+{
+  "projectName": "core",
+  "projectOwner": "@validointi",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": true,
+  "commitConvention": "angular",
+  "contributors": [
+    {
+      "login": "Jefiozie",
+      "name": "Jeffrey Bosch",
+      "avatar_url": "https://avatars.githubusercontent.com/u/17835373?v=4",
+      "profile": "https://jefiozie.github.io/",
+      "contributions": [
+        "code",
+        "doc",
+        "example",
+        "tool"
+      ]
+    },
+    {
+      "login": "SanderElias",
+      "name": "Sander Elias",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1249083?v=4",
+      "profile": "https://github.com/SanderElias",
+      "contributions": [
+        "code",
+        "doc",
+        "example"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7
+}

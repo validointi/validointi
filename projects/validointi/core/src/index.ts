@@ -1,5 +1,5 @@
 /*
- * Public API Surface of @se-ng/validate
+ * Public API Surface of validointi
  */
 
 import { ValidatorRegistryService } from './lib/validatorsRegistry.service';

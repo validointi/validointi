@@ -10,8 +10,8 @@
       ],
       "parserOptions": {
         "project": [
-          "projects/se-ng/validate/tsconfig.lib.json",
-          "projects/se-ng/validate/tsconfig.spec.json"
+          "projects/validointi/core/tsconfig.lib.json",
+          "projects/validointi/core/tsconfig.spec.json"
         ],
         "createDefaultProgram": true
       },
