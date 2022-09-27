@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { ValidationErrors, ValidatorRegistryService } from '@validointi/core';
 import { of } from 'rxjs';
-import { create, enforce, only, optional, test, warn } from 'vest';
+import { create, enforce, include, only, optional, test, warn } from 'vest';
 
 export interface SampleData {
   id: string;
@@ -58,7 +58,17 @@ export class SampleDataService {
 const year = 365 * 24 * 60 * 60 * 1000;
 const suite = create((data: SampleData = {} as SampleData, field?: string) => {
 
-  only(field);
+  if (field !== undefined) {
+    only(field);
+    if (field.startsWith('tags')) {
+      for(let i = 0; i < data.tags.length; i++) {
+        include(`tags[${i}]`);
+      }
+    }
+    if (field='password') {
+      include('confirm');
+    }
+  }
 
   test('id', 'id is required', () => {
     enforce(data.id).isNotEmpty();

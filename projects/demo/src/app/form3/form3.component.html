@@ -1,10 +1,11 @@
-<p>form3 works!</p>
+<h1>form3 works!</h1>
+<button (click)="fieldValidation=!fieldValidation">{{fieldValidation?'Field':'form'}}-level</button>
 <ng-container *ngIf="data$ | async as data">
   <form
     validationId="sample-data"
     (ngSubmit)="submit($any(data))"
     #form="ngForm"
-    [validateOnFieldChanges]="false"
+    [validateOnFieldChanges]="fieldValidation"
   >
     <input
       type="hidden"

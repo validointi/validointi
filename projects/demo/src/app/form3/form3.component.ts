@@ -23,6 +23,7 @@ import { Form3TagsComponent } from './form3-tags/form3-tags.component';
 export class Form3Component {
   #sds = inject(SampleDataService);
   data$ = this.#sds.getById('1');
+  fieldValidation = true;
 
   submit(data: SampleData) {
     this.#sds
@@ -37,10 +38,13 @@ export class Form3Component {
   }
 
   async force(data: SampleData, form: NgForm, ev: Event) {
-    form.control.clearAsyncValidators();
-    form.control.clearValidators();
-    form.control.markAllAsTouched();
-    form.control.updateValueAndValidity();
+    Object.entries(form.controls).forEach(([key, control]) => {
+      // control.clearAsyncValidators();
+      // control.clearValidators();
+      // control.markAsTouched();
+      // control.markAsDirty();
+      control.updateValueAndValidity();
+    });
     ev.preventDefault();
   }
 
@@ -48,19 +52,25 @@ export class Form3Component {
     clearObject(data);
     const rawData = form.control.getRawValue();
     console.table(rawData);
-    form.control.clearAsyncValidators();
-    form.control.clearValidators();
-    form.control.markAllAsTouched();
+    Object.entries(form.controls).forEach(([key, control]) => {
+      control.clearAsyncValidators();
+      control.clearValidators();
+      control.markAsUntouched();
+      control.updateValueAndValidity();
+    });
     ev.preventDefault();
   }
 
   async reset(data: SampleData, form: NgForm) {
     const original = await firstValueFrom(this.#sds.getById('1'));
     data.tags.length = 0;
-    merge(data, original);
-    form.control.markAllAsTouched();
-    form.control.clearAsyncValidators();
-    form.control.clearValidators();
+    mergeObjects(data, original);
+    Object.entries(form.controls).forEach(([key, control]) => {
+      control.clearAsyncValidators();
+      control.clearValidators();
+      control.markAsUntouched();
+      control.updateValueAndValidity();
+    });
   }
 }
 
@@ -77,10 +87,20 @@ const clearObject = (obj: any) => {
   }
 };
 
-const merge = (target: any = {}, source: any) => {
+const mergeObjects = (target: any = {}, source: any) => {
   for (const key of Object.keys(source)) {
-    if (source[key] instanceof Object) {
-      merge((target[key] ??= {}), source[key]);
+    if (Array.isArray(source[key])) {
+      // merge(target[key] ??= [], source[key]);
+      target[key] ??= [];
+      source[key].forEach((item: any, index: number) => {
+        if (item instanceof Object) {
+          mergeObjects(target[key][index] ??= (Array.isArray(item) ? [] : {}), item);
+        } else {
+          target[key][index] = item;
+        }
+      })
+    } else if (source[key] instanceof Object) {
+      mergeObjects((target[key] ??= {}), source[key]);
     } else {
       target[key] = source[key];
     }
