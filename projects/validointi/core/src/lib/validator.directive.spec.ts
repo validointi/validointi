@@ -9,9 +9,9 @@ import { ValidatorRegistryService } from './validatorsRegistry.service';
   standalone: true,
   imports: [ValidatorDirective, FormsModule],
 })
-export class SimpleComponent implements OnInit {
+export class SimpleComponent {
   service = inject(ValidatorRegistryService);
-  ngOnInit() {
+  constructor() {
     async function validateSampleData(data: any): Promise<any> {
       const test = (data = {}) => {
         return [];
