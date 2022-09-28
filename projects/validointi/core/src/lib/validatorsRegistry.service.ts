@@ -6,15 +6,15 @@ import { Model, ValidationId, Validator } from "./validator.types";
   providedIn: 'root'
 })
 export class ValidatorRegistryService {
-  #registery = new Map<ValidationId, Validator<any>>()
+  #registry = new Map<ValidationId, Validator<any>>()
 
   registerValidator = <T extends Object>(name: ValidationId, fn: Validator<T>) => {
-    this.#registery.set(name, fn)
+    this.#registry.set(name, fn)
     return this.getValidator(name);
   };
 
   getValidator = (name: ValidationId) => {
-    const fn = this.#registery.get(name)
+    const fn = this.#registry.get(name)
     if (!fn) {
       throw new Error(`No validator found with name "${name}"`);
     }

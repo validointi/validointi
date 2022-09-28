@@ -1,18 +1,21 @@
 {
-  "peacock.color": "#943d7d",
+  "peacock.color": "#4ceb42",
   "workbench.colorCustomizations": {
-    "activityBar.activeBackground": "#b64e9b",
+    "activityBar.activeBackground": "#78f070",
     "activityBar.activeBorder": "#a6be61",
-    "activityBar.background": "#b64e9b",
-    "activityBar.foreground": "#e7e7e7",
-    "activityBar.inactiveForeground": "#e7e7e799",
-    "activityBarBadge.background": "#a6be61",
+    "activityBar.background": "#78f070",
+    "activityBar.foreground": "#15202b",
+    "activityBar.inactiveForeground": "#15202b99",
+    "activityBarBadge.background": "#6f77f0",
     "activityBarBadge.foreground": "#15202b",
-    "sash.hoverBorder": "#b64e9b",
-    "statusBar.background": "#943d7d",
-    "statusBar.foreground": "#e7e7e7",
-    "statusBarItem.hoverBackground": "#b64e9b",
-    "statusBarItem.remoteBackground": "#943d7d",
-    "statusBarItem.remoteForeground": "#e7e7e7"
-  }
+    "sash.hoverBorder": "#78f070",
+    "statusBar.background": "#4ceb42",
+    "statusBar.foreground": "#15202b",
+    "statusBarItem.hoverBackground": "#24e218",
+    "statusBarItem.remoteBackground": "#4ceb42",
+    "statusBarItem.remoteForeground": "#15202b"
+  },
+  "cSpell.words": [
+    "validointi"
+  ]
 }

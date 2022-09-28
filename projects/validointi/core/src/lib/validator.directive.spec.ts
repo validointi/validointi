@@ -2,6 +2,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { ValidatorDirective } from './validator.directive';
+import { ValidationErrors } from './validator.types';
 import { ValidatorRegistryService } from './validatorsRegistry.service';
 
 @Component({
@@ -9,16 +10,11 @@ import { ValidatorRegistryService } from './validatorsRegistry.service';
   standalone: true,
   imports: [ValidatorDirective, FormsModule],
 })
-export class SimpleComponent implements OnInit {
+export class SimpleComponent {
   service = inject(ValidatorRegistryService);
-  ngOnInit() {
-    async function validateSampleData(data: any): Promise<any> {
-      const test = (data = {}) => {
-        return [];
-      };
-    }
-    let validate = this.service.registerValidator('testdata', validateSampleData);
-  }
+  validate = this.service.registerValidator('testdata', async () => {
+    return {} as ValidationErrors;
+  });
 }
 
 describe('ValidatorDirective', () => {

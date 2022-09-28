@@ -14,5 +14,5 @@ export interface ValidationErrors {
 export type ValidationId = string;
 
 export interface Validator<T extends Object> {
-  (data: T): Promise<ValidationErrors>;
+  (data: T, fieldName?: keyof T, group?: string): Promise<ValidationErrors>;
 }

@@ -1,6 +1,6 @@
 import { Directive, ElementRef, inject, OnDestroy } from '@angular/core';
 import { NgModel } from '@angular/forms';
-import { tap } from 'rxjs';
+import { asyncScheduler, observeOn, tap } from 'rxjs';
 
 @Directive({
   selector: '[ngModel]',
@@ -12,14 +12,14 @@ export class ValidationErrorHookUpDirective implements OnDestroy {
 
   #sub = this.#model.statusChanges
     ?.pipe(
+      observeOn(asyncScheduler),
       tap(() => {
         const errors = this.#model.control.errors;
         if (errors) {
           Object.entries(errors).forEach(([key, value]) => {
-            const errMsg = Array.isArray(value) ? value.join('/n') : value;
+            const errMsg = Array.isArray(value) ? value.join('\n') : value;
             this.#elm.setCustomValidity(errMsg);
             this.#elm.title = errMsg;
-            console.log({ key, value });
           });
         } else {
           this.#elm.setCustomValidity('');
