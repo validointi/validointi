@@ -5,6 +5,7 @@ import { ValidatorDirective } from '@validointi/core';
 import { firstValueFrom } from 'rxjs';
 import { SampleData, SampleDataService } from '../form1/sample-data.service';
 import { ValidationErrorHookUpDirective } from '../form1/validationErrorHookUp.directive';
+import { ContactsComponent } from './contacts/contacts.component';
 import { Form3TagsComponent } from './form3-tags/form3-tags.component';
 
 @Component({
@@ -16,6 +17,7 @@ import { Form3TagsComponent } from './form3-tags/form3-tags.component';
     FormsModule,
     ValidationErrorHookUpDirective,
     Form3TagsComponent,
+    ContactsComponent
   ],
   templateUrl: './form3.component.html',
   styleUrls: ['./form3.component.css'],
@@ -26,6 +28,7 @@ export class Form3Component {
   fieldValidation = true;
 
   submit(data: SampleData) {
+    console.table(data)
     this.#sds
       .save(data)
       .catch((e): void => {
@@ -38,6 +41,7 @@ export class Form3Component {
   }
 
   async force(data: SampleData, form: NgForm, ev: Event) {
+    console.table(form.control.getRawValue());
     Object.entries(form.controls).forEach(([key, control]) => {
       // control.clearAsyncValidators();
       // control.clearValidators();
@@ -50,8 +54,6 @@ export class Form3Component {
 
   async clear(data: SampleData, form: NgForm, ev: Event) {
     clearObject(data);
-    const rawData = form.control.getRawValue();
-    console.table(rawData);
     Object.entries(form.controls).forEach(([key, control]) => {
       control.clearAsyncValidators();
       control.clearValidators();
@@ -62,23 +64,15 @@ export class Form3Component {
   }
 
   async reset(data: SampleData, form: NgForm) {
-    const original = await firstValueFrom(this.#sds.getById('1'));
-    data.tags.length = 0;
-    mergeObjects(data, original);
-    Object.entries(form.controls).forEach(([key, control]) => {
-      control.clearAsyncValidators();
-      control.clearValidators();
-      control.markAsUntouched();
-      control.updateValueAndValidity();
-    });
+    this.data$ = this.#sds.getById('1');
   }
 }
-
 const clearObject = (obj: any) => {
   for (const key of Object.keys(obj)) {
     if (key === 'id') continue;
     if (Array.isArray(obj[key])) {
-      obj[key].length = 0;
+      obj[key].length=0; // throw away all the items
+      obj[key] = []; // replace with a new reference to a new array
     } else if (obj[key] instanceof Object) {
       clearObject(obj[key]);
     } else {

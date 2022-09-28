@@ -78,11 +78,17 @@ export class ValidatorDirective implements OnInit, OnDestroy {
     }
   }
 
+  /** only when using full formValidation (and an actual form exits!) */
+  #fullFormValidation = (this.#form.valueChanges || EMPTY).pipe(
+    debounceTime(10), // dont fire too often
+    tap(this.#validateForm),
+  )
+
   /**
    * helper to validate a single control.
    * it will make sure that related fields are also updated in the view
    */
-  #validateField = async ({ key, control, newVal }: {
+   #validateField = async ({ key, control, newVal }: {
     key: string;
     control: AbstractControl<any, any>;
     newVal: any;
@@ -114,13 +120,6 @@ export class ValidatorDirective implements OnInit, OnDestroy {
       }
     })
   }
-
-
-  /** only when using full formValidation (and an actual form exits!) */
-  #fullFormValidation = (this.#form.valueChanges || EMPTY).pipe(
-    debounceTime(10), // dont fire too often
-    tap(this.#validateForm),
-  )
 
   /** subscribe to each model separate, when your validations are too slow otherwise. */
   #perControlValidation = this.#formChanges.pipe(

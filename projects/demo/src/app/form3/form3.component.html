@@ -21,15 +21,11 @@
       placeholder="Your name"
       [(ngModel)]="data.name"
     />
-    <label>
-      <span>Email</span>
-      <input
-        type="email"
-        name="email"
-        placeholder="Your email"
-        [(ngModel)]="data.email"
-      />
-    </label>
+    <fieldset>
+      <legend>Contact info</legend>
+      <app-contacts [contacts]="data.contacts"></app-contacts>
+    </fieldset>
+
     <label>
       <span>Date of Birth</span>
       <input
@@ -118,7 +114,7 @@
     <button
       type="button"
       (click)="force(data,form, $event)"
-    >force Validation</button>
+    >Inspect && force Validation</button>
     <button
       type="reset"
       (click)="clear(data, form, $event)"
