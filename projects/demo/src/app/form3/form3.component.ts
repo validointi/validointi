@@ -40,14 +40,16 @@ export class Form3Component {
       .then(() => console.info('Yes!'));
   }
 
-  async force(data: SampleData, form: NgForm, ev: Event) {
-    console.table(form.control.getRawValue());
+  async inspect(data: SampleData, form: NgForm, ev: Event) {
+    // console.table(form.control.getRawValue());
     Object.entries(form.controls).forEach(([key, control]) => {
       // control.clearAsyncValidators();
       // control.clearValidators();
       // control.markAsTouched();
       // control.markAsDirty();
       control.updateValueAndValidity();
+      control.markAsTouched();
+      control.markAsDirty();
     });
     ev.preventDefault();
   }

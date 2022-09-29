@@ -27,7 +27,6 @@ export class ContactsComponent {
       value: '',
       priority: 0
     });
-    console.table(this.contacts);
     ev.preventDefault();
   }
 }

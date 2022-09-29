@@ -19,8 +19,20 @@ label > *:nth-child(2) {
 }
 
 fieldset {
+  position: relative;
   display: flex;
   padding: var(--size-3);
   flex-direction: column;
   gap: var(--size-3);
 }
+
+fieldset > button {
+  border-radius: 50%;
+  aspect-ratio: 1;
+  background-color: var(--surface-3);
+  position: absolute;
+  right: -0.2rem;
+  top: -.9rem;
+  scale: 0.7;
+}
+

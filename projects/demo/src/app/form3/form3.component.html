@@ -6,6 +6,7 @@
     (ngSubmit)="submit($any(data))"
     #form="ngForm"
     [validateOnFieldChanges]="fieldValidation"
+    #validointi="validointi"
   >
     <input
       type="hidden"
@@ -94,10 +95,11 @@
       </label>
     </fieldset>
     <fieldset>
-      <legend>tags <button
-          type="button"
-          (click)="data.tags.push('')"
-        >add</button></legend>
+      <legend>tags</legend>
+      <button
+        type="button"
+        (click)="data.tags.push('')"
+      >➕</button>
       <label
         *ngFor="let tag of data.tags; let index = index"
         [tag]="tag"
@@ -113,7 +115,7 @@
     />
     <button
       type="button"
-      (click)="force(data,form, $event)"
+      (click)="inspect(data,form, $event);validointi.validate()"
     >Inspect && force Validation</button>
     <button
       type="reset"

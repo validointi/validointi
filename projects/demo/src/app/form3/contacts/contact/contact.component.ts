@@ -34,7 +34,7 @@ export class ContactComponent implements OnDestroy {
     this.models.forEach(model => {
       /** This could have been done in the template, but this is my lazy solution. */
       model.name = `contacts[${this.rowNum}].${model.name}`;
-      // this.form.addControl(model);
+      this.form.addControl(model);
     });
   }
 

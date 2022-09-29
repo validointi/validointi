@@ -1,14 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { ValidationErrors, ValidatorRegistryService } from '@validointi/core';
 import { of } from 'rxjs';
-import { create, enforce, include, only, optional, test, warn } from 'vest';
-import isEmail from 'validator/es/lib/isEmail';
-import isMobilePhone from 'validator/es/lib/isMobilePhone';
-
-/** use additional validators in vest! */
-enforce.extend({ isEmail, isMobilePhone });
-
-
+import { create, each, enforce, include, only, test, warn } from 'vest';
 
 export interface SampleData {
   id: string;
@@ -94,7 +87,6 @@ const year = 365 * 24 * 60 * 60 * 1000;
  * because we have arrays and objects in our data structure, and we want to be able to validate a single field.
  */
 const suite = (data: SampleData = {} as SampleData, field?: string) => create(() => {
-  console.log('suite', field);
 
   if (field !== undefined) {
     only(field);
@@ -119,7 +111,8 @@ const suite = (data: SampleData = {} as SampleData, field?: string) => create(()
     enforce(data.contacts.length).greaterThanOrEquals(1);
   })
 
-  data.contacts.forEach(validateContact)
+  const contacts = data.contacts || [];
+  each(contacts, validateContacts);
 
   test('dob', 'must be older as 18', () => {
     const dob = new Date(data.dob);
@@ -167,48 +160,52 @@ const suite = (data: SampleData = {} as SampleData, field?: string) => create(()
   });
 
   const tags = data.tags || [];
-  for (let [index, value] of tags.entries()) {
-    test(`tags[${index}]`, 'tag is required', () => {
-      enforce(value).isNotEmpty();
-    });
-
-    test(`tags[${index}]`, 'tag needs to be unique', () => {
-      enforce(value).condition((tag: string) => tags.filter(t => t === tag).length === 1);
-    });
-  }
-
+  each(tags, (tag, index) => {
+    test(`tags[${index}]`, 'tag is required', () => { enforce(tag).isNotEmpty() }, index + 'required');
+    test(`tags[${index}]`, 'tag needs to be unique', () => { enforce(tag).condition((tag: string) => tags.filter(t => t === tag).length === 1) }, index + 'unique' + tag);
+  });
 
 })();
 
+function validateContacts(contact: SampleDataContactDetail, i: number) {
+  test(`contacts[${i}].type`,
+    'Type is required',
+    () => { enforce(contact.type); },
+    `contacts[${i}].type-required`
+  );
+  test(`contacts[${i}].type`,
+    `Type "${contact.type}" is an unknown type`,
+    () => { enforce(contact.type).isValueOf(SampleDataContactDetailType); },
+    `contacts[${i}].type-unknown${contact.type}`
+  );
+  test(`contacts[${i}].value`,
+    () => {
+      enforce(contact.value)
+        .message('This field can not be blank')
+        .isNotBlank()
+      switch (contact.type) {
+        case SampleDataContactDetailType.Email:
+          enforce(contact.value)
+            .message('not an valid email address')
+            .matches(/^[^@]+@[^@]+$/);
+          break;
+        case SampleDataContactDetailType.Fax:
+        case SampleDataContactDetailType.Mobile:
+        case SampleDataContactDetailType.Phone:
+          const allowedChars = '0123456789-()+ '.split('');
+          enforce(contact.value)
+            .message('Phone number can only contain numbers, spaces, dashes, brackets and plus signs')
+            .condition((value: string) => value.split('').every(c => allowedChars.includes(c)))
+          enforce(contact.value)
+            .message('Phone number must contain at least 9 numbers')
+            .condition((value: string) => value.split('').filter(c => '0123456789'.includes(c)).length >= 9);
+          break;
+      }
+    },
+    `contacts[${i}].value-${contact.value}`
+  );
+};
 
-
-function validateContact(contact: SampleDataContactDetail, i: number) {
-  test(`contacts[${i}].type`, 'Type is required', () => {
-    enforce(contact.type);
-  });
-  test(`contacts[${i}].type`, `Type "${contact.type}" is an unknown type`, () => {
-    enforce(contact.type).isValueOf(SampleDataContactDetailType);
-  });
-  test(`contacts[${i}].value`, 'This field is required', () => {
-    enforce(contact.value).isNotEmpty();
-  });
-  switch (contact.type) {
-    case SampleDataContactDetailType.Email:
-      test(`contacts[${i}].value`, 'Not a valid email address', () => {
-        enforce(contact.value)['isEmail']();
-      });
-      break;
-    case SampleDataContactDetailType.Mobile:
-    case SampleDataContactDetailType.Phone:
-    case SampleDataContactDetailType.Fax:
-      test(`contacts[${i}].value`, 'Not a valid phone number', () => {
-        enforce(contact.value)['isMobilePhone']();
-      });
-      break;
-    default:
-      const exhaustiveCheck: never = contact.type;
-  }
-}
 
 function isEmpty(obj: Object) {
   return Object.keys(obj).length === 0;

@@ -1,4 +1,4 @@
-import { Directive, ElementRef, inject, Input, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Directive, ElementRef, inject, Input, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, AsyncValidatorFn, NgForm, ValidatorFn, ValidationErrors } from '@angular/forms';
 import { asyncScheduler, BehaviorSubject, combineLatest, debounceTime, EMPTY, firstValueFrom, map, mapTo, merge, mergeAll, mergeMap, Observable, observeOn, of, ReplaySubject, switchMap, take, tap } from 'rxjs';
 import { ObjectFromRawFormValue } from './ObjectFromRawFormValue';
@@ -10,7 +10,8 @@ const relatedFields = Symbol('relatedfields');
 @Directive({
   // eslint-disable-next-line @angular-eslint/directive-selector
   selector: 'form[validationId]',
-  standalone: true
+  standalone: true,
+  exportAs: 'validointi',
 })
 export class ValidatorDirective implements OnInit, OnDestroy {
   #state$ = new BehaviorSubject({
@@ -28,10 +29,21 @@ export class ValidatorDirective implements OnInit, OnDestroy {
     this.#state$.next({ ...this.#state$.value, validateOnFieldChanges });
   }
   #vr = inject(ValidatorRegistryService);
+  #cdr = inject(ChangeDetectorRef)
 
 
   #form = inject(NgForm);
   #elm = inject(ElementRef) as ElementRef<HTMLFormElement>;
+
+  validate = (key?: string): void => {
+    const rawFormContent = this.#form.control.getRawValue();
+    if (key) {
+      const control = this.#form.control.get(key)!;
+      this.#validateField({ key, control, newVal: control.value });
+    } else {
+      this.#validateForm(rawFormContent);
+    }
+  }
 
   /**
    * Use an mutationObserver to detect changes in the DOM, so we know there might be new controls to validate.
@@ -52,25 +64,33 @@ export class ValidatorDirective implements OnInit, OnDestroy {
     return () => {
       observer.disconnect()
     };
-  }).pipe(debounceTime(10));
+  }).pipe(
+    debounceTime(10),
+    /** revalidate the entire form. if an field is added with invalid content, the form needs to be disabled now. */
+    tap(() => this.validate())
+  );
 
   /** helper to validate the whole form at once */
   #validateForm = async (rawFormContent: Model) => {
     this.#form.control.markAsPending();
     const { validatorFn } = await firstValueFrom(this.#state$)
     const errors = await validatorFn?.(ObjectFromRawFormValue(rawFormContent));
+    console.dir(errors);
     if (errors) {
       for (const [key, control] of Object.entries(this.#form.controls)) {
         if (control.enabled) {
+          // this.#cdr.markForCheck(); // make sure the error is shown
           if (errors[key]) {
             const errMsg = errToMsg(errors[key] as any);
             control.setErrors({ [key]: errMsg });
-            control.markAllAsTouched();
+            control.markAsTouched();
             control.markAsDirty();
           } else {
             control.setErrors(null);
           }
+          control.updateValueAndValidity();
         }
+
       }
     } else {
       // this will clear the pending state
@@ -88,7 +108,7 @@ export class ValidatorDirective implements OnInit, OnDestroy {
    * helper to validate a single control.
    * it will make sure that related fields are also updated in the view
    */
-   #validateField = async ({ key, control, newVal }: {
+  #validateField = async ({ key, control, newVal }: {
     key: string;
     control: AbstractControl<any, any>;
     newVal: any;
@@ -104,6 +124,9 @@ export class ValidatorDirective implements OnInit, OnDestroy {
     /** iterate over new errors, and previous fields that had one */
     errKeys.concat(...related).forEach((key) => {
       const currentCtrl = this.#form.controls[key];
+      if (currentCtrl === undefined) {
+        return;
+      }
       if (errKeys.includes(key)) {
         const errMsg = errToMsg(errors[key] as any);
         if (currentCtrl.enabled) {
