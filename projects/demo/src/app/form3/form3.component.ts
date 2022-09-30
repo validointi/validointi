@@ -1,10 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { ValidatorDirective } from '@validointi/core';
-import { firstValueFrom } from 'rxjs';
 import { SampleData, SampleDataService } from '../form1/sample-data.service';
 import { ValidationErrorHookUpDirective } from '../form1/validationErrorHookUp.directive';
+import { clearObject } from './clearObject';
 import { ContactsComponent } from './contacts/contacts.component';
 import { Form3TagsComponent } from './form3-tags/form3-tags.component';
 
@@ -31,12 +31,7 @@ export class Form3Component {
     console.table(data)
     this.#sds
       .save(data)
-      .catch((e): void => {
-        console.error(
-          'this should be impossible, as the form is validated, but anyway, there is an error while saving the data!',
-          e
-        );
-      })
+      .catch((e): void => {  })
       .then(() => console.info('Yes!'));
   }
 
@@ -63,38 +58,3 @@ export class Form3Component {
     this.data$ = this.#sds.getById('1');
   }
 }
-const clearObject = (obj: any) => {
-  for (const key of Object.keys(obj)) {
-    if (key === 'id') continue;
-    if (Array.isArray(obj[key])) {
-      obj[key].forEach((item: any, index: number, a: any[]) => { a[index] = undefined; });
-      obj[key].length = 0; // throw away all the items
-      obj[key] = []; // replace with a new reference to a new array
-    } else if (obj[key] instanceof Object) {
-      clearObject(obj[key]);
-    } else {
-      obj[key] = undefined;
-    }
-  }
-};
-
-const mergeObjects = (target: any = {}, source: any) => {
-  for (const key of Object.keys(source)) {
-    if (Array.isArray(source[key])) {
-      // merge(target[key] ??= [], source[key]);
-      target[key] ??= [];
-      source[key].forEach((item: any, index: number) => {
-        if (item instanceof Object) {
-          mergeObjects(target[key][index] ??= (Array.isArray(item) ? [] : {}), item);
-        } else {
-          target[key][index] = item;
-        }
-      })
-    } else if (source[key] instanceof Object) {
-      mergeObjects((target[key] ??= {}), source[key]);
-    } else {
-      target[key] = source[key];
-    }
-  }
-  return target;
-};

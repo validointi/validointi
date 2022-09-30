@@ -1,8 +1,8 @@
-import { ChangeDetectorRef, Directive, ElementRef, inject, Input, NgZone, OnDestroy, OnInit } from '@angular/core';
-import { AbstractControl, AsyncValidatorFn, NgForm, ValidatorFn, ValidationErrors, AsyncValidator } from '@angular/forms';
-import { asyncScheduler, BehaviorSubject, combineLatest, debounceTime, delay, EMPTY, firstValueFrom, map, mapTo, merge, mergeAll, mergeMap, Observable, observeOn, of, ReplaySubject, switchMap, take, tap } from 'rxjs';
+import { Directive, ElementRef, inject, Input, NgZone, OnDestroy, OnInit } from '@angular/core';
+import { AbstractControl, NgForm, ValidationErrors } from '@angular/forms';
+import { BehaviorSubject, debounceTime, EMPTY, firstValueFrom, map, merge, Observable, of, ReplaySubject, switchMap, tap } from 'rxjs';
 import { ObjectFromRawFormValue } from './ObjectFromRawFormValue';
-import { Model, ValidationFormatter, ValidationId, Validator } from './validator.types';
+import { Model, ValidationId, Validator } from './validator.types';
 import { ValidatorRegistryService } from './validatorsRegistry.service';
 
 const relatedFields = Symbol('relatedfields');
