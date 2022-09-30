@@ -181,7 +181,7 @@ function validateContacts(contact: SampleDataContactDetail, i: number) {
   test(`contacts[${i}].value`,
     () => {
       enforce(contact.value)
-        .message('This field can not be blank')
+        .message(`${contact.type} can not be blank`)
         .isNotBlank()
       switch (contact.type) {
         case SampleDataContactDetailType.Email:
@@ -210,3 +210,14 @@ function validateContacts(contact: SampleDataContactDetail, i: number) {
 function isEmpty(obj: Object) {
   return Object.keys(obj).length === 0;
 }
+
+export const entropy = (str:string) => {
+  return [...new Set([...str])]
+    .map((chr) => {
+      return str.match(new RegExp(chr, 'g'))?.length || 0;
+    })
+    .reduce((sum, frequency) => {
+      let p = frequency / str.length;
+      return sum + p * Math.log2(1 / p);
+    }, 0);
+};

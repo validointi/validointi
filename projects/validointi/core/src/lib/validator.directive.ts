@@ -1,11 +1,17 @@
 import { ChangeDetectorRef, Directive, ElementRef, inject, Input, OnDestroy, OnInit } from '@angular/core';
-import { AbstractControl, AsyncValidatorFn, NgForm, ValidatorFn, ValidationErrors } from '@angular/forms';
-import { asyncScheduler, BehaviorSubject, combineLatest, debounceTime, EMPTY, firstValueFrom, map, mapTo, merge, mergeAll, mergeMap, Observable, observeOn, of, ReplaySubject, switchMap, take, tap } from 'rxjs';
+import { AbstractControl, AsyncValidatorFn, NgForm, ValidatorFn, ValidationErrors, AsyncValidator } from '@angular/forms';
+import { asyncScheduler, BehaviorSubject, combineLatest, debounceTime, delay, EMPTY, firstValueFrom, map, mapTo, merge, mergeAll, mergeMap, Observable, observeOn, of, ReplaySubject, switchMap, take, tap } from 'rxjs';
 import { ObjectFromRawFormValue } from './ObjectFromRawFormValue';
 import { Model, ValidationFormatter, ValidationId, Validator } from './validator.types';
 import { ValidatorRegistryService } from './validatorsRegistry.service';
 
 const relatedFields = Symbol('relatedfields');
+const errorStream = Symbol('errorStream');
+
+interface VldtiAbstractControl extends AbstractControl {
+  [relatedFields]?: string[];
+  [errorStream]: ReplaySubject<ValidationErrors | null>;
+}
 
 @Directive({
   // eslint-disable-next-line @angular-eslint/directive-selector
@@ -45,6 +51,24 @@ export class ValidatorDirective implements OnInit, OnDestroy {
     }
   }
 
+  #controlValidator: AsyncValidator = {
+    validate: (control: VldtiAbstractControl): Observable<ValidationErrors | null> => {
+      // console.log('validate', control.value);
+      return control[errorStream].pipe(
+        observeOn(asyncScheduler),
+        debounceTime(5),
+        take(1) // WTF, why is angular expecting this to be a cold observable?
+      );
+    }
+  }
+
+  #addValidator = (control: VldtiAbstractControl) => {
+    if (!control.hasAsyncValidator(this.#controlValidator.validate)) {
+      control[errorStream] ??= new ReplaySubject<ValidationErrors | null>(1);
+      control.addAsyncValidators(this.#controlValidator.validate);
+    }
+  }
+
   /**
    * Use an mutationObserver to detect changes in the DOM, so we know there might be new controls to validate.
    * emits void on start and when the number of controls changes.
@@ -65,7 +89,10 @@ export class ValidatorDirective implements OnInit, OnDestroy {
       observer.disconnect()
     };
   }).pipe(
-    debounceTime(10),
+    debounceTime(100),
+    tap(() => console.log('fomrChanges')),
+    /** make sure all controls have our validator! */
+    tap(() => Object.entries(this.#form.controls).forEach(([key, control]) => this.#addValidator(control as VldtiAbstractControl))),
     /** revalidate the entire form. if an field is added with invalid content, the form needs to be disabled now. */
     tap(() => this.validate())
   );
@@ -75,20 +102,19 @@ export class ValidatorDirective implements OnInit, OnDestroy {
     this.#form.control.markAsPending();
     const { validatorFn } = await firstValueFrom(this.#state$)
     const errors = await validatorFn?.(ObjectFromRawFormValue(rawFormContent));
-    console.dir(errors);
+    // console.dir(errors);
     if (errors) {
-      for (const [key, control] of Object.entries(this.#form.controls)) {
+      for (const [key, control] of Object.entries(this.#form.controls) as [keyof Model, VldtiAbstractControl][]) {
         if (control.enabled) {
-          // this.#cdr.markForCheck(); // make sure the error is shown
           if (errors[key]) {
             const errMsg = errToMsg(errors[key] as any);
-            control.setErrors({ [key]: errMsg });
-            control.markAsTouched();
-            control.markAsDirty();
+            console.log('setting error', key, errMsg);
+            control[errorStream].next({ [key]: errMsg });
           } else {
             control.setErrors(null);
           }
-          control.updateValueAndValidity();
+          // control.updateValueAndValidity();
+          // this.#cdr.detectChanges(); // make sure the error is shown
         }
 
       }
@@ -174,9 +200,10 @@ export class ValidatorDirective implements OnInit, OnDestroy {
 
 
 
+
 function errToMsg(err: string | string[]): string {
   if (typeof err === 'string') {
     return err;
   }
-  return err.join('/n');
+  return err.join('\n');
 }

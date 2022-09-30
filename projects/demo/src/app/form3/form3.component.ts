@@ -41,16 +41,18 @@ export class Form3Component {
   }
 
   async inspect(data: SampleData, form: NgForm, ev: Event) {
-    // console.table(form.control.getRawValue());
-    Object.entries(form.controls).forEach(([key, control]) => {
-      // control.clearAsyncValidators();
-      // control.clearValidators();
-      // control.markAsTouched();
-      // control.markAsDirty();
-      control.updateValueAndValidity();
-      control.markAsTouched();
-      control.markAsDirty();
-    });
+    console.table(form.control.getRawValue());
+    setTimeout(() => {
+      Object.entries(form.controls).forEach(([key, control]) => {
+        // control.clearAsyncValidators();
+        // control.clearValidators();
+        // control.markAsTouched();
+        // control.markAsDirty();
+        control.updateValueAndValidity();
+        control.markAsTouched();
+        control.markAsDirty();
+      });
+    }, 500)
     ev.preventDefault();
   }
 
@@ -73,7 +75,7 @@ const clearObject = (obj: any) => {
   for (const key of Object.keys(obj)) {
     if (key === 'id') continue;
     if (Array.isArray(obj[key])) {
-      obj[key].length=0; // throw away all the items
+      obj[key].length = 0; // throw away all the items
       obj[key] = []; // replace with a new reference to a new array
     } else if (obj[key] instanceof Object) {
       clearObject(obj[key]);

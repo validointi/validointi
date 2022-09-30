@@ -12,7 +12,7 @@ import { ContactComponent } from './contact/contact.component';
     <button (click)="add($event)" title="Add contact point">➕</button>
   `,
   styleUrls: ['./contacts.component.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ContactsComponent {
   @Input() contacts!: SampleDataContactDetail[];
@@ -24,7 +24,7 @@ export class ContactsComponent {
   add(ev:Event) {
     this.contacts.push({
       type: SampleDataContactDetailType.Email,
-      value: '',
+      value: ' ',
       priority: 0
     });
     ev.preventDefault();
