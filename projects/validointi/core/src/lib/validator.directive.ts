@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Directive, ElementRef, inject, Input, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Directive, ElementRef, inject, Input, NgZone, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, AsyncValidatorFn, NgForm, ValidatorFn, ValidationErrors, AsyncValidator } from '@angular/forms';
 import { asyncScheduler, BehaviorSubject, combineLatest, debounceTime, delay, EMPTY, firstValueFrom, map, mapTo, merge, mergeAll, mergeMap, Observable, observeOn, of, ReplaySubject, switchMap, take, tap } from 'rxjs';
 import { ObjectFromRawFormValue } from './ObjectFromRawFormValue';
@@ -6,11 +6,11 @@ import { Model, ValidationFormatter, ValidationId, Validator } from './validator
 import { ValidatorRegistryService } from './validatorsRegistry.service';
 
 const relatedFields = Symbol('relatedfields');
-const errorStream = Symbol('errorStream');
+const currentError = Symbol('currentError');
 
 interface VldtiAbstractControl extends AbstractControl {
-  [relatedFields]?: string[];
-  [errorStream]: ReplaySubject<ValidationErrors | null>;
+  [relatedFields]?: Set<string>;
+  [currentError]: ValidationErrors | null;
 }
 
 @Directive({
@@ -34,12 +34,12 @@ export class ValidatorDirective implements OnInit, OnDestroy {
     const validateOnFieldChanges = value === '' || value === true
     this.#state$.next({ ...this.#state$.value, validateOnFieldChanges });
   }
+
+  /** injections */
   #vr = inject(ValidatorRegistryService);
-  #cdr = inject(ChangeDetectorRef)
-
-
   #form = inject(NgForm);
   #elm = inject(ElementRef) as ElementRef<HTMLFormElement>;
+  #zone = inject(NgZone);
 
   validate = (key?: string): void => {
     const rawFormContent = this.#form.control.getRawValue();
@@ -51,29 +51,27 @@ export class ValidatorDirective implements OnInit, OnDestroy {
     }
   }
 
-  #controlValidator: AsyncValidator = {
-    validate: (control: VldtiAbstractControl): Observable<ValidationErrors | null> => {
-      // console.log('validate', control.value);
-      return control[errorStream].pipe(
-        observeOn(asyncScheduler),
-        debounceTime(5),
-        take(1) // WTF, why is angular expecting this to be a cold observable?
-      );
-    }
+  /* Keep this as a spare for now. There might be a future use for it.
+
+  #validatorFn: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
+    const workControl = control as VldtiAbstractControl;
+    workControl[currentError] && console.log('validatorFn', workControl[currentError]);
+    return workControl[currentError] || null;
   }
 
-  #addValidator = (control: VldtiAbstractControl) => {
-    if (!control.hasAsyncValidator(this.#controlValidator.validate)) {
-      control[errorStream] ??= new ReplaySubject<ValidationErrors | null>(1);
-      control.addAsyncValidators(this.#controlValidator.validate);
-    }
+  #asyncValidatorFn: AsyncValidatorFn = (absControl: AbstractControl): Promise<ValidationErrors | null> => {
+    const control = absControl as VldtiAbstractControl;
+    const key = Object.entries(this.#form.control.controls).find(([, c]) => c === absControl)?.[0]!;
+    return this.#validateField({ key, control, newVal: control.value });
   }
+
+  */
 
   /**
    * Use an mutationObserver to detect changes in the DOM, so we know there might be new controls to validate.
    * emits void on start and when the number of controls changes.
    */
-  #formChanges = new Observable<void>(subscriber => {
+  #formChanges = this.#zone.runOutsideAngular(() => new Observable<void>(subscriber => {
     let lastLength = 0;
     const observer = new MutationObserver(() => {
       /** check the number of controls in the injected form */
@@ -90,33 +88,38 @@ export class ValidatorDirective implements OnInit, OnDestroy {
     };
   }).pipe(
     debounceTime(100),
-    tap(() => console.log('fomrChanges')),
-    /** make sure all controls have our validator! */
-    tap(() => Object.entries(this.#form.controls).forEach(([key, control]) => this.#addValidator(control as VldtiAbstractControl))),
-    /** revalidate the entire form. if an field is added with invalid content, the form needs to be disabled now. */
+    /** make sure every field has an validator!
+     * keep hooking up the validators in spare too, just in case.
+    tap(() => Object.entries(this.#form.controls).forEach(([key, control]) => {
+      if (!control.hasValidator(this.#validatorFn)) {
+        control.setValidators(this.#validatorFn);
+      }
+      if (!control.hasAsyncValidator(this.#asyncValidatorFn)) {
+        control.setAsyncValidators(this.#asyncValidatorFn);
+      }
+    })),
+
+    /** revalidate the entire form. if an field is added with invalid content, the form needs to be reexamined now. */
     tap(() => this.validate())
-  );
+  ));
 
   /** helper to validate the whole form at once */
   #validateForm = async (rawFormContent: Model) => {
-    this.#form.control.markAsPending();
+    this.#form.control.markAsPending({ onlySelf: false });
     const { validatorFn } = await firstValueFrom(this.#state$)
     const errors = await validatorFn?.(ObjectFromRawFormValue(rawFormContent));
-    // console.dir(errors);
     if (errors) {
       for (const [key, control] of Object.entries(this.#form.controls) as [keyof Model, VldtiAbstractControl][]) {
         if (control.enabled) {
           if (errors[key]) {
             const errMsg = errToMsg(errors[key] as any);
-            console.log('setting error', key, errMsg);
-            control[errorStream].next({ [key]: errMsg });
+            control[currentError] = { [key]: errMsg };
+            control.setErrors({ [key]: errMsg });
           } else {
             control.setErrors(null);
+            control[currentError] = null;
           }
-          // control.updateValueAndValidity();
-          // this.#cdr.detectChanges(); // make sure the error is shown
         }
-
       }
     } else {
       // this will clear the pending state
@@ -125,10 +128,10 @@ export class ValidatorDirective implements OnInit, OnDestroy {
   }
 
   /** only when using full formValidation (and an actual form exits!) */
-  #fullFormValidation = (this.#form.valueChanges || EMPTY).pipe(
+  #fullFormValidation = this.#zone.runOutsideAngular(() => (this.#form.valueChanges || EMPTY).pipe(
     debounceTime(10), // dont fire too often
     tap(this.#validateForm),
-  )
+  ));
 
   /**
    * helper to validate a single control.
@@ -136,20 +139,20 @@ export class ValidatorDirective implements OnInit, OnDestroy {
    */
   #validateField = async ({ key, control, newVal }: {
     key: string;
-    control: AbstractControl<any, any>;
+    control: VldtiAbstractControl | AbstractControl;
     newVal: any;
   }) => {
+    control = control as VldtiAbstractControl;
     control.markAsPending();
     const { validatorFn } = await firstValueFrom(this.#state$)
     const formValue = ObjectFromRawFormValue(control.root.getRawValue());
     const errors = await validatorFn?.(formValue, key);
     const errKeys = Object.keys(errors || {});
-    // @ts-ignore because we are dynamically adding a property to the control
-    const related = control[relatedFields] ??= new Set<string>();
+    const related = (control as VldtiAbstractControl)[relatedFields] ??= new Set<string>();
     related.add(key); // make sure we validate/clear this field to prevent from pending forever
     /** iterate over new errors, and previous fields that had one */
     errKeys.concat(...related).forEach((key) => {
-      const currentCtrl = this.#form.controls[key];
+      const currentCtrl = this.#form.controls[key] as VldtiAbstractControl;
       if (currentCtrl === undefined) {
         return;
       }
@@ -158,8 +161,7 @@ export class ValidatorDirective implements OnInit, OnDestroy {
         if (currentCtrl.enabled) {
           // set the error, and make sure it surfaces to user by setting touched and dirty
           currentCtrl.setErrors({ [key]: errMsg });
-          currentCtrl.markAllAsTouched();
-          currentCtrl.markAsDirty();
+          currentCtrl[currentError] = { [key]: errMsg };
           related.add(key);
         }
       } else {
@@ -168,38 +170,42 @@ export class ValidatorDirective implements OnInit, OnDestroy {
         currentCtrl.setErrors(null);
       }
     })
+    return (control as VldtiAbstractControl)[currentError];
   }
 
   /** subscribe to each model separate, when your validations are too slow otherwise. */
-  #perControlValidation = this.#formChanges.pipe(
-    observeOn(asyncScheduler),
+  #perControlValidation = this.#zone.runOutsideAngular(() => this.#formChanges.pipe(
     switchMap(() => of(Array.from(Object.entries(this.#form?.controls)))),
-    switchMap((controls) => merge(...controls.map(([key, control]) => control.valueChanges.pipe(map((newVal) => ({ key, control, newVal })))))),
-    debounceTime(10),
-    tap(this.#validateField),
-  )
+    switchMap((controls) => merge(
+      ...controls.map(([key, control]) => control.valueChanges.pipe(
+        map((newVal) => ({ key, control, newVal }))
+      ))
+    )),
+    debounceTime(25),
+    tap((r) => this.#zone.runOutsideAngular(() => this.#validateField(r))),
+  ))
 
 
-  #unsubscribe = this.#refresh.pipe(
+
+  #unsubscribe = this.#zone.runOutsideAngular(() => this.#refresh.pipe(
     switchMap(() => this.#state$),
     switchMap(({ validateOnFieldChanges }) => validateOnFieldChanges ?
       this.#perControlValidation :
       this.#fullFormValidation
     ),
-  ).subscribe()
+  ).subscribe())
 
   ngOnDestroy(): void {
+    /** allways clean up after yourself */
     this.#unsubscribe?.unsubscribe();
   }
 
   ngOnInit(): void {
+    /** start the whole process */
     this.#refresh.next();
   }
 
 }
-
-
-
 
 function errToMsg(err: string | string[]): string {
   if (typeof err === 'string') {

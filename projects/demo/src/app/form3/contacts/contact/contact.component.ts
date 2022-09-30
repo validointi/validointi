@@ -19,32 +19,24 @@ import { ValidationErrorHookUpDirective } from '../../../form1/validationErrorHo
   `,
   styleUrls: ['./contact.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  viewProviders: [{ provide: ControlContainer, useFactory: (form:NgForm) => form, deps: [NgForm] }],
+  /** use DI to hook up the controls to the form, This is due to a bug in NG */
+  viewProviders: [{ provide: ControlContainer, useFactory: (form: NgForm) => form, deps: [NgForm] }],
 })
-export class ContactComponent implements OnDestroy {
+export class ContactComponent {
   @Input() contact!: SampleDataContactDetail;
   @Input() rowNum = 0;
   @Output() delete = new EventEmitter<void>();
-  @ViewChildren(NgModel, { emitDistinctChangesOnly: false }) models!: NgModel[];
 
-  form = inject(NgForm)
   types = Object.values(SampleDataContactDetailType);
 
-  name = (field:string) => `contacts[${this.rowNum}].${field}`;
+  name = (field: string) => `contacts[${this.rowNum}].${field}`;
 
+  @ViewChildren(NgModel, { emitDistinctChangesOnly: false }) models!: NgModel[];
   ngAfterViewInit() {
-    /** I need to add the formFields to the form, and follow the validation engine name-spec */
     this.models.forEach(model => {
       /** This could have been done in the template, but this is my lazy solution. */
       model.name = `contacts[${this.rowNum}].${model.name}`;
-      // this.form.addControl(model);
     });
-  }
-
-  ngOnDestroy(): void {
-    // this.models.forEach(model => {
-    //   this.form.removeControl(model);
-    // });
   }
 
 }
