@@ -10,6 +10,7 @@ export class ValidationErrorHookUpDirective implements OnDestroy {
   #elm = inject(ElementRef).nativeElement! as HTMLInputElement;
   #cdr = inject(ChangeDetectorRef);
   #model = inject(NgModel);
+  lastState ='';
 
   #sub = this.#model.statusChanges
     ?.pipe(
@@ -31,10 +32,11 @@ export class ValidationErrorHookUpDirective implements OnDestroy {
          * but only when there is an invalid state!
          * when the state is valid, the ui is updated by the form itself.
          */
-        if (status === 'INVALID') {
+        if (status !== this.lastState) {
           this.#model.control.markAllAsTouched();
           this.#model.control.markAsDirty();
-          this.#cdr.markForCheck();
+          this.#cdr.detectChanges();
+          this.lastState = status;
         }
       })
     )

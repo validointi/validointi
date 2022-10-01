@@ -58,6 +58,8 @@ inMemoryDb.set('1', {
 export class SampleDataService {
   getById = (id: string) => of(structuredClone(inMemoryDb.get(id)) as SampleData);
   getAll = () => of(structuredClone(Array.from(inMemoryDb.values() as unknown as SampleData[])));
+
+  /** injections */
   #vr = inject(ValidatorRegistryService);
 
   validate = this.#vr.registerValidator('sample-data', validateSampleData);
@@ -71,6 +73,7 @@ export class SampleDataService {
     inMemoryDb.set(data.id as string, data);
   };
 }
+
 
 async function validateSampleData(data: SampleData, field?: string): Promise<ValidationErrors> {
   const errors = await suite(data, field).getErrors();
