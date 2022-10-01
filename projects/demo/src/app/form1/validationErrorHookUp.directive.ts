@@ -1,4 +1,4 @@
-import { Directive, ElementRef, inject, OnDestroy } from '@angular/core';
+import { ChangeDetectorRef, Directive, ElementRef, inject, OnDestroy } from '@angular/core';
 import { NgModel } from '@angular/forms';
 import { asyncScheduler, observeOn, tap } from 'rxjs';
 
@@ -8,12 +8,13 @@ import { asyncScheduler, observeOn, tap } from 'rxjs';
 })
 export class ValidationErrorHookUpDirective implements OnDestroy {
   #elm = inject(ElementRef).nativeElement! as HTMLInputElement;
+  #cdr = inject(ChangeDetectorRef);
   #model = inject(NgModel);
 
   #sub = this.#model.statusChanges
     ?.pipe(
       observeOn(asyncScheduler),
-      tap(() => {
+      tap((status) => {
         const errors = this.#model.control.errors;
         if (errors) {
           Object.entries(errors).forEach(([key, value]) => {
@@ -24,6 +25,16 @@ export class ValidationErrorHookUpDirective implements OnDestroy {
         } else {
           this.#elm.setCustomValidity('');
           this.#elm.title = '';
+        }
+        /**
+         * Make sure the ui is updated,
+         * but only when there is an invalid state!
+         * when the state is valid, the ui is updated by the form itself.
+         */
+        if (status === 'INVALID') {
+          this.#model.control.markAllAsTouched();
+          this.#model.control.markAsDirty();
+          this.#cdr.markForCheck();
         }
       })
     )

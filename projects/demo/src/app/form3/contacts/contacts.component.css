@@ -1,0 +1,15 @@
+:host {
+  display: block;
+  margin: 0 0 20px 0;
+  position: relative;
+  min-height: 2rem;;
+}
+
+button {
+  border-radius: 50%;
+  aspect-ratio: 1;
+  background-color: var(--surface-3);
+  position: absolute;
+  right: -.4rem;
+  top: -1.1rem;
+}

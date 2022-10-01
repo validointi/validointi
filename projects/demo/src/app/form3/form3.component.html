@@ -6,6 +6,7 @@
     (ngSubmit)="submit($any(data))"
     #form="ngForm"
     [validateOnFieldChanges]="fieldValidation"
+    #validointi="validointi"
   >
     <input
       type="hidden"
@@ -21,15 +22,11 @@
       placeholder="Your name"
       [(ngModel)]="data.name"
     />
-    <label>
-      <span>Email</span>
-      <input
-        type="email"
-        name="email"
-        placeholder="Your email"
-        [(ngModel)]="data.email"
-      />
-    </label>
+    <fieldset>
+      <legend>Contact info</legend>
+      <app-contacts [contacts]="data.contacts"></app-contacts>
+    </fieldset>
+
     <label>
       <span>Date of Birth</span>
       <input
@@ -98,10 +95,11 @@
       </label>
     </fieldset>
     <fieldset>
-      <legend>tags <button
-          type="button"
-          (click)="data.tags.push('')"
-        >add</button></legend>
+      <legend>tags</legend>
+      <button
+        type="button"
+        (click)="data.tags.push('')"
+      >➕</button>
       <label
         *ngFor="let tag of data.tags; let index = index"
         [tag]="tag"
@@ -117,8 +115,8 @@
     />
     <button
       type="button"
-      (click)="force(data,form, $event)"
-    >force Validation</button>
+      (click)="inspect(data,form, $event);validointi.validate()"
+    >Inspect && force Validation</button>
     <button
       type="reset"
       (click)="clear(data, form, $event)"

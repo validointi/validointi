@@ -18,9 +18,9 @@
       <span>Email</span>
       <input
         type="email"
-        name="email"
+        name="contact[0].value"
         placeholder="Your email"
-        [(ngModel)]="data.email"
+        [(ngModel)]="data.contacts[0].value"
       />
     </label>
     <label>
@@ -34,7 +34,7 @@
       />
     </label>
     <label>
-      <span>Password</span>
+      <span>Password  entropy:{{entropy(data.password)}}</span>
       <input
         type="password"
         name="password"
