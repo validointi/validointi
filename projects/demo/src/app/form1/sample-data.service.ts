@@ -171,17 +171,17 @@ const suite = (data: SampleData = {} as SampleData, field?: string) => create(()
 })();
 
 function validateContacts(contact: SampleDataContactDetail, i: number) {
-  test(`contacts[${i}].type`,
+  test(`contacts.${i}.type`,
     'Type is required',
     () => { enforce(contact.type); },
-    `contacts[${i}].type-required`
+    `contacts.${i}.type-required`
   );
-  test(`contacts[${i}].type`,
+  test(`contacts.${i}.type`,
     `Type "${contact.type}" is an unknown type`,
     () => { enforce(contact.type).isValueOf(SampleDataContactDetailType); },
-    `contacts[${i}].type-unknown${contact.type}`
+    `contacts.${i}.type-unknown${contact.type}`
   );
-  test(`contacts[${i}].value`,
+  test(`contacts.${i}.value`,
     () => {
       enforce(contact.value)
         .message(`${contact.type} can not be blank`)
@@ -205,7 +205,7 @@ function validateContacts(contact: SampleDataContactDetail, i: number) {
           break;
       }
     },
-    `contacts[${i}].value-${contact.value}`
+    `contacts.${i}.value-${contact.value}`
   );
 };
 

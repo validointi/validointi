@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, EventEmitter, inject, Input, OnDestroy, Output, ViewChildren } from '@angular/core';
-import { ControlContainer, FormGroup, FormsModule, NgForm, NgModel } from '@angular/forms';
+import { ControlContainer, FormGroup, FormsModule, NgForm, NgModel, NgModelGroup } from '@angular/forms';
 import { SampleDataContactDetail, SampleDataContactDetailType } from '../../../form1/sample-data.service';
 import { ValidationErrorHookUpDirective } from '../../../form1/validationErrorHookUp.directive';
 
@@ -19,24 +19,20 @@ import { ValidationErrorHookUpDirective } from '../../../form1/validationErrorHo
   `,
   styleUrls: ['./contact.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  /** use DI to hook up the controls to the form, This is due to a bug in NG */
-  viewProviders: [{ provide: ControlContainer, useFactory: (form: NgForm) => form, deps: [NgForm] }],
+  /** use DI to hook up the controls to the model-group, This is due to a bug in NG */
+  viewProviders: [{ provide: ControlContainer, useFactory: (form: NgModelGroup) => form, deps: [NgModelGroup] }],
 })
 export class ContactComponent {
   @Input() contact!: SampleDataContactDetail;
-  @Input() rowNum = 0;
   @Output() delete = new EventEmitter<void>();
 
   types = Object.values(SampleDataContactDetailType);
 
-  name = (field: string) => `contacts[${this.rowNum}].${field}`;
+  group = inject(NgModelGroup);
 
-  @ViewChildren(NgModel, { emitDistinctChangesOnly: false }) models!: NgModel[];
-  ngAfterViewInit() {
-    this.models.forEach(model => {
-      /** This could have been done in the template, but this is my lazy solution. */
-      model.name = `contacts[${this.rowNum}].${model.name}`;
-    });
+  ngOnInit() {
+    console.log('ContactComponent.ngOnInit', this.group);
   }
+
 
 }

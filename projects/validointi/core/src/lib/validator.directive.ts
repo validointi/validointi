@@ -1,4 +1,4 @@
-import { Directive, ElementRef, inject, Input, NgZone, OnDestroy, OnInit } from '@angular/core';
+import { Directive, ElementRef, inject, Input, isDevMode, NgZone, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, NgForm, ValidationErrors } from '@angular/forms';
 import { BehaviorSubject, debounceTime, EMPTY, firstValueFrom, map, merge, Observable, of, ReplaySubject, switchMap, tap } from 'rxjs';
 import { ObjectFromRawFormValue } from './ObjectFromRawFormValue';
@@ -146,7 +146,9 @@ export class ValidatorDirective implements OnInit, OnDestroy {
     control.markAsPending();
     const { validatorFn } = await firstValueFrom(this.#state$)
     const formValue = ObjectFromRawFormValue(control.root.getRawValue());
+    console.dir({formValue});
     const errors = await validatorFn?.(formValue, key);
+    console.dir({errors});
     const errKeys = Object.keys(errors || {});
     const related = (control as VldtiAbstractControl)[relatedFields] ??= new Set<string>();
     related.add(key); // make sure we validate/clear this field to prevent from pending forever
@@ -154,6 +156,9 @@ export class ValidatorDirective implements OnInit, OnDestroy {
     errKeys.concat(...related).forEach((key) => {
       const currentCtrl = this.#form.controls[key] as VldtiAbstractControl;
       if (currentCtrl === undefined) {
+        if (isDevMode()) {
+          console.warn(`[validointi] validated "${key}", but this doesn't seem to exists in this form!`);
+        }
         return;
       }
       if (errKeys.includes(key)) {
