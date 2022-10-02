@@ -28,11 +28,4 @@ export class ContactComponent {
 
   types = Object.values(SampleDataContactDetailType);
 
-  group = inject(NgModelGroup);
-
-  ngOnInit() {
-    console.log('ContactComponent.ngOnInit', this.group);
-  }
-
-
 }

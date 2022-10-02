@@ -114,6 +114,8 @@ const suite = (data: SampleData = {} as SampleData, field?: string) => create(()
     enforce(data.contacts.length).greaterThanOrEquals(1);
   })
 
+  console.dir(data)
+
   const contacts = data.contacts || [];
   each(contacts, validateContacts);
 

@@ -14,7 +14,7 @@ export class ValidationErrorHookUpDirective implements OnDestroy {
 
   #sub = this.#model.statusChanges
     ?.pipe(
-      observeOn(asyncScheduler),
+      // observeOn(asyncScheduler),
       tap((status) => {
         const errors = this.#model.control.errors;
         if (errors) {

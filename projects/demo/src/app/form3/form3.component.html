@@ -55,13 +55,13 @@
         [(ngModel)]="data.confirm"
       />
     </label>
-    <fieldset>
+    <fieldset ngModelGroup="address">
       <legend>Address</legend>
       <label>
         <span>Street</span>
         <input
           type="text"
-          name="address.street"
+          name="street"
           placeholder="Your street"
           [(ngModel)]="data.address.street"
         />
@@ -70,7 +70,7 @@
         <span>City</span>
         <input
           type="text"
-          name="address.city"
+          name="city"
           placeholder="Your city"
           [(ngModel)]="data.address.city"
         />
@@ -79,7 +79,7 @@
         <span>State</span>
         <input
           type="text"
-          name="address.state"
+          name="state"
           placeholder="Your state"
           [(ngModel)]="data.address.state"
         />
@@ -88,7 +88,7 @@
         <span>Zip</span>
         <input
           type="text"
-          name="address.zip"
+          name="zip"
           placeholder="Your zip"
           [(ngModel)]="data.address.zip"
         />
@@ -127,3 +127,4 @@
     >Reset to initial values</button>
   </form>
 </ng-container>
+

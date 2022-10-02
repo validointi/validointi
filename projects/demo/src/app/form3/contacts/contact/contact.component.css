@@ -16,3 +16,8 @@ button {
 input[type=number] {
   width: 3rem;
 }
+
+/** don't style the group, just the inputs */
+:host.ng-invalid {
+  background-color: inherit;
+}

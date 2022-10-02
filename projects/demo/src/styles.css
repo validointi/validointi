@@ -7,10 +7,15 @@
 @import "open-props/buttons.min.css";
 
 
-.ng-invalid.ng-touched:focus {
+:where(.ng-invalid):not(fieldset).ng-touched:focus {
   outline-color: var(--red-5);
   background-color: inherit;
 }
-.ng-invalid.ng-touched:not(form) {
+:where(.ng-invalid):not(fieldset).ng-touched:not(form) {
   background-color: var(--red-2)
+}
+
+
+:where(fieldset).ng-invalid {
+  border-color: var(--red-5);
 }
