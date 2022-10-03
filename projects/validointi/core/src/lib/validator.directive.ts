@@ -4,14 +4,8 @@ import { BehaviorSubject, debounceTime, distinctUntilKeyChanged, EMPTY, firstVal
 import { ObjectFromRawFormValue } from './ObjectFromRawFormValue';
 import { Model, ValidationId, Validator } from './validator.types';
 import { ValidatorRegistryService } from './validatorsRegistry.service';
+import { currentError, relatedFields, vldtniAbstractControl, VldtniAbstractControl } from './VldtiAbstractControl';
 
-const relatedFields = Symbol('relatedfields');
-const currentError = Symbol('currentError');
-
-interface VldtiAbstractControl extends AbstractControl {
-  [relatedFields]?: Set<string>;
-  [currentError]: ValidationErrors | null;
-}
 
 @Directive({
   // eslint-disable-next-line @angular-eslint/directive-selector
@@ -27,6 +21,7 @@ export class ValidatorDirective implements OnInit, OnDestroy {
     controlList: [] as ControlList
   });
   #refresh = new ReplaySubject<void>(1);
+  #lastFocus$ = new ReplaySubject<AbstractControl>(1);
   @Input() set validationId(validationId: ValidationId) {
     const validatorFn = this.#vr.getValidator(validationId);
     this.#state$.next({ ...this.#state$.value, validationId, validatorFn });
@@ -46,6 +41,17 @@ export class ValidatorDirective implements OnInit, OnDestroy {
   #elm = inject(ElementRef) as ElementRef<HTMLFormElement>;
   #zone = inject(NgZone);
 
+  /** get the complete path name of a control */
+  getMyName(control: VldtniAbstractControl) {
+    const fields = flattenControls(this.#form.control);
+    const field = fields.find(([key, f]) => f === control)!;
+    return field[0];
+  }
+
+  setLastFocus(control: AbstractControl) {
+    this.#lastFocus$.next(control);
+  }
+
   /**
    * Exported method to trigger validation manually.
    * @param controlName Optional- name of the control to validate, if not provided whole form is validated.
@@ -53,8 +59,8 @@ export class ValidatorDirective implements OnInit, OnDestroy {
   validate = async (key?: string): Promise<void> => {
     const rawFormContent = this.#form.control.getRawValue();
     if (key) {
-      const control = this.#form.control.get(key)!;
-      this.#validateField({ control, newVal: control.value });
+      const control = this.#form.control.get(key)! as VldtniAbstractControl;
+      this.#validateField(control);
     } else {
       this.#validateForm(rawFormContent);
     }
@@ -119,7 +125,7 @@ export class ValidatorDirective implements OnInit, OnDestroy {
     const errors = await validatorFn?.(ObjectFromRawFormValue(rawFormContent));
     const formEntries = flattenControls(this.#form);
     if (Object.keys(errors || {}).length) {
-      for (const [key, control] of formEntries as [keyof Model, VldtiAbstractControl][]) {
+      for (const [key, control] of formEntries as [keyof Model, VldtniAbstractControl][]) {
         if (control.enabled) {
           if (errors[key]) {
             const errMsg = errToMsg(errors[key] as any);
@@ -147,24 +153,20 @@ export class ValidatorDirective implements OnInit, OnDestroy {
    * helper to validate a single control.
    * it will make sure that related fields are also updated in the view
    */
-  #validateField = async ({ control, newVal }: {
-    control: VldtiAbstractControl | AbstractControl;
-    newVal: any;
-  }) => {
-    control = control as VldtiAbstractControl;
+  #validateField = async (control: VldtniAbstractControl) => {
     control.markAsPending();
     const { validatorFn } = await firstValueFrom(this.#state$)
     const formValue = ObjectFromRawFormValue(control.root.getRawValue());
     const controlList = flattenControls(this.#form)
     const formEntries = Object.fromEntries(controlList);
-    const key = controlList.find(([, c]) => c === control)?.[0]!;
+    const key = this.getMyName(control);
     const errors = await validatorFn?.(formValue, key);
     const errKeys = Object.keys(errors || {});
-    const related = (control as VldtiAbstractControl)[relatedFields] ??= new Set<string>();
+    const related = control[relatedFields] ??= new Set<string>();
     related.add(key); // make sure we validate/clear this field to prevent from pending forever
     /** iterate over new errors, and previous fields that had one */
     new Set([...errKeys, ...related]).forEach((checkKey) => {
-      const currentCtrl = formEntries[checkKey] as VldtiAbstractControl;
+      const currentCtrl = formEntries[checkKey] as VldtniAbstractControl;
       if (currentCtrl === undefined) {
         if (isDevMode()) {
           console.warn(`[validointi] validated "${checkKey}" "${key}", but this doesn't seem to exists in this form!`);
@@ -186,18 +188,17 @@ export class ValidatorDirective implements OnInit, OnDestroy {
         currentCtrl.setErrors(null);
       }
     })
-    return (control as VldtiAbstractControl)[currentError];
+    return control[currentError];
   }
 
   /** subscribe to each model separate, when your validations are too slow otherwise. */
   #perControlValidation = this.#zone.runOutsideAngular(() => this.#formChanges.pipe(
     switchMap(() => merge(
       ...flattenControls(this.#form)
-        .filter(([, control]) => !isContainer(control)) // only validate the leafs, as the containers will "eat" the valueChanges
-        .map(([key, control]) => control.valueChanges.pipe(
-          map((newVal) => ({ control, newVal }))
+        .map(([_, control]) => control.valueChanges.pipe(
+          map(() => (control)))
         ))
-    )),
+    ),
     debounceTime(this.#debounceTime),
     tap((r) => this.#zone.runOutsideAngular(() => this.#validateField(r))),
   ))
@@ -235,8 +236,12 @@ function isContainer(control: any): control is ControlContainer {
   return control instanceof FormGroup || control instanceof FormArray;
 }
 
+function isVldtniControl(control: any): control is VldtniAbstractControl {
+  return control.hasOwnProperty(vldtniAbstractControl);
+}
 
-type ControlList = [string, AbstractControl][];
+
+type ControlList = [string, VldtniAbstractControl][];
 
 function flattenControls(container: FormGroup | NgForm, preKey = '', result: ControlList = []): ControlList {
   if (container instanceof NgForm) {
@@ -247,7 +252,7 @@ function flattenControls(container: FormGroup | NgForm, preKey = '', result: Con
     if (result.findIndex(([k]) => k === fieldKey) !== -1) {
       console.warn(`[validointi] duplicate name "${fieldKey}" found!`);
     }
-    result.push([fieldKey, control]);
+    result.push([fieldKey, control as VldtniAbstractControl]);
     if (control instanceof FormGroup) {
       flattenControls(control, `${fieldKey}.`, result);
     }

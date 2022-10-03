@@ -10,8 +10,10 @@ import { ContactComponent } from './contact/contact.component';
   standalone: true,
   imports: [CommonModule, ContactComponent, FormsModule],
   template: `
-    <app-contact *ngFor="let contact of contacts; let i=index" [contact]="contact" (delete)="delete(contact)" ngModelGroup="{{'contacts.'+i}}"></app-contact>
-    <button (click)="add($event)"  title="Add contact point">➕</button>
+    <div>
+      <app-contact *ngFor="let contact of contacts; let i=index" [contact]="contact" (delete)="delete(contact)" ngModelGroup="{{'contacts.'+i}}"></app-contact>
+      <button (click)="add($event)"  title="Add contact point">➕</button>
+    </div>
   `,
   styleUrls: ['./contacts.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,

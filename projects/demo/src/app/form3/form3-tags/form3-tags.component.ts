@@ -1,11 +1,12 @@
 import { Component, inject, Input, OnInit, ViewChild } from '@angular/core';
 import { ControlContainer, FormsModule, NgForm, NgModel } from '@angular/forms';
+import { VldntiControlDirective } from '@validointi/core';
 import { ValidationErrorHookUpDirective } from '../../form1/validationErrorHookUp.directive';
 
 @Component({
   selector: 'label[tag][index]',
   standalone: true,
-  imports: [FormsModule, ValidationErrorHookUpDirective],
+  imports: [FormsModule, ValidationErrorHookUpDirective, VldntiControlDirective],
   template: `
       <span>Tag-{{index}}</span>
       <input

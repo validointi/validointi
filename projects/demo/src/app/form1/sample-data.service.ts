@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { ValidationErrors, ValidatorRegistryService } from '@validointi/core';
 import { of } from 'rxjs';
-import { create, each, enforce, include, only, test, warn } from 'vest';
+import { group, create, each, enforce, include, only, optional, test, warn } from 'vest';
 
 export interface SampleData {
   id: string;
@@ -114,8 +114,6 @@ const suite = (data: SampleData = {} as SampleData, field?: string) => create(()
     enforce(data.contacts.length).greaterThanOrEquals(1);
   })
 
-  console.dir(data)
-
   const contacts = data.contacts || [];
   each(contacts, validateContacts);
 
@@ -173,42 +171,45 @@ const suite = (data: SampleData = {} as SampleData, field?: string) => create(()
 })();
 
 function validateContacts(contact: SampleDataContactDetail, i: number) {
-  test(`contacts.${i}.type`,
-    'Type is required',
-    () => { enforce(contact.type); },
-    `contacts.${i}.type-required`
-  );
-  test(`contacts.${i}.type`,
-    `Type "${contact.type}" is an unknown type`,
-    () => { enforce(contact.type).isValueOf(SampleDataContactDetailType); },
-    `contacts.${i}.type-unknown${contact.type}`
-  );
-  test(`contacts.${i}.value`,
-    () => {
-      enforce(contact.value)
-        .message(`${contact.type} can not be blank`)
-        .isNotBlank()
-      switch (contact.type) {
-        case SampleDataContactDetailType.Email:
-          enforce(contact.value)
-            .message('not an valid email address')
-            .matches(/^[^@]+@[^@]+$/);
-          break;
-        case SampleDataContactDetailType.Fax:
-        case SampleDataContactDetailType.Mobile:
-        case SampleDataContactDetailType.Phone:
-          const allowedChars = '0123456789-()+ '.split('');
-          enforce(contact.value)
-            .message('Phone number can only contain numbers, spaces, dashes, brackets and plus signs')
-            .condition((value: string) => value.split('').every(c => allowedChars.includes(c)))
-          enforce(contact.value)
-            .message('Phone number must contain at least 9 numbers')
-            .condition((value: string) => value.split('').filter(c => '0123456789'.includes(c)).length >= 9);
-          break;
-      }
-    },
-    `contacts.${i}.value-${contact.value}`
-  );
+  const rowName = `contacts.${i}`;
+  group(rowName, () => {
+    test(`${rowName}.type`,
+      'Type is required',
+      () => { enforce(contact.type); },
+      `${rowName}.type-required`
+    );
+    test(`${rowName}.type`,
+      `Type "${contact.type}" is an unknown type`,
+      () => { enforce(contact.type).isValueOf(SampleDataContactDetailType); },
+      `${rowName}.type-unknown${contact.type}`
+    );
+    test(`${rowName}.value`,
+      () => {
+        enforce(contact.value)
+          .message(`${contact.type} can not be blank`)
+          .isNotBlank()
+        switch (contact.type) {
+          case SampleDataContactDetailType.Email:
+            enforce(contact.value)
+              .message('not an valid email address')
+              .matches(/^[^@]+@[^@]+$/);
+            break;
+          case SampleDataContactDetailType.Fax:
+          case SampleDataContactDetailType.Mobile:
+          case SampleDataContactDetailType.Phone:
+            const allowedChars = '0123456789-()+ '.split('');
+            enforce(contact.value)
+              .message('Phone number can only contain numbers, spaces, dashes, brackets and plus signs')
+              .condition((value: string) => value.split('').every(c => allowedChars.includes(c)))
+            enforce(contact.value)
+              .message('Phone number must contain at least 9 numbers')
+              .condition((value: string) => value.split('').filter(c => '0123456789'.includes(c)).length >= 9);
+            break;
+        }
+      },
+      `${rowName}.value-${contact.value}`
+    );
+  });
 };
 
 
@@ -216,7 +217,7 @@ function isEmpty(obj: Object) {
   return Object.keys(obj).length === 0;
 }
 
-export const entropy = (str:string) => {
+export const entropy = (str: string) => {
   return [...new Set([...str])]
     .map((chr) => {
       return str.match(new RegExp(chr, 'g'))?.length || 0;
