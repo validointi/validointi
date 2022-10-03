@@ -2,12 +2,11 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, EventEmitter, inject, Input, OnDestroy, Output, ViewChildren } from '@angular/core';
 import { ControlContainer, FormGroup, FormsModule, NgForm, NgModel } from '@angular/forms';
 import { SampleDataContactDetail, SampleDataContactDetailType } from '../../../form1/sample-data.service';
-import { ValidationErrorHookUpDirective } from '../../../form1/validationErrorHookUp.directive';
 
 @Component({
   selector: 'app-contact',
   standalone: true,
-  imports: [CommonModule, FormsModule, ValidationErrorHookUpDirective],
+  imports: [CommonModule, FormsModule],
   template: `
     <button (click)="delete.emit()">🗑️</button>
     <select [(ngModel)]="contact.type" name='type'>

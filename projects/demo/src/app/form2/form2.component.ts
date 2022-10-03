@@ -4,8 +4,7 @@ import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ValidatorDirective } from '@validointi/core';
 import { map } from 'rxjs/operators';
-import { ValidationErrorHookUpDirective } from '../form1/validationErrorHookUp.directive';
-import { SampleDataForm2Service, StarwarsDTO, SampleData } from './sample-data-form2.service';
+import { SampleData, SampleDataForm2Service, StarwarsDTO } from './sample-data-form2.service';
 @Component({
   selector: 'app-form2',
   standalone: true,
@@ -14,7 +13,6 @@ import { SampleDataForm2Service, StarwarsDTO, SampleData } from './sample-data-f
     ValidatorDirective,
     FormsModule,
     HttpClientModule,
-    ValidationErrorHookUpDirective,
   ],
   templateUrl: './form2.component.html',
   styleUrls: ['./form2.component.css'],

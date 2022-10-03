@@ -1,9 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
-import { ValidatorDirective } from '@validointi/core';
+import { ControlErrorDirective, FormErrorDirective, ValidatorDirective } from '@validointi/core';
 import { SampleData, SampleDataService } from '../form1/sample-data.service';
-import { ValidationErrorHookUpDirective } from '../form1/validationErrorHookUp.directive';
 import { clearObject } from './clearObject';
 import { ContactsComponent } from './contacts/contacts.component';
 import { Form3TagsComponent } from './form3-tags/form3-tags.component';
@@ -14,8 +13,9 @@ import { Form3TagsComponent } from './form3-tags/form3-tags.component';
   imports: [
     CommonModule,
     ValidatorDirective,
+    FormErrorDirective,
+    ControlErrorDirective,
     FormsModule,
-    ValidationErrorHookUpDirective,
     Form3TagsComponent,
     ContactsComponent
   ],
