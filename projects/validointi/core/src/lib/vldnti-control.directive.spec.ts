@@ -32,7 +32,7 @@ describe('VldntiControlDirective', () => {
     comp = fixture.debugElement.componentInstance;
   });
 
-  it('should create an instance', () => {q
+  it('should create an instance', () => {
     expect(comp).toBeTruthy();
   });
 });
