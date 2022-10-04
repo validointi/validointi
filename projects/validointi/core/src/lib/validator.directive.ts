@@ -1,7 +1,8 @@
 import { Directive, ElementRef, inject, Input, isDevMode, NgZone, OnDestroy, OnInit } from '@angular/core';
 import { ControlContainer, FormArray, FormGroup, NgForm } from '@angular/forms';
 import { BehaviorSubject, debounceTime, distinctUntilChanged, EMPTY, firstValueFrom, map, merge, Observable, ReplaySubject, switchMap, tap } from 'rxjs';
-import { ObjectFromRawFormValue } from './ObjectFromRawFormValue';
+import { ObjectFromRawFormValue, mergeObjects } from './ObjectFromRawFormValue';
+import { objFromPath } from './objFromPath';
 import { Model, ValidationId, Validator } from './validator.types';
 import { ValidatorRegistryService } from './validatorsRegistry.service';
 import { currentError, relatedFields, vldtniAbstractControl, VldtniAbstractControl } from './VldtiAbstractControl';
@@ -29,7 +30,7 @@ export class ValidatorDirective implements OnInit, OnDestroy {
     const validateOnFieldChanges = value === '' || value === true
     this.#state$.next({ ...this.#state$.value, validateOnFieldChanges });
   }
-  #debounceTime = 250
+  #debounceTime = 100
   @Input() set vldtiDebounceTime(value: number) {
     if (typeof value === 'number') this.#debounceTime = value;
   }
@@ -91,8 +92,8 @@ export class ValidatorDirective implements OnInit, OnDestroy {
   #validateForm = async (rawFormContent: Model) => {
     this.#form.control.markAsPending({ onlySelf: false });
     const { validatorFn } = await firstValueFrom(this.#state$)
-    const errors = await validatorFn?.(ObjectFromRawFormValue(rawFormContent));
     const formEntries = flattenControls(this.#form);
+    const errors = await validatorFn?.(ObjectFromRawFormValue(rawFormContent));
     if (Object.keys(errors || {}).length) {
       for (const [key, control] of formEntries as [keyof Model, VldtniAbstractControl][]) {
         if (control.enabled) {
@@ -125,9 +126,10 @@ export class ValidatorDirective implements OnInit, OnDestroy {
   #validateField = async ({ key, control }: { key: string, control: VldtniAbstractControl }) => {
     control.markAsPending();
     const { validatorFn } = await firstValueFrom(this.#state$)
-    const formValue = ObjectFromRawFormValue(control.root.getRawValue());
     const controlList = flattenControls(this.#form)
     const formEntries = Object.fromEntries(controlList);
+    const formValue = this.getFormData();
+    // console.dir(formValue);
     const errors = await validatorFn?.(formValue, key);
     const errKeys = Object.keys(errors || {});
     const related = control[relatedFields] ??= new Set<string>();
@@ -174,6 +176,12 @@ export class ValidatorDirective implements OnInit, OnDestroy {
     tap((r) => this.#zone.runOutsideAngular(() => this.#validateField(r))),
   ))
 
+
+  getFormData = () => {
+    const leafControls = flattenControls(this.#form).filter(([_, ctrl]) => !isContainer(ctrl));
+    const data = leafControls.reduce((acc, [key, control]) => mergeObjects(acc, objFromPath(key,control.value)), {});
+    return data as Model;
+  }
 
 
   #unsubscribe = this.#zone.runOutsideAngular(() => this.#refresh.pipe(

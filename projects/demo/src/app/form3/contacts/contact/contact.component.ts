@@ -21,7 +21,7 @@ import { ValidationErrorHookUpDirective } from '../../../form1/validationErrorHo
   styleUrls: ['./contact.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   /** use DI to hook up the controls to the model-group, This is due to a bug in NG */
-  viewProviders: [{ provide: ControlContainer, useFactory: (form: NgModelGroup) => form, deps: [NgModelGroup] }],
+  viewProviders: [{ provide: ControlContainer,useExisting: NgModelGroup }],
 })
 export class ContactComponent {
   @Input() contact!: SampleDataContactDetail;

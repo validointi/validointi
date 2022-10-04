@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Directive, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { ValidatorDirective, VldntiControlDirective } from '@validointi/core';
 import { SampleData, SampleDataService } from '../form1/sample-data.service';
@@ -33,7 +33,7 @@ export class Form3Component {
     console.table(data)
     this.#sds
       .save(data)
-      .catch((e): void => {  })
+      .catch((e): void => { })
       .then(() => console.info('Yes!'));
   }
 

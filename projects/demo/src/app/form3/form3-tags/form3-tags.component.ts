@@ -1,5 +1,5 @@
-import { Component, inject, Input, OnInit, ViewChild } from '@angular/core';
-import { ControlContainer, FormsModule, NgForm, NgModel } from '@angular/forms';
+import { Component, Input } from '@angular/core';
+import { ControlContainer, FormsModule, NgForm } from '@angular/forms';
 import { VldntiControlDirective } from '@validointi/core';
 import { ValidationErrorHookUpDirective } from '../../form1/validationErrorHookUp.directive';
 
