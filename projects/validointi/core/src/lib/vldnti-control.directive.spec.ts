@@ -1,6 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { FormsModule, ValidationErrors } from '@angular/forms';
+import { ValidatorDirective } from './validator.directive';
 import { ValidatorRegistryService } from './validatorsRegistry.service';
 import { VldntiControlDirective } from './vldnti-control.directive';
 
@@ -9,7 +10,7 @@ import { VldntiControlDirective } from './vldnti-control.directive';
     <input type="text" name="test" [(ngModel)]='test' />
   </form>`,
   standalone: true,
-  imports: [FormsModule],
+  imports: [FormsModule,VldntiControlDirective, ValidatorDirective],
 })
 export class SimpleComponent {
   test = "world";
@@ -18,8 +19,6 @@ export class SimpleComponent {
     return {} as ValidationErrors;
   });
 }
-
-
 
 describe('VldntiControlDirective', () => {
   let fixture;
