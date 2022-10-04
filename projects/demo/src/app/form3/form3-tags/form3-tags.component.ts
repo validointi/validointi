@@ -6,7 +6,7 @@ import { ValidationErrorHookUpDirective } from '../../form1/validationErrorHookU
 @Component({
   selector: 'label[tag][index]',
   standalone: true,
-  imports: [FormsModule, ValidationErrorHookUpDirective, VldntiControlDirective],
+  imports: [FormsModule, ValidationErrorHookUpDirective, VldntiControlDirective ],
   template: `
       <span>Tag-{{index}}</span>
       <input
