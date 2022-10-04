@@ -21,7 +21,7 @@ import { ValidationErrorHookUpDirective } from '../../form1/validationErrorHookU
     display: label;
   }
   `],
-  viewProviders: [{ provide: ControlContainer, useFactory: (form: NgForm) => form, deps: [NgForm] }],
+  viewProviders: [{ provide: ControlContainer, useExisting: NgForm }],
 })
 export class Form3TagsComponent {
   @Input() tag?: string;

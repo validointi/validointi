@@ -1,6 +1,6 @@
 import { Directive, ElementRef, inject, Input, isDevMode, NgZone, OnDestroy, OnInit } from '@angular/core';
-import { AbstractControl, ControlContainer, FormArray, FormControl, FormGroup, NgForm, NgModelGroup, ValidationErrors } from '@angular/forms';
-import { BehaviorSubject, debounceTime, distinctUntilKeyChanged, EMPTY, firstValueFrom, map, merge, Observable, of, ReplaySubject, switchMap, tap } from 'rxjs';
+import { ControlContainer, FormArray, FormGroup, NgForm } from '@angular/forms';
+import { BehaviorSubject, debounceTime, distinctUntilChanged, EMPTY, firstValueFrom, map, merge, Observable, ReplaySubject, switchMap, tap } from 'rxjs';
 import { ObjectFromRawFormValue } from './ObjectFromRawFormValue';
 import { Model, ValidationId, Validator } from './validator.types';
 import { ValidatorRegistryService } from './validatorsRegistry.service';
@@ -21,7 +21,6 @@ export class ValidatorDirective implements OnInit, OnDestroy {
     controlList: [] as ControlList
   });
   #refresh = new ReplaySubject<void>(1);
-  #lastFocus$ = new ReplaySubject<AbstractControl>(1);
   @Input() set validationId(validationId: ValidationId) {
     const validatorFn = this.#vr.getValidator(validationId);
     this.#state$.next({ ...this.#state$.value, validationId, validatorFn });
@@ -48,10 +47,6 @@ export class ValidatorDirective implements OnInit, OnDestroy {
     return field[0];
   }
 
-  setLastFocus(control: AbstractControl) {
-    this.#lastFocus$.next(control);
-  }
-
   /**
    * Exported method to trigger validation manually.
    * @param controlName Optional- name of the control to validate, if not provided whole form is validated.
@@ -60,27 +55,12 @@ export class ValidatorDirective implements OnInit, OnDestroy {
     const rawFormContent = this.#form.control.getRawValue();
     if (key) {
       const control = this.#form.control.get(key)! as VldtniAbstractControl;
-      this.#validateField(control);
+      this.#validateField({ key, control });
     } else {
       this.#validateForm(rawFormContent);
     }
   }
 
-  /* Keep this as a spare for now. There might be a future use for it.
-
-  #validatorFn: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
-    const workControl = control as VldtiAbstractControl;
-    workControl[currentError] && console.log('validatorFn', workControl[currentError]);
-    return workControl[currentError] || null;
-  }
-
-  #asyncValidatorFn: AsyncValidatorFn = (absControl: AbstractControl): Promise<ValidationErrors | null> => {
-    const control = absControl as VldtiAbstractControl;
-    const key = Object.entries(this.#form.control.controls).find(([, c]) => c === absControl)?.[0]!;
-    return this.#validateField({ key, control, newVal: control.value });
-  }
-
-  */
 
   /**
    * Use an mutationObserver to detect changes in the DOM, so we know there might be new controls to validate.
@@ -103,17 +83,6 @@ export class ValidatorDirective implements OnInit, OnDestroy {
     };
   }).pipe(
     debounceTime(this.#debounceTime),
-    /** make sure every field has an validator!
-     * keep hooking up the validators in spare too, just in case.
-    tap(() => Object.entries(this.#form.controls).forEach(([key, control]) => {
-      if (!control.hasValidator(this.#validatorFn)) {
-        control.setValidators(this.#validatorFn);
-      }
-      if (!control.hasAsyncValidator(this.#asyncValidatorFn)) {
-        control.setAsyncValidators(this.#asyncValidatorFn);
-      }
-    })),
-
     /** revalidate the entire form. if an field is added with invalid content, the form needs to be reexamined now. */
     tap(() => this.validate())
   ));
@@ -153,13 +122,12 @@ export class ValidatorDirective implements OnInit, OnDestroy {
    * helper to validate a single control.
    * it will make sure that related fields are also updated in the view
    */
-  #validateField = async (control: VldtniAbstractControl) => {
+  #validateField = async ({ key, control }: { key: string, control: VldtniAbstractControl }) => {
     control.markAsPending();
     const { validatorFn } = await firstValueFrom(this.#state$)
     const formValue = ObjectFromRawFormValue(control.root.getRawValue());
     const controlList = flattenControls(this.#form)
     const formEntries = Object.fromEntries(controlList);
-    const key = this.getMyName(control);
     const errors = await validatorFn?.(formValue, key);
     const errKeys = Object.keys(errors || {});
     const related = control[relatedFields] ??= new Set<string>();
@@ -193,12 +161,15 @@ export class ValidatorDirective implements OnInit, OnDestroy {
 
   /** subscribe to each model separate, when your validations are too slow otherwise. */
   #perControlValidation = this.#zone.runOutsideAngular(() => this.#formChanges.pipe(
+    // subscribeOn(asyncScheduler),
     switchMap(() => merge(
       ...flattenControls(this.#form)
-        .map(([_, control]) => control.valueChanges.pipe(
-          map(() => (control)))
+        .filter(([_, ctrl]) => !isContainer(ctrl)) // only validate the leafs
+        .map(([name, control]) => control.valueChanges.pipe(
+          // tap((v) => console.log(`[validointi] ${name} changed to ${v}`)), // leave this in, can be useful for debugging
+          map(() => ({ control, key: name })),
         ))
-    ),
+    )),
     debounceTime(this.#debounceTime),
     tap((r) => this.#zone.runOutsideAngular(() => this.#validateField(r))),
   ))
@@ -206,15 +177,18 @@ export class ValidatorDirective implements OnInit, OnDestroy {
 
 
   #unsubscribe = this.#zone.runOutsideAngular(() => this.#refresh.pipe(
-    switchMap(() => this.#state$),
-    switchMap(({ validateOnFieldChanges }) => validateOnFieldChanges ?
+    switchMap(() => this.#state$.pipe(
+      map(({ validateOnFieldChanges }) => validateOnFieldChanges),
+      distinctUntilChanged(), // only fire when this particular value changes
+    )),
+    switchMap((validateOnFieldChanges) => validateOnFieldChanges ?
       this.#perControlValidation :
       this.#fullFormValidation
     ),
   ).subscribe())
 
   ngOnDestroy(): void {
-    /** allways clean up after yourself */
+    /** always clean up after yourself */
     this.#unsubscribe?.unsubscribe();
   }
 

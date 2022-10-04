@@ -6,8 +6,6 @@ import { vldtniAbstractControl, VldtniAbstractControl } from './VldtiAbstractCon
 
 
 
-
-
 @Directive({
   // eslint-disable-next-line @angular-eslint/directive-selector
   selector: '[ngModel]',
@@ -16,18 +14,13 @@ import { vldtniAbstractControl, VldtniAbstractControl } from './VldtiAbstractCon
 export class VldntiControlDirective implements OnInit {
   #name$ = new BehaviorSubject('');
   @Input() set name(name: string) {  this.#name$.next(name); }
-  @HostListener('focus')
-  onFocus(target: HTMLInputElement) {
-    this.validator.setLastFocus(this.control);
-  }
+
 
   validator = inject(ValidatorDirective);
   ngModel= inject(NgModel);
   control = this.ngModel.control as unknown as VldtniAbstractControl;
 
   constructor() {
-    // @ts-ignore
-    // this.ngModel[vldtniAbstractControl] = true;
     this.control[vldtniAbstractControl] = true;
   }
 
