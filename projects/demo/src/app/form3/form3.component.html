@@ -8,9 +8,9 @@
     <input type="hidden" name="id" [(ngModel)]="data.id" />
     <label for="name">
       <span>Name</span>
+      <input type="text" name="name" placeholder="Your name"
+        [(ngModel)]="data.name" />
     </label>
-    <input type="text" name="name" placeholder="Your name"
-      [(ngModel)]="data.name" />
     <fieldset>
       <legend>Contact info</legend>
       <app-contacts [contacts]="data.contacts" ngModelGroup="contacts"></app-contacts>
@@ -57,7 +57,7 @@
     </fieldset>
     <fieldset>
       <legend>tags</legend>
-      <button type="button" (click)="data.tags.push('')">➕</button>
+      <button class="action" type="button" (click)="data.tags.push('')">➕</button>
       <!-- notice the label[tag][index] is the selector for the tag component -->
       <label *ngFor="let tag of data.tags; let index = index" [tag]="tag"
         [index]="index">

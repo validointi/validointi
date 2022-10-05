@@ -1,9 +1,7 @@
-
-
-const ValidatorDirective = import('../index').then(m => m.ValidatorDirective);
-const VldntiControlDirective = import('../index').then(m => m.VldntiControlDirective);
+import { ValidatorDirective } from './validator.directive';
+import { VldntiControlDirective } from './vldnti-control.directive';
 
 export const vldntiDirectives = [
   ValidatorDirective,
   VldntiControlDirective
-];
+] as const;

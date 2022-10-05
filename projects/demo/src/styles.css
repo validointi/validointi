@@ -1,4 +1,3 @@
-
 /* the props */
 @import "open-props";
 
@@ -6,16 +5,22 @@
 @import "open-props/normalize.min.css";
 @import "open-props/buttons.min.css";
 
-
-:where(.ng-invalid):not(fieldset).ng-touched:focus {
-  outline-color: var(--red-5);
+:where(fieldset):has(*.ng-invalid) {
+  border-color: var(--red-5);
   background-color: inherit;
 }
-:where(.ng-invalid):not(fieldset).ng-touched:not(form) {
-  background-color: var(--red-2)
+
+:where(*):has(button.action) {
+  /** make sure the parent of the action button has position relative */
+  position: relative;
 }
 
-
-:where(fieldset).ng-invalid {
-  border-color: var(--red-5);
+:where(button).action {
+  position: absolute;
+  border-radius: 50%;
+  aspect-ratio: 1;
+  background-color: var(--surface-3);
+  top:  0;
+  right: 0;
+  margin: 0;
 }
