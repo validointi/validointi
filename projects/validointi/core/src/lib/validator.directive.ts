@@ -1,17 +1,12 @@
-import { Directive, ElementRef, inject, Input, NgZone, OnDestroy, OnInit } from '@angular/core';
-import { AbstractControl, NgForm, ValidationErrors } from '@angular/forms';
-import { BehaviorSubject, debounceTime, EMPTY, firstValueFrom, map, merge, Observable, of, ReplaySubject, switchMap, tap } from 'rxjs';
-import { ObjectFromRawFormValue } from './ObjectFromRawFormValue';
+import { Directive, ElementRef, inject, Input, isDevMode, NgZone, OnDestroy, OnInit } from '@angular/core';
+import { ControlContainer, FormArray, FormGroup, NgForm } from '@angular/forms';
+import { asyncScheduler, BehaviorSubject, debounceTime, distinctUntilChanged, EMPTY, finalize, firstValueFrom, map, merge, Observable, ReplaySubject, subscribeOn, switchMap, tap } from 'rxjs';
+import { mergeObjects } from './ObjectFromRawFormValue';
+import { objFromPath } from './objFromPath';
 import { Model, ValidationId, Validator } from './validator.types';
 import { ValidatorRegistryService } from './validatorsRegistry.service';
+import { currentError, relatedFields, vldtniAbstractControl, VldtniAbstractControl } from './VldtiAbstractControl';
 
-const relatedFields = Symbol('relatedfields');
-const currentError = Symbol('currentError');
-
-interface VldtiAbstractControl extends AbstractControl {
-  [relatedFields]?: Set<string>;
-  [currentError]: ValidationErrors | null;
-}
 
 @Directive({
   // eslint-disable-next-line @angular-eslint/directive-selector
@@ -24,6 +19,7 @@ export class ValidatorDirective implements OnInit, OnDestroy {
     validationId: '',
     validatorFn: undefined as unknown as Validator<any>,
     validateOnFieldChanges: false,
+    controlList: [] as ControlList
   });
   #refresh = new ReplaySubject<void>(1);
   @Input() set validationId(validationId: ValidationId) {
@@ -34,6 +30,10 @@ export class ValidatorDirective implements OnInit, OnDestroy {
     const validateOnFieldChanges = value === '' || value === true
     this.#state$.next({ ...this.#state$.value, validateOnFieldChanges });
   }
+  #debounceTime = 100
+  @Input() set vldtiDebounceTime(value: number) {
+    if (typeof value === 'number') this.#debounceTime = value;
+  }
 
   /** injections */
   #vr = inject(ValidatorRegistryService);
@@ -41,31 +41,26 @@ export class ValidatorDirective implements OnInit, OnDestroy {
   #elm = inject(ElementRef) as ElementRef<HTMLFormElement>;
   #zone = inject(NgZone);
 
-  validate = (key?: string): void => {
-    const rawFormContent = this.#form.control.getRawValue();
+  /** get the complete path name of a control */
+  getMyName(control: VldtniAbstractControl) {
+    const fields = flattenControls(this.#form.control);
+    const field = fields.find(([key, f]) => f === control)!;
+    return field[0];
+  }
+
+  /**
+   * Exported method to trigger validation manually.
+   * @param controlName Optional- name of the control to validate, if not provided whole form is validated.
+   */
+  validate = async (key?: string): Promise<void> => {
     if (key) {
-      const control = this.#form.control.get(key)!;
-      this.#validateField({ key, control, newVal: control.value });
+      const control = this.#form.control.get(key)! as VldtniAbstractControl;
+      this.#validateField({ key, control });
     } else {
-      this.#validateForm(rawFormContent);
+      this.#validateForm();
     }
   }
 
-  /* Keep this as a spare for now. There might be a future use for it.
-
-  #validatorFn: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
-    const workControl = control as VldtiAbstractControl;
-    workControl[currentError] && console.log('validatorFn', workControl[currentError]);
-    return workControl[currentError] || null;
-  }
-
-  #asyncValidatorFn: AsyncValidatorFn = (absControl: AbstractControl): Promise<ValidationErrors | null> => {
-    const control = absControl as VldtiAbstractControl;
-    const key = Object.entries(this.#form.control.controls).find(([, c]) => c === absControl)?.[0]!;
-    return this.#validateField({ key, control, newVal: control.value });
-  }
-
-  */
 
   /**
    * Use an mutationObserver to detect changes in the DOM, so we know there might be new controls to validate.
@@ -87,29 +82,23 @@ export class ValidatorDirective implements OnInit, OnDestroy {
       observer.disconnect()
     };
   }).pipe(
-    debounceTime(100),
-    /** make sure every field has an validator!
-     * keep hooking up the validators in spare too, just in case.
-    tap(() => Object.entries(this.#form.controls).forEach(([key, control]) => {
-      if (!control.hasValidator(this.#validatorFn)) {
-        control.setValidators(this.#validatorFn);
-      }
-      if (!control.hasAsyncValidator(this.#asyncValidatorFn)) {
-        control.setAsyncValidators(this.#asyncValidatorFn);
-      }
-    })),
-
+    subscribeOn(asyncScheduler),
+    debounceTime(this.#debounceTime),
     /** revalidate the entire form. if an field is added with invalid content, the form needs to be reexamined now. */
-    tap(() => this.validate())
+    tap(()=> console.log('form changed')),
+    tap(() => this.validate()),
+    finalize(() => console.log('formChanges completed')),
   ));
 
   /** helper to validate the whole form at once */
-  #validateForm = async (rawFormContent: Model) => {
+  #validateForm = async () => {
     this.#form.control.markAsPending({ onlySelf: false });
     const { validatorFn } = await firstValueFrom(this.#state$)
-    const errors = await validatorFn?.(ObjectFromRawFormValue(rawFormContent));
-    if (errors) {
-      for (const [key, control] of Object.entries(this.#form.controls) as [keyof Model, VldtiAbstractControl][]) {
+    const { controlList, formValue } = this.getFormData();
+    const errors = await validatorFn?.(formValue);
+    console.log('errors', errors, formValue);
+    if (Object.keys(errors || {}).length) {
+      for (const [key, control] of controlList as [keyof Model, VldtniAbstractControl][]) {
         if (control.enabled) {
           if (errors[key]) {
             const errMsg = errToMsg(errors[key] as any);
@@ -129,7 +118,7 @@ export class ValidatorDirective implements OnInit, OnDestroy {
 
   /** only when using full formValidation (and an actual form exits!) */
   #fullFormValidation = this.#zone.runOutsideAngular(() => (this.#form.valueChanges || EMPTY).pipe(
-    debounceTime(10), // dont fire too often
+    debounceTime(this.#debounceTime), // dont fire too often
     tap(this.#validateForm),
   ));
 
@@ -137,66 +126,79 @@ export class ValidatorDirective implements OnInit, OnDestroy {
    * helper to validate a single control.
    * it will make sure that related fields are also updated in the view
    */
-  #validateField = async ({ key, control, newVal }: {
-    key: string;
-    control: VldtiAbstractControl | AbstractControl;
-    newVal: any;
-  }) => {
-    control = control as VldtiAbstractControl;
+  #validateField = async ({ key, control }: { key: string, control: VldtniAbstractControl }) => {
     control.markAsPending();
     const { validatorFn } = await firstValueFrom(this.#state$)
-    const formValue = ObjectFromRawFormValue(control.root.getRawValue());
+    const { formEntries, formValue } = this.getFormData();
     const errors = await validatorFn?.(formValue, key);
     const errKeys = Object.keys(errors || {});
-    const related = (control as VldtiAbstractControl)[relatedFields] ??= new Set<string>();
+    const related = control[relatedFields] ??= new Set<string>();
     related.add(key); // make sure we validate/clear this field to prevent from pending forever
     /** iterate over new errors, and previous fields that had one */
-    errKeys.concat(...related).forEach((key) => {
-      const currentCtrl = this.#form.controls[key] as VldtiAbstractControl;
+    new Set([...errKeys, ...related]).forEach((checkKey) => {
+      const currentCtrl = formEntries[checkKey] as VldtniAbstractControl;
       if (currentCtrl === undefined) {
+        if (isDevMode()) {
+          console.warn(`[validointi] validated "${checkKey}" "${key}", but this doesn't seem to exists in this form!`);
+        }
         return;
       }
-      if (errKeys.includes(key)) {
-        const errMsg = errToMsg(errors[key] as any);
-        if (currentCtrl.enabled) {
-          // set the error, and make sure it surfaces to user by setting touched and dirty
-          currentCtrl.setErrors({ [key]: errMsg });
-          currentCtrl[currentError] = { [key]: errMsg };
-          related.add(key);
-        }
+      if (!currentCtrl.enabled) {
+        return;
+      }
+      if (errKeys.includes(checkKey)) {
+        const errMsg = errToMsg(errors[checkKey] as any);
+        // set the error, and make sure it surfaces to user by setting touched and dirty
+        currentCtrl.setErrors({ [checkKey]: errMsg });
+        currentCtrl[currentError] = { [checkKey]: errMsg };
+        related.add(checkKey);
       } else {
         /** clear the error, and remove from list */
-        related.delete(key);
+        related.delete(checkKey);
         currentCtrl.setErrors(null);
+        currentCtrl[currentError] = null;
       }
     })
-    return (control as VldtiAbstractControl)[currentError];
+    return control[currentError];
   }
 
   /** subscribe to each model separate, when your validations are too slow otherwise. */
   #perControlValidation = this.#zone.runOutsideAngular(() => this.#formChanges.pipe(
-    switchMap(() => of(Array.from(Object.entries(this.#form?.controls)))),
-    switchMap((controls) => merge(
-      ...controls.map(([key, control]) => control.valueChanges.pipe(
-        map((newVal) => ({ key, control, newVal }))
-      ))
+    // subscribeOn(asyncScheduler),
+    switchMap(() => merge(
+      ...flattenControls(this.#form)
+        .filter(([_, ctrl]) => !isContainer(ctrl)) // only validate the leafs
+        .map(([name, control]) => control.valueChanges.pipe(
+          // tap((v) => console.log(`[validointi] ${name} changed to ${v}`)), // leave this in, can be useful for debugging
+          map(() => ({ control, key: name })),
+        ))
     )),
-    debounceTime(25),
+    debounceTime(this.#debounceTime),
     tap((r) => this.#zone.runOutsideAngular(() => this.#validateField(r))),
   ))
 
 
+  getFormData = () => {
+    const controlList = flattenControls(this.#form)
+    const formEntries = Object.fromEntries(controlList);
+    const leafControls = controlList.filter(([_, ctrl]) => !isContainer(ctrl));
+    const formValue = leafControls.reduce((acc, [path, control]) => mergeObjects(acc, objFromPath(path as string, control.value)), {}) as Model;
+    return { controlList, formEntries, formValue };
+  }
 
   #unsubscribe = this.#zone.runOutsideAngular(() => this.#refresh.pipe(
-    switchMap(() => this.#state$),
-    switchMap(({ validateOnFieldChanges }) => validateOnFieldChanges ?
+    switchMap(() => this.#state$.pipe(
+      map(({ validateOnFieldChanges }) => validateOnFieldChanges),
+      distinctUntilChanged(), // only fire when this particular value changes
+    )),
+    switchMap((validateOnFieldChanges) => validateOnFieldChanges ?
       this.#perControlValidation :
       this.#fullFormValidation
     ),
   ).subscribe())
 
   ngOnDestroy(): void {
-    /** allways clean up after yourself */
+    /** always clean up after yourself */
     this.#unsubscribe?.unsubscribe();
   }
 
@@ -212,4 +214,32 @@ function errToMsg(err: string | string[]): string {
     return err;
   }
   return err.join('\n');
+}
+
+function isContainer(control: any): control is ControlContainer {
+  return control instanceof FormGroup || control instanceof FormArray;
+}
+
+function isVldtniControl(control: any): control is VldtniAbstractControl {
+  return control.hasOwnProperty(vldtniAbstractControl);
+}
+
+
+type ControlList = [string, VldtniAbstractControl][];
+
+function flattenControls(container: FormGroup | NgForm, preKey = '', result: ControlList = []): ControlList {
+  if (container instanceof NgForm) {
+    return flattenControls(container.form, preKey, result);
+  }
+  for (const [key, control] of Object.entries(container.controls)) {
+    const fieldKey = `${preKey}${key}`;
+    if (result.findIndex(([k]) => k === fieldKey) !== -1) {
+      console.warn(`[validointi] duplicate name "${fieldKey}" found!`);
+    }
+    result.push([fieldKey, control as VldtniAbstractControl]);
+    if (control instanceof FormGroup) {
+      flattenControls(control, `${fieldKey}.`, result);
+    }
+  }
+  return result;
 }

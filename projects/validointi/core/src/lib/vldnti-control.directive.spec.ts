@@ -1,25 +1,26 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { FormsModule } from '@angular/forms';
-// import { VldntiControlDirective } from './vldnti-control.directive';
-// import { ValidatorDirective } from './validator.directive';
-import { ValidationErrors } from './validator.types';
+import { FormsModule, ValidationErrors } from '@angular/forms';
+import { ValidatorDirective } from './validator.directive';
 import { ValidatorRegistryService } from './validatorsRegistry.service';
-import exp from 'constants';
+import { VldntiControlDirective } from './vldnti-control.directive';
 
 @Component({
-  template: '<form validationId="testdata"></form>',
+  template: `<form validationId="testdata">
+    <input type="text" name="test" [(ngModel)]='test' />
+  </form>`,
   standalone: true,
-  imports: [ FormsModule],
+  imports: [FormsModule,VldntiControlDirective, ValidatorDirective],
 })
 export class SimpleComponent {
+  test = "world";
   service = inject(ValidatorRegistryService);
   validate = this.service.registerValidator('testdata', async () => {
     return {} as ValidationErrors;
   });
 }
 
-describe('ValidatorDirective', () => {
+describe('VldntiControlDirective', () => {
   let fixture;
   let comp: SimpleComponent;
   beforeEach(async () => {
@@ -31,6 +32,6 @@ describe('ValidatorDirective', () => {
   });
 
   it('should create an instance', () => {
-    expect(comp).toBeDefined();
+    expect(comp).toBeTruthy();
   });
 });

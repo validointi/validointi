@@ -1,13 +1,14 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, EventEmitter, inject, Input, OnDestroy, Output, ViewChildren } from '@angular/core';
-import { ControlContainer, FormGroup, FormsModule, NgForm, NgModel } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
+import { ControlContainer, FormsModule, NgModelGroup } from '@angular/forms';
+import { VldntiControlDirective } from '@validointi/core';
 import { SampleDataContactDetail, SampleDataContactDetailType } from '../../../form1/sample-data.service';
 import { ValidationErrorHookUpDirective } from '../../../form1/validationErrorHookUp.directive';
 
 @Component({
   selector: 'app-contact',
   standalone: true,
-  imports: [CommonModule, FormsModule, ValidationErrorHookUpDirective],
+  imports: [CommonModule, FormsModule, ValidationErrorHookUpDirective, VldntiControlDirective],
   template: `
     <button (click)="delete.emit()">🗑️</button>
     <select [(ngModel)]="contact.type" name='type'>
@@ -19,24 +20,13 @@ import { ValidationErrorHookUpDirective } from '../../../form1/validationErrorHo
   `,
   styleUrls: ['./contact.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  /** use DI to hook up the controls to the form, This is due to a bug in NG */
-  viewProviders: [{ provide: ControlContainer, useFactory: (form: NgForm) => form, deps: [NgForm] }],
+  /** use DI to hook up the controls to the model-group, This is due to a bug in NG */
+  viewProviders: [{ provide: ControlContainer,useExisting: NgModelGroup }],
 })
 export class ContactComponent {
   @Input() contact!: SampleDataContactDetail;
-  @Input() rowNum = 0;
   @Output() delete = new EventEmitter<void>();
 
   types = Object.values(SampleDataContactDetailType);
-
-  name = (field: string) => `contacts[${this.rowNum}].${field}`;
-
-  @ViewChildren(NgModel, { emitDistinctChangesOnly: false }) models!: NgModel[];
-  ngAfterViewInit() {
-    this.models.forEach(model => {
-      /** This could have been done in the template, but this is my lazy solution. */
-      model.name = `contacts[${this.rowNum}].${model.name}`;
-    });
-  }
 
 }

@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
-import { ValidatorDirective } from '@validointi/core';
+import { ValidatorDirective, VldntiControlDirective } from '@validointi/core';
 import { SampleData, SampleDataService } from '../form1/sample-data.service';
 import { ValidationErrorHookUpDirective } from '../form1/validationErrorHookUp.directive';
 import { clearObject } from './clearObject';
@@ -14,6 +14,7 @@ import { Form3TagsComponent } from './form3-tags/form3-tags.component';
   imports: [
     CommonModule,
     ValidatorDirective,
+    VldntiControlDirective,
     FormsModule,
     ValidationErrorHookUpDirective,
     Form3TagsComponent,
@@ -31,12 +32,11 @@ export class Form3Component {
     console.table(data)
     this.#sds
       .save(data)
-      .catch((e): void => {  })
+      .catch((e): void => { })
       .then(() => console.info('Yes!'));
   }
 
   async inspect(data: SampleData, form: NgForm, ev: Event) {
-    console.table(form.control.getRawValue());
     Object.entries(form.controls).forEach(([key, control]) => {
       control.updateValueAndValidity();
     });

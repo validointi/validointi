@@ -29,7 +29,7 @@ export const ObjectFromRawFormValue = (model: { [path: string]: any; }): {} | []
  * @param source
  * @returns reference to the target object
  */
-const mergeObjects = (target: any, source: any) => {
+export const mergeObjects = (target: any, source: any) => {
   for (const key of Object.keys(source)) {
     if (Array.isArray(source[key])) {
       mergeArray(target[key] ??= [], source[key]);
