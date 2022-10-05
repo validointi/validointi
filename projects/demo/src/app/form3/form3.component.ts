@@ -7,7 +7,6 @@ import { ValidationErrorHookUpDirective } from '../form1/validationErrorHookUp.d
 import { clearObject } from './clearObject';
 import { ContactsComponent } from './contacts/contacts.component';
 import { Form3TagsComponent } from './form3-tags/form3-tags.component';
-// import { vldntiDirectives } from './vldntiDirectives';
 
 @Component({
   selector: 'app-form3',
@@ -38,7 +37,6 @@ export class Form3Component {
   }
 
   async inspect(data: SampleData, form: NgForm, ev: Event) {
-    console.dir(form.control.getRawValue());
     Object.entries(form.controls).forEach(([key, control]) => {
       control.updateValueAndValidity();
     });

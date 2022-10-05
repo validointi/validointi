@@ -13,7 +13,7 @@
       [(ngModel)]="data.name" />
     <fieldset>
       <legend>Contact info</legend>
-      <app-contacts [contacts]="data.contacts"></app-contacts>
+      <app-contacts [contacts]="data.contacts" ngModelGroup="contacts"></app-contacts>
     </fieldset>
 
     <label>

@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { ControlContainer, FormsModule, NgForm } from '@angular/forms';
+import { ControlContainer, FormsModule, NgModelGroup } from '@angular/forms';
 import { SampleDataContactDetail, SampleDataContactDetailType } from '../../form1/sample-data.service';
 import { ContactComponent } from './contact/contact.component';
 
@@ -9,13 +9,13 @@ import { ContactComponent } from './contact/contact.component';
   standalone: true,
   imports: [CommonModule, ContactComponent, FormsModule],
   template: `
-    <app-contact *ngFor="let contact of contacts; let i=index" [contact]="contact" (delete)="delete(contact)" ngModelGroup="{{'contact.'+i}}"></app-contact>
+    <app-contact *ngFor="let contact of contacts; let i=index" [contact]="contact" (delete)="delete(contact)" ngModelGroup="{{''+i}}"></app-contact>
     <button (click)="add($event)"  title="Add contact point">➕</button>
   `,
   styleUrls: ['./contacts.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   /** use DI to hook up the controls to the form, This is due to a bug in NG */
-  viewProviders: [{ provide: ControlContainer, useExisting: NgForm }],
+  viewProviders: [{ provide: ControlContainer, useExisting: NgModelGroup }],
 
 })
 export class ContactsComponent {

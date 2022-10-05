@@ -1,7 +1,7 @@
 import { Directive, ElementRef, inject, Input, isDevMode, NgZone, OnDestroy, OnInit } from '@angular/core';
 import { ControlContainer, FormArray, FormGroup, NgForm } from '@angular/forms';
-import { BehaviorSubject, debounceTime, distinctUntilChanged, EMPTY, firstValueFrom, map, merge, Observable, ReplaySubject, switchMap, tap } from 'rxjs';
-import { ObjectFromRawFormValue, mergeObjects } from './ObjectFromRawFormValue';
+import { asyncScheduler, BehaviorSubject, debounceTime, distinctUntilChanged, EMPTY, finalize, firstValueFrom, map, merge, Observable, ReplaySubject, subscribeOn, switchMap, tap } from 'rxjs';
+import { mergeObjects } from './ObjectFromRawFormValue';
 import { objFromPath } from './objFromPath';
 import { Model, ValidationId, Validator } from './validator.types';
 import { ValidatorRegistryService } from './validatorsRegistry.service';
@@ -53,12 +53,11 @@ export class ValidatorDirective implements OnInit, OnDestroy {
    * @param controlName Optional- name of the control to validate, if not provided whole form is validated.
    */
   validate = async (key?: string): Promise<void> => {
-    const rawFormContent = this.#form.control.getRawValue();
     if (key) {
       const control = this.#form.control.get(key)! as VldtniAbstractControl;
       this.#validateField({ key, control });
     } else {
-      this.#validateForm(rawFormContent);
+      this.#validateForm();
     }
   }
 
@@ -83,19 +82,23 @@ export class ValidatorDirective implements OnInit, OnDestroy {
       observer.disconnect()
     };
   }).pipe(
+    subscribeOn(asyncScheduler),
     debounceTime(this.#debounceTime),
     /** revalidate the entire form. if an field is added with invalid content, the form needs to be reexamined now. */
-    tap(() => this.validate())
+    tap(()=> console.log('form changed')),
+    tap(() => this.validate()),
+    finalize(() => console.log('formChanges completed')),
   ));
 
   /** helper to validate the whole form at once */
-  #validateForm = async (rawFormContent: Model) => {
+  #validateForm = async () => {
     this.#form.control.markAsPending({ onlySelf: false });
     const { validatorFn } = await firstValueFrom(this.#state$)
-    const formEntries = flattenControls(this.#form);
-    const errors = await validatorFn?.(ObjectFromRawFormValue(rawFormContent));
+    const { controlList, formValue } = this.getFormData();
+    const errors = await validatorFn?.(formValue);
+    console.log('errors', errors, formValue);
     if (Object.keys(errors || {}).length) {
-      for (const [key, control] of formEntries as [keyof Model, VldtniAbstractControl][]) {
+      for (const [key, control] of controlList as [keyof Model, VldtniAbstractControl][]) {
         if (control.enabled) {
           if (errors[key]) {
             const errMsg = errToMsg(errors[key] as any);
@@ -126,10 +129,7 @@ export class ValidatorDirective implements OnInit, OnDestroy {
   #validateField = async ({ key, control }: { key: string, control: VldtniAbstractControl }) => {
     control.markAsPending();
     const { validatorFn } = await firstValueFrom(this.#state$)
-    const controlList = flattenControls(this.#form)
-    const formEntries = Object.fromEntries(controlList);
-    const formValue = this.getFormData();
-    // console.dir(formValue);
+    const { formEntries, formValue } = this.getFormData();
     const errors = await validatorFn?.(formValue, key);
     const errKeys = Object.keys(errors || {});
     const related = control[relatedFields] ??= new Set<string>();
@@ -156,6 +156,7 @@ export class ValidatorDirective implements OnInit, OnDestroy {
         /** clear the error, and remove from list */
         related.delete(checkKey);
         currentCtrl.setErrors(null);
+        currentCtrl[currentError] = null;
       }
     })
     return control[currentError];
@@ -178,11 +179,12 @@ export class ValidatorDirective implements OnInit, OnDestroy {
 
 
   getFormData = () => {
-    const leafControls = flattenControls(this.#form).filter(([_, ctrl]) => !isContainer(ctrl));
-    const data = leafControls.reduce((acc, [key, control]) => mergeObjects(acc, objFromPath(key,control.value)), {});
-    return data as Model;
+    const controlList = flattenControls(this.#form)
+    const formEntries = Object.fromEntries(controlList);
+    const leafControls = controlList.filter(([_, ctrl]) => !isContainer(ctrl));
+    const formValue = leafControls.reduce((acc, [path, control]) => mergeObjects(acc, objFromPath(path as string, control.value)), {}) as Model;
+    return { controlList, formEntries, formValue };
   }
-
 
   #unsubscribe = this.#zone.runOutsideAngular(() => this.#refresh.pipe(
     switchMap(() => this.#state$.pipe(
