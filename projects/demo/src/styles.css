@@ -15,6 +15,15 @@
   position: relative;
 }
 
+:where(.ng-invalid):not(fieldset).ng-touched:focus {
+  outline-color: var(--red-5);
+  background-color: inherit;
+}
+:where(.ng-invalid):not(fieldset).ng-touched:not(form) {
+  background-color: var(--red-2)
+}
+
+
 :where(button).action {
   position: absolute;
   border-radius: 50%;

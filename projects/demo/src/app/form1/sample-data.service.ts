@@ -101,6 +101,15 @@ const suite = (data: SampleData = {} as SampleData, field?: string) => create(()
     if (field = 'password') {
       include('confirm');
     }
+    if (field.startsWith('contacts')) {
+      const [cn,row,name] = field.split('.');
+      console.log({field, cn, row, name});
+      if (cn!==undefined && row!==undefined && name!==undefined) {
+        include(`contacts.${row}.value`).when(`contacts.${row}.type`);
+        console.log(`include contacts.${row}.value`);
+      }
+
+    }
   }
 
   test('id', 'id is required', () => {
