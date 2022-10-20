@@ -1,4 +1,4 @@
-# Validate
+# @validointi/core
 
 This is a library to help you validate your template driven forms.
 Its currently in BETA, use at yor own risk.
