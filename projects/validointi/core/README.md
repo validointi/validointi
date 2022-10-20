@@ -9,7 +9,7 @@ The reason its still in alpha is because we are still extending the functionalit
 To install this library, run:
 
 ```bash
-$ npm install validointi@alpha --save
+$ npm install validointi@beta --save
 ```
 
 ## Using it in your project.

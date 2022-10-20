@@ -1,9 +1,9 @@
 /* the props */
-@import "open-props";
+@import "open-props/style";
 
 /* optional imports that use the props */
-@import "open-props/normalize.min.css";
-@import "open-props/buttons.min.css";
+@import "open-props/normalize";
+@import "open-props/buttons";
 
 :where(fieldset):has(*.ng-invalid) {
   border-color: var(--red-5);
