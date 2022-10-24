@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
-import { ValidationErrors, ValidatorRegistryService } from '@validointi/core';
+import { createVestAdapter, ValidatorRegistryService } from '@validointi/core';
 import { of } from 'rxjs';
-import { group, create, each, enforce, include, only, optional, test, warn } from 'vest';
+import { create, each, enforce, group, include, only, test, warn } from 'vest';
 
 export interface SampleData {
   id: string;
@@ -62,7 +62,7 @@ export class SampleDataService {
   /** injections */
   #vr = inject(ValidatorRegistryService);
 
-  validate = this.#vr.registerValidator('sample-data', validateSampleData);
+  validate = this.#vr.registerValidator('sample-data', createVestAdapter(suite));
 
   save = async (data: Partial<SampleData>) => {
     const validationResult = await this.validate(data);
@@ -74,14 +74,6 @@ export class SampleDataService {
   };
 }
 
-
-async function validateSampleData(data: SampleData, field?: string): Promise<ValidationErrors> {
-  const errors = await suite(data, field).getErrors();
-  return Object.entries(errors).reduce((acc, [key, err]) => {
-    acc[key] = err;
-    return acc;
-  }, {} as ValidationErrors);
-}
 
 
 const year = 365 * 24 * 60 * 60 * 1000;
@@ -102,9 +94,9 @@ const suite = (data: SampleData = {} as SampleData, field?: string) => create(()
       include('confirm');
     }
     if (field.startsWith('contacts')) {
-      const [cn,row,name] = field.split('.');
-      console.log({field, cn, row, name});
-      if (cn!==undefined && row!==undefined && name!==undefined) {
+      const [cn, row, name] = field.split('.');
+      console.log({ field, cn, row, name });
+      if (cn !== undefined && row !== undefined && name !== undefined) {
         include(`contacts.${row}.value`).when(`contacts.${row}.type`);
         console.log(`include contacts.${row}.value`);
       }
