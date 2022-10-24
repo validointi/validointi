@@ -1,6 +1,6 @@
 {
   "name": "@validointi/core",
-  "version": "0.0.0-beta.3",
+  "version": "0.0.0-beta.4",
   "description": "Model driven validation for Angular template forms",
   "repository": {
     "type": "git",

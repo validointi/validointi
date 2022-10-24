@@ -9,6 +9,7 @@ import { ObjectFromRawFormValue } from './lib/ObjectFromRawFormValue';
 import { ValidatorDirective } from './lib/validator.directive';
 import type { Model, ValidationErrors, ValidationFormatter, ValidationId } from './lib/validator.types';
 import { VldntiControlDirective } from './lib/vldnti-control.directive';
+import { createVestAdapter } from './lib/vestAdapter';
 
 export {
   ValidatorRegistryService,
@@ -19,4 +20,5 @@ export {
   ValidationFormatter,
   ValidationId,
   ObjectFromRawFormValue,
+  createVestAdapter,
 };
