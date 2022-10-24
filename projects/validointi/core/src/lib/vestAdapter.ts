@@ -1,4 +1,4 @@
-import { ValidationErrors } from '..';
+import { ValidationErrors } from './validator.types';
 
 interface VestLike<T> {
   (data: T | undefined, field?: string): any;
