@@ -31,4 +31,11 @@ export const rootRoutes: Routes = [
     loadComponent: () =>
       import('./form3/form3.component').then((c) => c.Form3Component),
   },
+  {
+    path: 'joi',
+    loadComponent: () =>
+      import('./joi-example/joi-example.component').then(
+        (c) => c.JoiExampleComponent
+      ),
+  },
 ];

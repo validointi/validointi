@@ -10,6 +10,7 @@ import { ValidatorDirective } from './lib/validator.directive';
 import type { Model, ValidationErrors, ValidationFormatter, ValidationId } from './lib/validator.types';
 import { VldntiControlDirective } from './lib/vldnti-control.directive';
 import { createVestAdapter } from './lib/vestAdapter';
+import { createJoiAdapter } from './lib/joiAdapter';
 
 export {
   ValidatorRegistryService,
@@ -21,4 +22,5 @@ export {
   ValidationId,
   ObjectFromRawFormValue,
   createVestAdapter,
+  createJoiAdapter
 };
