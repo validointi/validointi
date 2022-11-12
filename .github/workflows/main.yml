@@ -11,7 +11,7 @@ jobs:
       - uses: google/wireit@setup-github-actions-caching/v1
       - name: 👷 install
         run: |
-          npm ci --force
+          npm install --legacy-peer-deps --force
       - name: 🕵️‍♂️ lint our lib
         run: |
           npm run lint:lib
