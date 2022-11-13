@@ -1,0 +1,38 @@
+<ng-container *ngIf="data$ | async as data">
+  <form
+    validationId="joi-data"
+    (ngSubmit)="submit($any(data))"
+    #form="ngForm"
+  >
+    <input type="hidden" name="id" [(ngModel)]="data.id" />
+    <label for="name">
+      <span>Name</span>
+    </label>
+    <input
+      type="text"
+      name="name"
+      placeholder="Your name"
+      [(ngModel)]="data.name"
+    />
+    <label>
+      <!-- <span>Password entropy:{{ entropy(data.password) }}</span> -->
+      <input
+        type="password"
+        name="password"
+        placeholder="Your password"
+        [(ngModel)]="data.password"
+      />
+    </label>
+    <label>
+      <span>Confirm password</span>
+      <input
+        type="password"
+        name="confirm"
+        placeholder="Your password again"
+        [(ngModel)]="data.confirm"
+      />
+    </label>
+    <input type="submit" value="Submit" [disabled]="form.invalid" />
+    <button type="reset">Reset</button>
+  </form>
+</ng-container>
