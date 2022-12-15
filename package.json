@@ -101,7 +101,7 @@
     "zone.js": "~0.12.0"
   },
   "devDependencies": {
-    "@angular-builders/jest": "^14.0.2",
+    "@angular-builders/jest": "^15.0.0-beta.2",
     "@angular-devkit/build-angular": "^15.1.0-next.3",
     "@angular-eslint/builder": "15.1.0",
     "@angular-eslint/eslint-plugin": "15.1.0",
