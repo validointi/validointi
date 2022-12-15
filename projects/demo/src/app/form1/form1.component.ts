@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { ValidatorDirective } from '@validointi/core';
+import { vldntiDirectives } from '@validointi/core';
 import { entropy, SampleData, SampleDataService } from './sample-data.service';
 import { ValidationErrorHookUpDirective } from './validationErrorHookUp.directive';
 
@@ -10,7 +10,7 @@ import { ValidationErrorHookUpDirective } from './validationErrorHookUp.directiv
   standalone: true,
   imports: [
     CommonModule,
-    ValidatorDirective,
+    [vldntiDirectives],
     FormsModule,
     ValidationErrorHookUpDirective,
   ],
