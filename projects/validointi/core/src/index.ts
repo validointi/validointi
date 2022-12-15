@@ -22,5 +22,6 @@ export {
   ValidationId,
   ObjectFromRawFormValue,
   createVestAdapter,
-  createJoiAdapter
+  createJoiAdapter,
+  vldntiDirectives
 };
