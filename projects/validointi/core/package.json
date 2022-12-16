@@ -1,14 +1,14 @@
 {
   "name": "@validointi/core",
-  "version": "0.0.0-beta.4",
+  "version": "1.0.0",
   "description": "Model driven validation for Angular template forms",
   "repository": {
     "type": "git",
     "url": "https://github.com/validointi/validointi/tree/main/projects/validointi/core"
   },
   "peerDependencies": {
-    "@angular/common": "^14.1.0",
-    "@angular/core": "^14.1.0"
+    "@angular/common": "^15.0.0",
+    "@angular/core": "^15.0.0"
   },
   "dependencies": {
     "tslib": "^2.3.0"
