@@ -18,3 +18,6 @@ jobs:
       - name: 🧪 test
         run: |
           npm test -- --no-watch
+      - name: 🏗️ build
+        run: |
+          npm run build
