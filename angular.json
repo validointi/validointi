@@ -35,13 +35,9 @@
               "projects/demo/src/assets"
             ],
             "stylePreprocessorOptions": {
-              "includePaths": [
-                "../node_modules/"
-              ]
+              "includePaths": ["../node_modules/"]
             },
-            "styles": [
-              "projects/demo/src/styles.css"
-            ],
+            "styles": ["projects/demo/src/styles.css"],
             "scripts": []
           },
           "configurations": {

@@ -1,19 +1,7 @@
 {
   "peacock.color": "#4ceb42",
   "workbench.colorCustomizations": {
-    "activityBar.activeBackground": "#78f070",
-    "activityBar.activeBorder": "#a6be61",
-    "activityBar.background": "#78f070",
-    "activityBar.foreground": "#15202b",
-    "activityBar.inactiveForeground": "#15202b99",
-    "activityBarBadge.background": "#6f77f0",
-    "activityBarBadge.foreground": "#15202b",
-    "sash.hoverBorder": "#78f070",
-    "statusBar.background": "#4ceb42",
-    "statusBar.foreground": "#15202b",
-    "statusBarItem.hoverBackground": "#24e218",
-    "statusBarItem.remoteBackground": "#4ceb42",
-    "statusBarItem.remoteForeground": "#15202b"
+    "activityBar.activeBorder": "#a6be61"
   },
   "cSpell.words": [
     "validointi",
