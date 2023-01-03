@@ -8,7 +8,7 @@
     "build": "wireit",
     "build:demo": "wireit",
     "build:lib": "wireit",
-    "postbuild:lib": "wireit",
+    "build:schematics": "wireit",
     "test:lib": "wireit",
     "test:app": "wireit",
     "test": "wireit",
@@ -29,11 +29,8 @@
         "angular.json"
       ]
     },
-    "postbuild:lib": {
+    "build:schematics": {
       "command": "npx tsc -p projects/validointi/core/tsconfig.schematics.json",
-      "dependencies": [
-        "build:lib"
-      ],
       "output": [
         "dist/validate/**/*.*"
       ],
@@ -60,6 +57,7 @@
     "build": {
       "dependencies": [
         "build:lib",
+        "build:schematics",
         "build:demo"
       ]
     },
