@@ -8,6 +8,7 @@
     "build": "wireit",
     "build:demo": "wireit",
     "build:lib": "wireit",
+    "postbuild:lib": "wireit",
     "test:lib": "wireit",
     "test:app": "wireit",
     "test": "wireit",
@@ -26,6 +27,19 @@
         "projects/validointi/core/package.json",
         "projects/validointi/core/tsconfig.lib.prod.json",
         "angular.json"
+      ]
+    },
+    "postbuild:lib": {
+      "command": "npx tsc -p projects/validointi/core/tsconfig.schematics.json",
+      "dependencies": [
+        "build:lib"
+      ],
+      "output": [
+        "dist/validate/**/*.*"
+      ],
+      "files": [
+        "projects/validointi/core/src/lib/schematics/**/*.*",
+        "projects/validointi/core/src/lib/schematics/collection.json"
       ]
     },
     "build:demo": {

@@ -29,5 +29,6 @@
     "form",
     "template",
     "model"
-  ]
+  ],
+  "schematics": "./schematics/collection.json"
 }
