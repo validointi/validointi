@@ -35,8 +35,8 @@
         "dist/validate/**/*.*"
       ],
       "files": [
-        "projects/validointi/core/src/lib/schematics/**/*.*",
-        "projects/validointi/core/src/lib/schematics/collection.json"
+        "projects/validointi/core/schematics/**/*.*",
+        "projects/validointi/core/schematics/collection.json"
       ]
     },
     "build:demo": {
