@@ -37,6 +37,9 @@
       "files": [
         "projects/validointi/core/schematics/**/*.*",
         "projects/validointi/core/schematics/collection.json"
+      ],
+      "dependencies": [
+        "build:lib"
       ]
     },
     "build:demo": {
