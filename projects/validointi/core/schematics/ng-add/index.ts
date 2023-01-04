@@ -8,7 +8,7 @@ import { addPackageToPackageJson } from '../utils';
  */
 export function ngAdd(): Rule {
   return (tree: Tree, context: SchematicContext) => {
-    addPackageToPackageJson(tree, '@validointi/core', '^1.1.0');
+    addPackageToPackageJson(tree, '@validointi/core', 'latest');
     context.addTask(new NodePackageInstallTask());
     context.logger.info(`@validointi/core is installed`);
     return tree;
