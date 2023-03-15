@@ -11,8 +11,6 @@
 # @validointi/core
 
 This is a library to help you validate your template driven forms.
-Its currently in BETA, use at yor own risk.
-The reason its still in BETA is because we are still extending the functionality, and there is only little documentation.
 
 ## Installation
 
