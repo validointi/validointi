@@ -85,9 +85,7 @@ export class ValidatorDirective implements OnInit, OnDestroy {
     subscribeOn(asyncScheduler),
     debounceTime(this.#debounceTime),
     /** revalidate the entire form. if an field is added with invalid content, the form needs to be reexamined now. */
-    tap(()=> console.log('form changed')),
     tap(() => this.validate()),
-    finalize(() => console.log('formChanges completed')),
   ));
 
   /** helper to validate the whole form at once */
@@ -96,7 +94,6 @@ export class ValidatorDirective implements OnInit, OnDestroy {
     const { validatorFn } = await firstValueFrom(this.#state$)
     const { controlList, formValue } = this.getFormData();
     const errors = await validatorFn?.(formValue);
-    console.log('errors', errors, formValue);
     if (Object.keys(errors || {}).length) {
       for (const [key, control] of controlList as [keyof Model, VldtniAbstractControl][]) {
         if (control.enabled) {
@@ -164,12 +161,10 @@ export class ValidatorDirective implements OnInit, OnDestroy {
 
   /** subscribe to each model separate, when your validations are too slow otherwise. */
   #perControlValidation = this.#zone.runOutsideAngular(() => this.#formChanges.pipe(
-    // subscribeOn(asyncScheduler),
     switchMap(() => merge(
       ...flattenControls(this.#form)
         .filter(([_, ctrl]) => !isContainer(ctrl)) // only validate the leafs
         .map(([name, control]) => control.valueChanges.pipe(
-          // tap((v) => console.log(`[validointi] ${name} changed to ${v}`)), // leave this in, can be useful for debugging
           map(() => ({ control, key: name })),
         ))
     )),
