@@ -1,6 +1,6 @@
 # @validointi/core
 
-This is a library to help you validate your template driven forms.
+This is a library to help you validate your template driven forms and seperate validation logic from your ui logic
 
 ## Installation
 
