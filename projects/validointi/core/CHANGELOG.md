@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.0](https://github.com/validointi/validointi/compare/core-v1.2.0...core-v1.3.0) (2023-07-19)
+
+
+### Features
+
+* update docs for release ([72202a2](https://github.com/validointi/validointi/commit/72202a2d7402457335c9ea16db60564bd7fbe8f9))
+
 ## [1.2.0](https://github.com/validointi/validointi/compare/core-v1.1.0...core-v1.2.0) (2023-01-04)
 
 
