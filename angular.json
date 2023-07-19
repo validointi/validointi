@@ -124,7 +124,7 @@
           "builder": "@angular-builders/jest:run",
           "options": {
             "passWithNoTests": true,
-            "tsConfig": "tsconfig.spec.json"
+            "tsConfig": "projects/validointi/core/tsconfig.spec.json"
           }
         },
         "lint": {
