@@ -7,8 +7,8 @@
     "url": "https://github.com/validointi/validointi/tree/main/projects/validointi/core"
   },
   "peerDependencies": {
-    "@angular/common": "^15.2.2",
-    "@angular/core": "^15.2.2"
+    "@angular/common": "^16.1.5",
+    "@angular/core": "^16.1.5"
   },
   "dependencies": {
     "tslib": "^2.4.1"
