@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.0](https://github.com/validointi/validointi/compare/core-v1.3.0...core-v1.4.0) (2023-07-20)
+
+
+### Features
+
+* update to angular v16([#70](https://github.com/validointi/validointi/issues/70)) ([0cab213](https://github.com/validointi/validointi/commit/0cab213c4755bc8e2de489ee318b6bc3c98167b9))
+
 ## [1.3.0](https://github.com/validointi/validointi/compare/core-v1.2.0...core-v1.3.0) (2023-07-19)
 
 
