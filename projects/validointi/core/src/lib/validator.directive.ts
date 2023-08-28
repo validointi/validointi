@@ -8,7 +8,7 @@ import {
   OnDestroy,
   OnInit,
 } from '@angular/core';
-import { ControlContainer, FormArray, FormGroup, NgForm } from '@angular/forms';
+import { NgForm } from '@angular/forms';
 import {
   asyncScheduler,
   BehaviorSubject,
@@ -31,9 +31,10 @@ import { ValidatorRegistryService } from './validatorsRegistry.service';
 import {
   currentError,
   relatedFields,
-  vldtniAbstractControl,
   VldtniAbstractControl,
 } from './VldtiAbstractControl';
+import { flattenControls } from './utils/flattenControls';
+import { isContainer } from './utils/isContainer';
 
 @Directive({
   // eslint-disable-next-line @angular-eslint/directive-selector
@@ -133,9 +134,9 @@ export class ValidatorDirective implements OnInit, OnDestroy {
       ][]) {
         if (control.enabled) {
           if (errors[key]) {
-            const errMsg = errToMsg(errors[key] as any);
-            control[currentError] = { [key]: errMsg };
-            control.setErrors({ [key]: errMsg });
+            const errs = errors[key];
+            control[currentError] = { [key]: errs };
+            control.setErrors({ [key]: errs });
           } else {
             control.setErrors(null);
             control[currentError] = null;
@@ -190,10 +191,10 @@ export class ValidatorDirective implements OnInit, OnDestroy {
         return;
       }
       if (errKeys.includes(checkKey)) {
-        const errMsg = errToMsg(errors[checkKey] as any);
+        const errs = errors[checkKey];
         // set the error, and make sure it surfaces to user by setting touched and dirty
-        currentCtrl.setErrors({ [checkKey]: errMsg });
-        currentCtrl[currentError] = { [checkKey]: errMsg };
+        currentCtrl.setErrors({ [checkKey]: errs });
+        currentCtrl[currentError] = { [checkKey]: errs };
         related.add(checkKey);
       } else {
         /** clear the error, and remove from list */
@@ -263,40 +264,4 @@ export class ValidatorDirective implements OnInit, OnDestroy {
   }
 }
 
-function errToMsg(err: string | string[]): string {
-  if (typeof err === 'string') {
-    return err;
-  }
-  return err.join('\n');
-}
-
-function isContainer(control: any): control is ControlContainer {
-  return control instanceof FormGroup || control instanceof FormArray;
-}
-
-function isVldtniControl(control: any): control is VldtniAbstractControl {
-  return control.hasOwnProperty(vldtniAbstractControl);
-}
-
-type ControlList = [string, VldtniAbstractControl][];
-
-function flattenControls(
-  container: FormGroup | NgForm,
-  preKey = '',
-  result: ControlList = []
-): ControlList {
-  if (container instanceof NgForm) {
-    return flattenControls(container.form, preKey, result);
-  }
-  for (const [key, control] of Object.entries(container.controls)) {
-    const fieldKey = `${preKey}${key}`;
-    if (result.findIndex(([k]) => k === fieldKey) !== -1) {
-      console.warn(`[validointi] duplicate name "${fieldKey}" found!`);
-    }
-    result.push([fieldKey, control as VldtniAbstractControl]);
-    if (control instanceof FormGroup) {
-      flattenControls(control, `${fieldKey}.`, result);
-    }
-  }
-  return result;
-}
+export type ControlList = [string, VldtniAbstractControl][];
