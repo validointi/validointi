@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.4.1](https://github.com/validointi/validointi/compare/core-v1.4.0...core-v1.4.1) (2023-08-28)
+
+
+### Bug Fixes
+
+* formatting using prettier, including settings ([#75](https://github.com/validointi/validointi/issues/75)) ([ceeec43](https://github.com/validointi/validointi/commit/ceeec4314b3f738a32bc3355a7e58ef7a940e4da))
+* non string error support ([#73](https://github.com/validointi/validointi/issues/73)) ([34c2806](https://github.com/validointi/validointi/commit/34c28064a10cdd1aeeed1a1552c61018a7a0c961))
+
 ## [1.4.0](https://github.com/validointi/validointi/compare/core-v1.3.0...core-v1.4.0) (2023-07-20)
 
 ### Features
