@@ -8,12 +8,8 @@
     "inlineSources": true,
     "types": []
   },
-  "exclude": [
-    "**/*.spec.ts"
-  ],
+  "exclude": ["**/*.spec.ts"],
   "paths": {
-    "validate": [
-      "./src/index.ts"
-    ]
+    "validate": ["./src/index.ts"]
   }
 }

@@ -10,7 +10,7 @@ import exp from 'constants';
 @Component({
   template: '<form validationId="testdata"></form>',
   standalone: true,
-  imports: [ FormsModule],
+  imports: [FormsModule],
 })
 export class SimpleComponent {
   service = inject(ValidatorRegistryService);

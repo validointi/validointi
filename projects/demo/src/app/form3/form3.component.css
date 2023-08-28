@@ -25,8 +25,7 @@ fieldset {
   gap: var(--size-3);
 }
 
-  button.action {
-  right: .6rem;
+button.action {
+  right: 0.6rem;
   top: -1.93rem;
 }
-

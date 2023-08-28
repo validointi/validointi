@@ -6,21 +6,18 @@ import { ValidationErrorHookUpDirective } from '../../form1/validationErrorHookU
 @Component({
   selector: 'label[tag][index]',
   standalone: true,
-  imports: [FormsModule, ValidationErrorHookUpDirective, VldntiControlDirective ],
+  imports: [FormsModule, ValidationErrorHookUpDirective, VldntiControlDirective],
   template: `
-      <span>Tag-{{index}}</span>
-      <input
-        type="text"
-        [name]="'tags[' + index + ']'"
-        placeholder="Your tag"
-        [(ngModel)]="tag"
-      />
+    <span>Tag-{{ index }}</span>
+    <input type="text" [name]="'tags[' + index + ']'" placeholder="Your tag" [(ngModel)]="tag" />
   `,
-  styles: [`
-  :host {
-    display: label;
-  }
-  `],
+  styles: [
+    `
+      :host {
+        display: label;
+      }
+    `,
+  ],
   viewProviders: [{ provide: ControlContainer, useExisting: NgForm }],
 })
 export class Form3TagsComponent {

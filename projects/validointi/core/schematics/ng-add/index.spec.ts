@@ -4,10 +4,7 @@ import * as path from 'path';
 describe('validointi', () => {
   const collectionPath = path.join(__dirname, '../collection.json');
   let appTree: Tree;
-  const runner: SchematicTestRunner = new SchematicTestRunner(
-    'schematics',
-    collectionPath
-  );
+  const runner: SchematicTestRunner = new SchematicTestRunner('schematics', collectionPath);
   const defaultOptions = {};
 
   beforeEach(async () => {

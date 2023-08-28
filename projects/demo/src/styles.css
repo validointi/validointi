@@ -1,9 +1,9 @@
 /* the props */
-@import "open-props/style";
+@import 'open-props/style';
 
 /* optional imports that use the props */
-@import "open-props/normalize";
-@import "open-props/buttons";
+@import 'open-props/normalize';
+@import 'open-props/buttons';
 
 :where(fieldset):has(*.ng-invalid) {
   border-color: var(--red-5);
@@ -20,16 +20,15 @@
   background-color: inherit;
 }
 :where(.ng-invalid):not(fieldset).ng-touched:not(form) {
-  background-color: var(--red-2)
+  background-color: var(--red-2);
 }
-
 
 :where(button).action {
   position: absolute;
   border-radius: 50%;
   aspect-ratio: 1;
   background-color: var(--surface-3);
-  top:  0;
+  top: 0;
   right: 0;
   margin: 0;
 }

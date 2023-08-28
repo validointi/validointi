@@ -5,7 +5,7 @@ const mergeObjects = (target: any = {}, source: any) => {
       target[key] ??= [];
       source[key].forEach((item: any, index: number) => {
         if (item instanceof Object) {
-          mergeObjects(target[key][index] ??= (Array.isArray(item) ? [] : {}), item);
+          mergeObjects((target[key][index] ??= Array.isArray(item) ? [] : {}), item);
         } else {
           target[key][index] = item;
         }

@@ -70,8 +70,7 @@ async function checkValueOnEndpoint(item: any) {
     id: index,
     name: person.name,
   }));
-  const hasError =
-    results.filter((person) => person.name === item).length === 0;
+  const hasError = results.filter((person) => person.name === item).length === 0;
   if (hasError) {
     throw new Error('Figure is not on the list');
   }

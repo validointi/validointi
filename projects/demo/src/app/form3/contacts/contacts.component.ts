@@ -9,18 +9,21 @@ import { ContactComponent } from './contact/contact.component';
   standalone: true,
   imports: [CommonModule, ContactComponent, FormsModule],
   template: `
-    <app-contact *ngFor="let contact of contacts; let i=index" [contact]="contact" (delete)="delete(contact)" ngModelGroup="{{''+i}}"></app-contact>
-    <button class="action" (click)="add($event)"  title="Add contact point">➕</button>
+    <app-contact
+      *ngFor="let contact of contacts; let i = index"
+      [contact]="contact"
+      (delete)="delete(contact)"
+      ngModelGroup="{{ '' + i }}"
+    ></app-contact>
+    <button class="action" (click)="add($event)" title="Add contact point">➕</button>
   `,
   styleUrls: ['./contacts.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   /** use DI to hook up the controls to the form, This is due to a bug in NG */
   viewProviders: [{ provide: ControlContainer, useExisting: NgModelGroup }],
-
 })
 export class ContactsComponent {
   @Input() contacts!: SampleDataContactDetail[];
-
 
   delete(contact: SampleDataContactDetail) {
     this.contacts.splice(this.contacts.indexOf(contact), 1);
@@ -30,9 +33,8 @@ export class ContactsComponent {
     this.contacts.push({
       type: SampleDataContactDetailType.Email,
       value: ' ',
-      priority: 0
+      priority: 0,
     });
     ev.preventDefault();
   }
-
 }

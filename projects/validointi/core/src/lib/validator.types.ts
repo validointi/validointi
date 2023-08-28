@@ -2,10 +2,7 @@ export interface Model {
   [key: string]: any;
 }
 
-export type ValidationFormatter = <T extends Object>(
-  data: T,
-  errors: string | string[]
-) => string;
+export type ValidationFormatter = <T extends Object>(data: T, errors: string | string[]) => string;
 
 export interface ValidationErrors {
   [key: string]: unknown;
