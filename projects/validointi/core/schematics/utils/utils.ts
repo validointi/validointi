@@ -1,11 +1,7 @@
 import { SchematicsException, Tree } from '@angular-devkit/schematics';
 
 /** Adds a package to the package.json in the given host tree. */
-export function addPackageToPackageJson(
-  host: Tree,
-  pkg: string,
-  version: string
-): Tree {
+export function addPackageToPackageJson(host: Tree, pkg: string, version: string): Tree {
   if (host.exists('package.json')) {
     const sourceText = host.read('package.json')!.toString('utf-8');
     const json = JSON.parse(sourceText);
@@ -32,8 +28,11 @@ export function addPackageToPackageJson(
 function sortObjectByKeys(obj: Record<string, string>) {
   return Object.keys(obj)
     .sort()
-    .reduce((result, key) => {
-      result[key] = obj[key];
-      return result;
-    }, {} as Record<string, string>);
+    .reduce(
+      (result, key) => {
+        result[key] = obj[key];
+        return result;
+      },
+      {} as Record<string, string>
+    );
 }

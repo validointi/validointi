@@ -19,19 +19,12 @@
     "importHelpers": true,
     "target": "ES2022",
     "module": "es2020",
-    "lib": [
-      "es2020",
-      "dom"
-    ],
+    "lib": ["es2020", "dom"],
     "allowJs": true,
     "allowSyntheticDefaultImports": true,
     "paths": {
-      "@validointi/core": [
-        "dist/validointi/core"
-      ],
-      "@validointi/*": [
-        "dist/validointi/core/*"
-      ]
+      "@validointi/core": ["dist/validointi/core"],
+      "@validointi/*": ["dist/validointi/core/*"]
     },
     "useDefineForClassFields": false
   },

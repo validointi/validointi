@@ -33,14 +33,11 @@ export class ValidationErrorHookUpDirective implements OnDestroy {
       this.#cdr.detectChanges();
       this.lastState = status;
     }
-  }
+  };
 
-  #sub = this.#model.statusChanges?.pipe(
-    tap(this.#change)
-  ).subscribe();
+  #sub = this.#model.statusChanges?.pipe(tap(this.#change)).subscribe();
 
   ngOnDestroy(): void {
     this.#sub?.unsubscribe();
   }
-
 }

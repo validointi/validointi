@@ -8,12 +8,7 @@ import { ValidationErrorHookUpDirective } from './validationErrorHookUp.directiv
 @Component({
   selector: 'app-form1',
   standalone: true,
-  imports: [
-    CommonModule,
-    [vldntiDirectives],
-    FormsModule,
-    ValidationErrorHookUpDirective,
-  ],
+  imports: [CommonModule, [vldntiDirectives], FormsModule, ValidationErrorHookUpDirective],
   templateUrl: './form1.component.html',
   styleUrls: ['./form1.component.css'],
 })

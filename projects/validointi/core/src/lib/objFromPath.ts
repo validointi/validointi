@@ -9,9 +9,14 @@ export const objFromPath = <T>(path: string, value?: unknown): T => {
   if (path.includes('..')) {
     throw new Error(`[@validointi] Invalid path: "${path}", it contains two dots in a row`);
   }
-  const parts = path.split(/[\[\]\.]/).filter((p) => p).reverse(); //?
-  if (parts.some(p => p.trim()  === '')) {
-    throw new Error(`[@validointi] Invalid path: "${path}", should not contain whitespace between the dots or brackets`);
+  const parts = path
+    .split(/[\[\]\.]/)
+    .filter((p) => p)
+    .reverse(); //?
+  if (parts.some((p) => p.trim() === '')) {
+    throw new Error(
+      `[@validointi] Invalid path: "${path}", should not contain whitespace between the dots or brackets`
+    );
   }
   if (parts.length === 0) {
     throw new Error(`[@validointi] Invalid path: a path can not be empty`);
@@ -25,4 +30,4 @@ export const objFromPath = <T>(path: string, value?: unknown): T => {
     newArr[index] = acc;
     return newArr;
   }, value) as T;
-}
+};

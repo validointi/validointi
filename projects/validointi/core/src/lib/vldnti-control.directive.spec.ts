@@ -7,13 +7,13 @@ import { VldntiControlDirective } from './vldnti-control.directive';
 
 @Component({
   template: `<form validationId="testdata">
-    <input type="text" name="test" [(ngModel)]='test' />
+    <input type="text" name="test" [(ngModel)]="test" />
   </form>`,
   standalone: true,
-  imports: [FormsModule,VldntiControlDirective, ValidatorDirective],
+  imports: [FormsModule, VldntiControlDirective, ValidatorDirective],
 })
 export class SimpleComponent {
-  test = "world";
+  test = 'world';
   service = inject(ValidatorRegistryService);
   validate = this.service.registerValidator('testdata', async () => {
     return {} as ValidationErrors;

@@ -23,5 +23,6 @@ label > *:nth-child(2) {
   background-color: inherit;
 }
 .ng-invalid.ng-dirty:not(form) {
-  background-color: var(--red-2)
+  background-color: var(--red-2);
+  color: black;
 }

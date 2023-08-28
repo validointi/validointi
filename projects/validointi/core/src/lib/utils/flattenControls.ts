@@ -2,11 +2,7 @@ import { FormGroup, NgForm } from '@angular/forms';
 import { VldtniAbstractControl } from '../VldtiAbstractControl';
 import { ControlList } from '../validator.directive';
 
-export function flattenControls(
-  container: FormGroup | NgForm,
-  preKey = '',
-  result: ControlList = []
-): ControlList {
+export function flattenControls(container: FormGroup | NgForm, preKey = '', result: ControlList = []): ControlList {
   if (container instanceof NgForm) {
     return flattenControls(container.form, preKey, result);
   }

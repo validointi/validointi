@@ -2,7 +2,7 @@
   display: block;
   margin: 0 0 20px 0;
   position: relative;
-  min-height: 2rem;;
+  min-height: 2rem;
 }
 
 /** don't show background color when host is invalid, we handle that on leaf nodes */
@@ -11,7 +11,6 @@
 }
 
 button {
-  right: -.4rem;
+  right: -0.4rem;
   top: -3rem;
 }
-

@@ -1,10 +1,5 @@
-import {
-  vldtniAbstractControl,
-  VldtniAbstractControl,
-} from '../VldtiAbstractControl';
+import { vldtniAbstractControl, VldtniAbstractControl } from '../VldtiAbstractControl';
 
-export function isVldtniControl(
-  control: any
-): control is VldtniAbstractControl {
+export function isVldtniControl(control: any): control is VldtniAbstractControl {
   return control.hasOwnProperty(vldtniAbstractControl);
 }

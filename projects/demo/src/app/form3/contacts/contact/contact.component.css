@@ -1,8 +1,8 @@
 :host {
   display: flex;
   width: 100%;
-  gap: .5rem;
-  margin-top: .5rem;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
 }
 
 select {
@@ -13,7 +13,7 @@ button {
   background-color: var(--surface-2);
 }
 
-input[type=number] {
+input[type='number'] {
   width: 3rem;
 }
 

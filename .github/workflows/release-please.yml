@@ -14,7 +14,7 @@ jobs:
         id: release
         with:
           release-type: node
-          package-name: "@validonti/core"
+          package-name: '@validonti/core'
           command: manifest
       # The logic below handles the npm publication:
       - uses: actions/checkout@v2

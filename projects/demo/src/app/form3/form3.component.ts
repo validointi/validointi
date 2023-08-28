@@ -18,7 +18,7 @@ import { Form3TagsComponent } from './form3-tags/form3-tags.component';
     FormsModule,
     ValidationErrorHookUpDirective,
     Form3TagsComponent,
-    ContactsComponent
+    ContactsComponent,
   ],
   templateUrl: './form3.component.html',
   styleUrls: ['./form3.component.css'],
@@ -29,10 +29,10 @@ export class Form3Component {
   fieldValidation = true;
 
   submit(data: SampleData) {
-    console.table(data)
+    console.table(data);
     this.#sds
       .save(data)
-      .catch((e): void => { })
+      .catch((e): void => {})
       .then(() => console.info('Yes!'));
   }
 

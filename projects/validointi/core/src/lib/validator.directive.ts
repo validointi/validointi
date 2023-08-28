@@ -1,13 +1,4 @@
-import {
-  Directive,
-  ElementRef,
-  inject,
-  Input,
-  isDevMode,
-  NgZone,
-  OnDestroy,
-  OnInit,
-} from '@angular/core';
+import { Directive, ElementRef, inject, Input, isDevMode, NgZone, OnDestroy, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import {
   asyncScheduler,
@@ -28,11 +19,7 @@ import { mergeObjects } from './ObjectFromRawFormValue';
 import { objFromPath } from './objFromPath';
 import { Model, ValidationId, Validator } from './validator.types';
 import { ValidatorRegistryService } from './validatorsRegistry.service';
-import {
-  currentError,
-  relatedFields,
-  VldtniAbstractControl,
-} from './VldtiAbstractControl';
+import { currentError, relatedFields, VldtniAbstractControl } from './VldtiAbstractControl';
 import { flattenControls } from './utils/flattenControls';
 import { isContainer } from './utils/isContainer';
 
@@ -128,10 +115,7 @@ export class ValidatorDirective implements OnInit, OnDestroy {
     const { controlList, formValue } = this.getFormData();
     const errors = await validatorFn?.(formValue);
     if (Object.keys(errors || {}).length) {
-      for (const [key, control] of controlList as [
-        keyof Model,
-        VldtniAbstractControl
-      ][]) {
+      for (const [key, control] of controlList as [keyof Model, VldtniAbstractControl][]) {
         if (control.enabled) {
           if (errors[key]) {
             const errs = errors[key];
@@ -161,13 +145,7 @@ export class ValidatorDirective implements OnInit, OnDestroy {
    * helper to validate a single control.
    * it will make sure that related fields are also updated in the view
    */
-  #validateField = async ({
-    key,
-    control,
-  }: {
-    key: string;
-    control: VldtniAbstractControl;
-  }) => {
+  #validateField = async ({ key, control }: { key: string; control: VldtniAbstractControl }) => {
     control.markAsPending();
     const { validatorFn } = await firstValueFrom(this.#state$);
     const { formEntries, formValue } = this.getFormData();
@@ -180,9 +158,7 @@ export class ValidatorDirective implements OnInit, OnDestroy {
       const currentCtrl = formEntries[checkKey] as VldtniAbstractControl;
       if (currentCtrl === undefined) {
         if (isDevMode()) {
-          console.warn(
-            `[validointi] validated "${checkKey}" "${key}", but this doesn't seem to exists in this form!`
-          );
+          console.warn(`[validointi] validated "${checkKey}" "${key}", but this doesn't seem to exists in this form!`);
         }
         return;
       }
@@ -213,9 +189,7 @@ export class ValidatorDirective implements OnInit, OnDestroy {
         merge(
           ...flattenControls(this.#form)
             .filter(([_, ctrl]) => !isContainer(ctrl)) // only validate the leafs
-            .map(([name, control]) =>
-              control.valueChanges.pipe(map(() => ({ control, key: name })))
-            )
+            .map(([name, control]) => control.valueChanges.pipe(map(() => ({ control, key: name }))))
         )
       ),
       debounceTime(this.#debounceTime),
@@ -228,8 +202,7 @@ export class ValidatorDirective implements OnInit, OnDestroy {
     const formEntries = Object.fromEntries(controlList);
     const leafControls = controlList.filter(([_, ctrl]) => !isContainer(ctrl));
     const formValue = leafControls.reduce(
-      (acc, [path, control]) =>
-        mergeObjects(acc, objFromPath(path as string, control.value)),
+      (acc, [path, control]) => mergeObjects(acc, objFromPath(path as string, control.value)),
       {}
     ) as Model;
     return { controlList, formEntries, formValue };
@@ -245,9 +218,7 @@ export class ValidatorDirective implements OnInit, OnDestroy {
           )
         ),
         switchMap((validateOnFieldChanges) =>
-          validateOnFieldChanges
-            ? this.#perControlValidation
-            : this.#fullFormValidation
+          validateOnFieldChanges ? this.#perControlValidation : this.#fullFormValidation
         )
       )
       .subscribe()

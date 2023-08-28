@@ -30,10 +30,7 @@
             "main": "projects/demo/src/main.ts",
             "polyfills": "projects/demo/src/polyfills.ts",
             "tsConfig": "projects/demo/tsconfig.app.json",
-            "assets": [
-              "projects/demo/src/favicon.ico",
-              "projects/demo/src/assets"
-            ],
+            "assets": ["projects/demo/src/favicon.ico", "projects/demo/src/assets"],
             "stylePreprocessorOptions": {
               "includePaths": ["../node_modules/"]
             },
@@ -132,10 +129,7 @@
           "options": {
             "cache": true,
             "cacheLocation": ".eslintcache",
-            "lintFilePatterns": [
-              "projects/validointi/core/**/*.ts",
-              "projects/validointi/core/**/*.html"
-            ]
+            "lintFilePatterns": ["projects/validointi/core/**/*.ts", "projects/validointi/core/**/*.html"]
           }
         }
       }

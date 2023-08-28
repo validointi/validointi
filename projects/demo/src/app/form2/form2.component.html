@@ -1,10 +1,6 @@
 <ng-container *ngIf="data$ | async as data">
   <ng-container *ngIf="starwars$ | async as starwars; else loading">
-    <form
-      (ngSubmit)="submit($any(data))"
-      #form="ngForm"
-      validationId="sample-data2"
-    >
+    <form (ngSubmit)="submit($any(data))" #form="ngForm" validationId="sample-data2">
       <input type="hidden" name="id" [(ngModel)]="data.id" />
       <label>
         <span>Select a starwars</span>
@@ -15,12 +11,7 @@
       </label>
       <label>
         <span>Some other thing here</span>
-        <input
-          type="email"
-          name="email"
-          placeholder="Your email"
-          [(ngModel)]="data.email"
-        />
+        <input type="email" name="email" placeholder="Your email" [(ngModel)]="data.email" />
       </label>
       <input type="submit" value="Submit" [disabled]="form.invalid" />
       <button type="reset">Reset</button>
