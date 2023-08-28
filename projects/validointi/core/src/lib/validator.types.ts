@@ -8,7 +8,7 @@ export type ValidationFormatter = <T extends Object>(
 ) => string;
 
 export interface ValidationErrors {
-  [key: string]: undefined | string | string[] | ValidationFormatter;
+  [key: string]: unknown;
 }
 
 export type ValidationId = string;

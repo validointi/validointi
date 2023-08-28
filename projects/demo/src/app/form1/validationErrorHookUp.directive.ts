@@ -25,9 +25,7 @@ export class ValidationErrorHookUpDirective implements OnDestroy {
       this.#elm.title = '';
     }
     /**
-     * Make sure the ui is updated,
-     * but only when there is an invalid state!
-     * when the state is valid, the ui is updated by the form itself.
+     * Make sure the ui is updated when the status changes
      */
     if (status !== this.lastState) {
       this.#model.control.markAllAsTouched();

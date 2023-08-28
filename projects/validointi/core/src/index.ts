@@ -3,25 +3,31 @@
  */
 
 import { ValidatorRegistryService } from './lib/validatorsRegistry.service';
-//TODO: make sure we import this as _types_
-import { vldntiDirectives } from './lib/directives';
 import { ObjectFromRawFormValue } from './lib/ObjectFromRawFormValue';
-import { ValidatorDirective } from './lib/validator.directive';
-import type { Model, ValidationErrors, ValidationFormatter, ValidationId } from './lib/validator.types';
-import { VldntiControlDirective } from './lib/vldnti-control.directive';
-import { createVestAdapter } from './lib/vestAdapter';
+import { vldntiDirectives } from './lib/directives';
 import { createJoiAdapter } from './lib/joiAdapter';
-
-export {
-  ValidatorRegistryService,
-  ValidatorDirective,
-  VldntiControlDirective,
+import { isVldtniControl } from './lib/utils/isVldtniControl';
+import { ValidatorDirective } from './lib/validator.directive';
+import type {
   Model,
   ValidationErrors,
   ValidationFormatter,
   ValidationId,
+} from './lib/validator.types';
+import { createVestAdapter } from './lib/vestAdapter';
+import { VldntiControlDirective } from './lib/vldnti-control.directive';
+
+export {
+  Model,
   ObjectFromRawFormValue,
-  createVestAdapter,
+  ValidationErrors,
+  ValidationFormatter,
+  ValidationId,
+  ValidatorDirective,
+  ValidatorRegistryService,
+  VldntiControlDirective,
   createJoiAdapter,
-  vldntiDirectives
+  createVestAdapter,
+  isVldtniControl,
+  vldntiDirectives,
 };
