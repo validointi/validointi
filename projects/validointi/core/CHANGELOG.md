@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.2](https://github.com/validointi/validointi/compare/core-v1.4.1...core-v1.4.2) (2023-11-15)
+
+
+### Bug Fixes
+
+* :package: dont error on V17/18 ([#77](https://github.com/validointi/validointi/issues/77)) ([1a02ec6](https://github.com/validointi/validointi/commit/1a02ec688cf32c4edb0a672a3ef46a9d6f75a2cf))
+
 ## [1.4.1](https://github.com/validointi/validointi/compare/core-v1.4.0...core-v1.4.1) (2023-08-28)
 
 
