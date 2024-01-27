@@ -19,7 +19,8 @@
         "code",
         "doc",
         "example",
-        "tool"
+        "tool",
+        "maintenance"
       ]
     },
     {
