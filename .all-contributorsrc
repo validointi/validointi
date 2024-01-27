@@ -31,7 +31,8 @@
       "contributions": [
         "code",
         "doc",
-        "example"
+        "example",
+        "maintenance"
       ]
     }
   ],
