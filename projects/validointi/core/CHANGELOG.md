@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.5.0](https://github.com/validointi/validointi/compare/core-v1.4.2...core-v1.5.0) (2024-03-02)
+
+
+### Features
+
+* **utils:** :sparkles: add abillity to handle dates in forms ([17abafb](https://github.com/validointi/validointi/commit/17abafb770fc8781970cbacc86d5c01e192ee4a1))
+
 ## [1.4.2](https://github.com/validointi/validointi/compare/core-v1.4.1...core-v1.4.2) (2023-11-15)
 
 
