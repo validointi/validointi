@@ -15,5 +15,13 @@
     "statusBarItem.remoteBackground": "#4ceb42",
     "statusBarItem.remoteForeground": "#15202b"
   },
-  "cSpell.words": ["validointi", "vldnti", "Vldnti", "vldtni"]
+  "cSpell.words": [
+    "validointi",
+    "vldnti",
+    "Vldnti",
+    "vldtni"
+  ],
+  "conventionalCommits.scopes": [
+    "utils"
+  ]
 }

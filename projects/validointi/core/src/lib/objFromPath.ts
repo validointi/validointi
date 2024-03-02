@@ -12,7 +12,7 @@ export const objFromPath = <T>(path: string, value?: unknown): T => {
   const parts = path
     .split(/[\[\]\.]/)
     .filter((p) => p)
-    .reverse(); //?
+    .reverse();
   if (parts.some((p) => p.trim() === '')) {
     throw new Error(
       `[@validointi] Invalid path: "${path}", should not contain whitespace between the dots or brackets`
