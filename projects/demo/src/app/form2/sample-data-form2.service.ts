@@ -72,9 +72,10 @@ async function checkValueOnEndpoint(item: any) {
   }));
   const hasError = results.filter((person) => person.name === item).length === 0;
   if (hasError) {
-    throw new Error('Figure is not on the list');
+    /** this will reject the promise */
+    throw new Error('Person is not on the list');
   }
-  return Promise.resolve(hasError.toString());
+  /** Everything is ok! Doing nothing here will return undefined */
 }
 
 export interface StarwarsDTO {
