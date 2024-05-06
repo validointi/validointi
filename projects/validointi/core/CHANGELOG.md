@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.0](https://github.com/validointi/validointi/compare/core-v1.5.0...core-v1.6.0) (2024-05-06)
+
+
+### Features
+
+* support vest 5 ([#89](https://github.com/validointi/validointi/issues/89)) ([2c61729](https://github.com/validointi/validointi/commit/2c61729fbdcdd47dec2e43342b145254790cc1dd)), closes [#91](https://github.com/validointi/validointi/issues/91)
+
 ## [1.5.0](https://github.com/validointi/validointi/compare/core-v1.4.2...core-v1.5.0) (2024-03-02)
 
 
