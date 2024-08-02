@@ -7,8 +7,13 @@
     "emitDecoratorMetadata": true,
     "outDir": "../../out-tsc/spec",
     "module": "ES2022",
-    "types": ["mocha", "node"]
+    "types": [
+      "node"
+    ]
   },
   "files": [],
-  "include": ["**/*.spec.ts", "**/*.d.ts"]
+  "include": [
+    "**/*.spec.ts",
+    "**/*.d.ts"
+  ]
 }

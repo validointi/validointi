@@ -29,9 +29,7 @@
               "base": "dist/demo"
             },
             "index": "projects/demo/src/index.html",
-            "polyfills": [
-              "projects/demo/src/polyfills.ts"
-            ],
+            "polyfills": ["projects/demo/src/polyfills.ts"],
             "tsConfig": "projects/demo/tsconfig.app.json",
             "assets": ["projects/demo/src/favicon.ico", "projects/demo/src/assets"],
             "stylePreprocessorOptions": {
@@ -89,11 +87,6 @@
           "options": {
             "buildTarget": "demo:build"
           }
-        },
-        "test": {
-          "builder": "@angular-devkit/build-angular:web-test-runner",
-          "options": {
-          }
         }
       }
     },
@@ -119,10 +112,7 @@
           "defaultConfiguration": "production"
         },
         "test": {
-          "builder": "@angular-devkit/build-angular:web-test-runner",
-          "options": {
-            "tsConfig": "./projects/validointi/core/tsconfig.spec.json"
-          }
+          "builder": "@analogjs/vitest-angular:test"
         },
         "lint": {
           "builder": "@angular-eslint/builder:lint",
