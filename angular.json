@@ -89,9 +89,8 @@
           }
         },
         "test": {
-          "builder": "@angular-builders/jest:run",
+          "builder": "@angular-devkit/build-angular:web-test-runner",
           "options": {
-            "passWithNoTests": true
           }
         }
       }
@@ -118,10 +117,9 @@
           "defaultConfiguration": "production"
         },
         "test": {
-          "builder": "@angular-builders/jest:run",
+          "builder": "@angular-devkit/build-angular:web-test-runner",
           "options": {
-            "passWithNoTests": true,
-            "tsConfig": "projects/validointi/core/tsconfig.spec.json"
+            "tsConfig": "./projects/validointi/core/tsconfig.spec.json"
           }
         },
         "lint": {
