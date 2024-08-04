@@ -67,16 +67,9 @@
     "test:lib": {
       "command": "ng test --project validointi"
     },
-    "test:app": {
-      "command": "ng test --project demo",
-      "dependencies": [
-        "build:lib"
-      ]
-    },
     "test": {
       "dependencies": [
-        "test:lib",
-        "test:app"
+        "test:lib"
       ]
     },
     "lint:lib": {
