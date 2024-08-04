@@ -1,6 +1,5 @@
-import { Directive, HostListener, inject, Input, OnInit } from '@angular/core';
+import { Directive, inject, input, OnInit } from '@angular/core';
 import { NgModel } from '@angular/forms';
-import { BehaviorSubject } from 'rxjs';
 import { ValidatorDirective } from './validator.directive';
 import { vldtniAbstractControl, VldtniAbstractControl } from './VldtiAbstractControl';
 
@@ -9,11 +8,8 @@ import { vldtniAbstractControl, VldtniAbstractControl } from './VldtiAbstractCon
   selector: '[ngModel]',
   standalone: true,
 })
-export class VldntiControlDirective implements OnInit {
-  #name$ = new BehaviorSubject('');
-  @Input() set name(name: string) {
-    this.#name$.next(name);
-  }
+export class VldntiControlDirective {
+  name = input.required<string>();
 
   validator = inject(ValidatorDirective);
   ngModel = inject(NgModel);
@@ -21,12 +17,5 @@ export class VldntiControlDirective implements OnInit {
 
   constructor() {
     this.control[vldtniAbstractControl] = true;
-  }
-
-  ngOnInit() {
-    const name = this.#name$.value;
-    if (!name) {
-      throw new Error('[Validointi]: ngModel must have a name');
-    }
   }
 }

@@ -91,7 +91,10 @@
       "dependencies": [
         "build:lib"
       ],
-      "server": true
+      "files": [
+        "dist/validointi/**/*.*"
+      ],
+      "service": true
     }
   },
   "private": true,

@@ -1,27 +1,25 @@
-import { Directive, ElementRef, inject, Input, isDevMode, NgZone, OnDestroy, OnInit } from '@angular/core';
-import { NgForm } from '@angular/forms';
 import {
-  asyncScheduler,
-  BehaviorSubject,
-  debounceTime,
-  distinctUntilChanged,
-  EMPTY,
-  firstValueFrom,
-  map,
-  merge,
-  Observable,
-  ReplaySubject,
-  subscribeOn,
-  switchMap,
-  tap,
-} from 'rxjs';
+  afterNextRender,
+  computed,
+  DestroyRef,
+  Directive,
+  effect,
+  ElementRef,
+  inject,
+  input,
+  isDevMode,
+  NgZone,
+  signal,
+} from '@angular/core';
+import { NgForm } from '@angular/forms';
+import { debounceTime, type Subscription } from 'rxjs';
 import { mergeObjects } from './ObjectFromRawFormValue';
 import { objFromPath } from './objFromPath';
-import { Model, ValidationId, Validator } from './validator.types';
-import { ValidatorRegistryService } from './validatorsRegistry.service';
-import { currentError, relatedFields, VldtniAbstractControl } from './VldtiAbstractControl';
 import { flattenControls } from './utils/flattenControls';
 import { isContainer } from './utils/isContainer';
+import { Model } from './validator.types';
+import { ValidatorRegistryService } from './validatorsRegistry.service';
+import { currentError, relatedFields, VldtniAbstractControl } from './VldtiAbstractControl';
 
 @Directive({
   // eslint-disable-next-line @angular-eslint/directive-selector
@@ -29,32 +27,19 @@ import { isContainer } from './utils/isContainer';
   standalone: true,
   exportAs: 'validointi',
 })
-export class ValidatorDirective implements OnInit, OnDestroy {
-  #state$ = new BehaviorSubject({
-    validationId: '',
-    validatorFn: undefined as unknown as Validator<any>,
-    validateOnFieldChanges: false,
-    controlList: [] as ControlList,
+export class ValidatorDirective {
+  validationId = input.required<string>();
+  validateOnFieldChanges = input(false, {
+    transform: (v: string | boolean) => v === '' || v === true,
   });
-  #refresh = new ReplaySubject<void>(1);
-  @Input() set validationId(validationId: ValidationId) {
-    const validatorFn = this.#vr.getValidator(validationId);
-    this.#state$.next({ ...this.#state$.value, validationId, validatorFn });
-  }
-  @Input() set validateOnFieldChanges(value: boolean | '') {
-    const validateOnFieldChanges = value === '' || value === true;
-    this.#state$.next({ ...this.#state$.value, validateOnFieldChanges });
-  }
-  #debounceTime = 100;
-  @Input() set vldtiDebounceTime(value: number) {
-    if (typeof value === 'number') this.#debounceTime = value;
-  }
+  vldtiDebounceTime = input(100);
+  validatorFn = computed(() => this.#vr.getValidator(this.validationId()));
 
   /** injections */
   #vr = inject(ValidatorRegistryService);
   #form = inject(NgForm);
   #elm = inject(ElementRef) as ElementRef<HTMLFormElement>;
-  #zone = inject(NgZone);
+  #des = inject(DestroyRef);
 
   /** get the complete path name of a control */
   getMyName(control: VldtniAbstractControl) {
@@ -76,70 +61,28 @@ export class ValidatorDirective implements OnInit, OnDestroy {
     }
   };
 
-  /**
-   * Use an mutationObserver to detect changes in the DOM, so we know there might be new controls to validate.
-   * emits void on start and when the number of controls changes.
-   */
-  #formChanges = this.#zone.runOutsideAngular(() =>
-    new Observable<void>((subscriber) => {
-      let lastLength = 0;
-      const observer = new MutationObserver(() => {
-        /** check the number of controls in the injected form */
-        const newLength = Object.keys(this.#form.controls).length;
-        if (lastLength !== newLength) {
-          lastLength = newLength;
-          subscriber.next(); // emit when the number of controls changes
-        }
-      });
-      observer.observe(this.#elm.nativeElement, {
-        attributes: false,
-        childList: true,
-        subtree: true,
-      });
-      subscriber.next(); //make sure we get start!
-      return () => {
-        observer.disconnect();
-      };
-    }).pipe(
-      subscribeOn(asyncScheduler),
-      debounceTime(this.#debounceTime),
-      /** revalidate the entire form. if an field is added with invalid content, the form needs to be reexamined now. */
-      tap(() => this.validate())
-    )
-  );
-
   /** helper to validate the whole form at once */
   #validateForm = async () => {
     this.#form.control.markAsPending({ onlySelf: false });
-    const { validatorFn } = await firstValueFrom(this.#state$);
     const { controlList, formValue } = this.getFormData();
-    const errors = await validatorFn?.(formValue);
-    if (Object.keys(errors || {}).length) {
-      for (const [key, control] of controlList as [keyof Model, VldtniAbstractControl][]) {
-        if (control.enabled) {
-          if (errors[key]) {
-            const errs = errors[key];
-            control[currentError] = { [key]: errs };
-            control.setErrors({ [key]: errs });
-          } else {
-            control.setErrors(null);
-            control[currentError] = null;
-          }
+    const errors = await this.validatorFn()(formValue);
+    for (const [key, control] of controlList as [keyof Model, VldtniAbstractControl][]) {
+      if (control.enabled) {
+        if (errors[key]) {
+          const errs = errors[key];
+          control[currentError] = { [key]: errs };
+          control.setErrors({ [key]: errs });
+        } else {
+          control.setErrors(null);
+          control[currentError] = null;
         }
       }
-    } else {
-      // this will clear the pending state
+    }
+    // this will clear the pending state, just in case nothing was updated
+    if (Object.entries(errors).length === 0) {
       this.#form.control.setErrors(null);
     }
   };
-
-  /** only when using full formValidation (and an actual form exits!) */
-  #fullFormValidation = this.#zone.runOutsideAngular(() =>
-    (this.#form.valueChanges || EMPTY).pipe(
-      debounceTime(this.#debounceTime), // dont fire too often
-      tap(this.#validateForm)
-    )
-  );
 
   /**
    * helper to validate a single control.
@@ -147,9 +90,9 @@ export class ValidatorDirective implements OnInit, OnDestroy {
    */
   #validateField = async ({ key, control }: { key: string; control: VldtniAbstractControl }) => {
     control.markAsPending();
-    const { validatorFn } = await firstValueFrom(this.#state$);
+    const validatorFn = this.validatorFn();
     const { formEntries, formValue } = this.getFormData();
-    const errors = await validatorFn?.(formValue, key);
+    const errors = await validatorFn(formValue, key);
     const errKeys = Object.keys(errors || {});
     const related = (control[relatedFields] ??= new Set<string>());
     related.add(key); // make sure we validate/clear this field to prevent from pending forever
@@ -182,21 +125,6 @@ export class ValidatorDirective implements OnInit, OnDestroy {
     return control[currentError];
   };
 
-  /** subscribe to each model separate, when your validations are too slow otherwise. */
-  #perControlValidation = this.#zone.runOutsideAngular(() =>
-    this.#formChanges.pipe(
-      switchMap(() =>
-        merge(
-          ...flattenControls(this.#form)
-            .filter(([_, ctrl]) => !isContainer(ctrl)) // only validate the leafs
-            .map(([name, control]) => control.valueChanges.pipe(map(() => ({ control, key: name }))))
-        )
-      ),
-      debounceTime(this.#debounceTime),
-      tap((r) => this.#zone.runOutsideAngular(() => this.#validateField(r)))
-    )
-  );
-
   getFormData = () => {
     const controlList = flattenControls(this.#form);
     const formEntries = Object.fromEntries(controlList);
@@ -208,31 +136,52 @@ export class ValidatorDirective implements OnInit, OnDestroy {
     return { controlList, formEntries, formValue };
   };
 
-  #unsubscribe = this.#zone.runOutsideAngular(() =>
-    this.#refresh
-      .pipe(
-        switchMap(() =>
-          this.#state$.pipe(
-            map(({ validateOnFieldChanges }) => validateOnFieldChanges),
-            distinctUntilChanged() // only fire when this particular value changes
-          )
-        ),
-        switchMap((validateOnFieldChanges) =>
-          validateOnFieldChanges ? this.#perControlValidation : this.#fullFormValidation
-        )
-      )
-      .subscribe()
-  );
+  #numberOfControls = signal(0);
+  constructor() {
+    const subs: Subscription[] = [];
+    this.#des.onDestroy(() => {
+      subs.forEach((s) => s.unsubscribe());
+    });
+    effect(async () => {
+      const validateOnFieldChanges = this.validateOnFieldChanges();
+      const numberOfControls = this.#numberOfControls();
+      subs.forEach((s) => s.unsubscribe()); // clean up eventual previous subscriptions
+      subs.length = 0; // reset the array
+      if (numberOfControls === 0) {
+        return;
+      }
+      await this.#validateForm(); // initial validation, also run this when fields are added/removed
+      if (validateOnFieldChanges) {
+        /** subscribe to each control valuechanges separate, when your validations are too slow otherwise. */
+        flattenControls(this.#form.control).forEach(([key, control]) => {
+          subs.push(
+            control
+              .valueChanges!.pipe(debounceTime(this.vldtiDebounceTime()))
+              .subscribe(() => this.#validateField({ key, control }))
+          );
+        });
+      } else {
+        /** listen for value-changes on the whole form to trigger. */
+        subs.push(this.#form.valueChanges!.pipe(debounceTime(this.vldtiDebounceTime())).subscribe(this.#validateForm));
+      }
+    });
 
-  ngOnDestroy(): void {
-    /** always clean up after yourself */
-    this.#unsubscribe?.unsubscribe();
-  }
-
-  ngOnInit(): void {
-    /** start the whole process */
-    this.#refresh.next();
+    afterNextRender(() => {
+      const elm = this.#elm.nativeElement;
+      /**
+       * the native DOM form element has a property `elements` that is a
+       * live collection of all the controls in the form.
+       * That means it will change when controls are added or removed, no matter
+       * how deeply nested they are.
+       * we update the signal for every event that might trigger a change.
+       * using a signal means this will be debounced, and only trigger the above
+       * effect once.
+       */
+      const change = (ev: Event) => this.#numberOfControls.set(elm.elements.length); // update the number of controls
+      elm.addEventListener('change', change);
+      elm.addEventListener('input', change);
+      elm.addEventListener('click', change);
+    });
   }
 }
-
 export type ControlList = [string, VldtniAbstractControl][];
