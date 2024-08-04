@@ -6,9 +6,14 @@
     "esModuleInterop": true,
     "emitDecoratorMetadata": true,
     "outDir": "../../out-tsc/spec",
-    "module": "CommonJs",
-    "types": ["jest", "node"]
+    "module": "ES2022",
+    "types": [
+      "node"
+    ]
   },
   "files": [],
-  "include": ["**/*.spec.ts", "**/*.d.ts"]
+  "include": [
+    "**/*.spec.ts",
+    "**/*.d.ts"
+  ]
 }

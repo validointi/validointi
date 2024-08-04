@@ -23,19 +23,21 @@
       "prefix": "app",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:browser-esbuild",
+          "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist/demo",
+            "outputPath": {
+              "base": "dist/demo"
+            },
             "index": "projects/demo/src/index.html",
-            "main": "projects/demo/src/main.ts",
-            "polyfills": "projects/demo/src/polyfills.ts",
+            "polyfills": ["projects/demo/src/polyfills.ts"],
             "tsConfig": "projects/demo/tsconfig.app.json",
             "assets": ["projects/demo/src/favicon.ico", "projects/demo/src/assets"],
             "stylePreprocessorOptions": {
               "includePaths": ["../node_modules/"]
             },
             "styles": ["projects/demo/src/styles.css"],
-            "scripts": []
+            "scripts": [],
+            "browser": "projects/demo/src/main.ts"
           },
           "configurations": {
             "production": {
@@ -60,9 +62,7 @@
               "outputHashing": "all"
             },
             "development": {
-              "buildOptimizer": false,
               "optimization": false,
-              "vendorChunk": true,
               "extractLicenses": false,
               "sourceMap": true,
               "namedChunks": true
@@ -74,10 +74,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "demo:build:production"
+              "buildTarget": "demo:build:production"
             },
             "development": {
-              "browserTarget": "demo:build:development"
+              "buildTarget": "demo:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -85,13 +85,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "demo:build"
-          }
-        },
-        "test": {
-          "builder": "@angular-builders/jest:run",
-          "options": {
-            "passWithNoTests": true
+            "buildTarget": "demo:build"
           }
         }
       }
@@ -118,11 +112,7 @@
           "defaultConfiguration": "production"
         },
         "test": {
-          "builder": "@angular-builders/jest:run",
-          "options": {
-            "passWithNoTests": true,
-            "tsConfig": "projects/validointi/core/tsconfig.spec.json"
-          }
+          "builder": "@analogjs/vitest-angular:test"
         },
         "lint": {
           "builder": "@angular-eslint/builder:lint",

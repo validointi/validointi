@@ -42,3 +42,4 @@ testem.log
 Thumbs.db
 .wireit
 .eslintcache
+projects/validointi/core/node_modules
