@@ -10,7 +10,6 @@
     "build:lib": "wireit",
     "build:schematics": "wireit",
     "test:lib": "wireit",
-    "test:app": "wireit",
     "test": "wireit",
     "lint:lib": "wireit",
     "hooks:pre-commit": "node hooks/pre-commit.js",
@@ -65,7 +64,13 @@
       ]
     },
     "test:lib": {
-      "command": "ng test --project validointi"
+      "command": "ng test --project validointi",
+      "files": [
+        "projects/validointi/core/src/**/*.*",
+        "projects/validointi/core/package.json",
+        "projects/validointi/core/tsconfig.lib.prod.json",
+        "angular.json"
+      ]
     },
     "test": {
       "dependencies": [
@@ -105,7 +110,7 @@
     "rxjs": "~7.5.7",
     "tslib": "^2.4.1",
     "vest": "^4.6.7",
-    "wireit": "^0.7.2",
+    "wireit": "^0.7.3",
     "zone.js": "~0.14.8"
   },
   "devDependencies": {
