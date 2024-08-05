@@ -1,4 +1,3 @@
-import { object } from 'joi';
 import { objFromPath } from './objFromPath';
 
 /**
