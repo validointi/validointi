@@ -8,8 +8,7 @@ import {
   inject,
   input,
   isDevMode,
-  NgZone,
-  signal,
+  signal
 } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { debounceTime, type Subscription } from 'rxjs';
