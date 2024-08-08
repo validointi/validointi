@@ -64,7 +64,7 @@ export class ValidatorDirective {
   #validateForm = async () => {
     this.#form.control.markAsPending({ onlySelf: false });
     const { controlList, formValue } = this.getFormData();
-    const errors = await this.validatorFn()(formValue);
+    const errors = await this.validatorFn()(formValue) || {};
     for (const [key, control] of controlList as [keyof Model, VldtniAbstractControl][]) {
       if (control.enabled) {
         if (errors[key]) {
