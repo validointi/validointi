@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.2](https://github.com/validointi/validointi/compare/core-v1.6.0...core-v1.6.2) (2024-10-20)
+
+
+### Miscellaneous Chores
+
+* release 1.6.2 ([#97](https://github.com/validointi/validointi/issues/97)) ([99d3c55](https://github.com/validointi/validointi/commit/99d3c55790d0946b62ab6a5b24ad8e365342b9fb))
+
 ## [1.6.0](https://github.com/validointi/validointi/compare/core-v1.5.0...core-v1.6.0) (2024-05-06)
 
 
