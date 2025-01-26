@@ -1,6 +1,6 @@
 {
   "name": "@validointi/core",
-  "version": "1.6.2",
+  "version": "1.7.0",
   "license": "MIT",
   "description": "Model driven validation for Angular template forms",
   "repository": {

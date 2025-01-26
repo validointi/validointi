@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.7.0](https://github.com/validointi/validointi/compare/core-v1.6.2...core-v1.7.0) (2025-01-26)
+
+
+### Features
+
+* update lib to support newer NG versions ([#100](https://github.com/validointi/validointi/issues/100)) ([85079ff](https://github.com/validointi/validointi/commit/85079ff907b01a91f18d2f1c990e21d722e0ed06))
+
 ## [1.6.2](https://github.com/validointi/validointi/compare/core-v1.6.0...core-v1.6.2) (2024-10-20)
 
 
