@@ -1,9 +1,10 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { FormsModule, ValidationErrors } from '@angular/forms';
 import { ValidatorDirective } from './validator.directive';
 import { ValidatorRegistryService } from './validatorsRegistry.service';
 import { VldntiControlDirective } from './vldnti-control.directive';
+import { beforeEach, describe, expect, it } from 'vitest';
 
 @Component({
   template: `<form validationId="testdata">
@@ -26,6 +27,7 @@ describe('VldntiControlDirective', () => {
   beforeEach(async () => {
     fixture = TestBed.configureTestingModule({
       imports: [SimpleComponent],
+      providers: [provideZonelessChangeDetection()],
     }).createComponent(SimpleComponent);
     fixture.detectChanges();
     comp = fixture.debugElement.componentInstance;

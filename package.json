@@ -127,6 +127,7 @@
     "@types/node": "^24.3.0",
     "@typescript-eslint/eslint-plugin": "^8.41.0",
     "@typescript-eslint/parser": "^8.41.0",
+    "@vitest/coverage-v8": "^3.2.4",
     "all-contributors-cli": "^6.26.1",
     "chalk": "^5.6.0",
     "eslint": "^9.34.0",
@@ -138,6 +139,7 @@
     "lint-staged": "^16.1.6",
     "ng-packagr": "^20.2.0",
     "typescript": "^5.9.2",
+    "vitest": "^3.2.4",
     "wireit": "^0.14.12"
   },
   "husky": {
