@@ -13,10 +13,10 @@
     "declaration": false,
     "esModuleInterop": true,
     "experimentalDecorators": true,
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
+    "module": "Preserve",
     "importHelpers": true,
     "target": "ES2022",
-    "module": "es2020",
     "lib": ["es2020", "dom"],
     "allowJs": true,
     "paths": {

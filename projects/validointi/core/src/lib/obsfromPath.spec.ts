@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest';
 import { objFromPath } from './objFromPath';
 
 describe('Objects from path', () => {

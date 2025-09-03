@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest';
 import { ObjectFromRawFormValue } from './ObjectFromRawFormValue';
 
 const sample = {
