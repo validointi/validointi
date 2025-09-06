@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, model } from '@angular/core';
 import { ControlContainer, FormsModule, NgModelGroup } from '@angular/forms';
 import { SampleDataContactDetail, SampleDataContactDetailType } from '../../form1/sample-data.service';
 import { ContactComponent } from './contact/contact.component';
@@ -19,10 +19,10 @@ import { ContactComponent } from './contact/contact.component';
   viewProviders: [{ provide: ControlContainer, useExisting: NgModelGroup }],
 })
 export class ContactsComponent {
-  readonly contacts = input.required<SampleDataContactDetail[]>();
+  readonly contacts = model.required<SampleDataContactDetail[]>();
 
   delete(contact: SampleDataContactDetail) {
-    this.contacts().splice(this.contacts().indexOf(contact), 1);
+    this.contacts.update((contacts) => contacts.filter((c) => c !== contact));
   }
 
   add(ev: Event) {
