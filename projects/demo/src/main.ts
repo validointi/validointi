@@ -1,9 +1,10 @@
 import { provideHttpClient } from '@angular/common/http';
+import { provideZonelessChangeDetection } from '@angular/core';
 import { bootstrapApplication } from '@angular/platform-browser';
 import { provideRouter } from '@angular/router';
 import { AppComponent } from './app/app.component';
 import { rootRoutes } from './app/root.routes';
 
 bootstrapApplication(AppComponent, {
-  providers: [provideRouter(rootRoutes), provideHttpClient()],
+  providers: [provideRouter(rootRoutes), provideHttpClient(), provideZonelessChangeDetection()],
 }).catch(console.error);

@@ -1,5 +1,4 @@
-import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, model } from '@angular/core';
 import { ControlContainer, FormsModule, NgModelGroup } from '@angular/forms';
 import { SampleDataContactDetail, SampleDataContactDetailType } from '../../form1/sample-data.service';
 import { ContactComponent } from './contact/contact.component';
@@ -7,14 +6,11 @@ import { ContactComponent } from './contact/contact.component';
 @Component({
   selector: 'app-contacts',
   standalone: true,
-  imports: [CommonModule, ContactComponent, FormsModule],
+  imports: [ContactComponent, FormsModule],
   template: `
-    <app-contact
-      *ngFor="let contact of contacts; let i = index"
-      [contact]="contact"
-      (delete)="delete(contact)"
-      ngModelGroup="{{ '' + i }}"
-    ></app-contact>
+    @for (contact of contacts(); track contact; let i = $index) {
+    <app-contact [contact]="contact" (delete)="delete(contact)" ngModelGroup="{{ '' + i }}"></app-contact>
+    }
     <button class="action" (click)="add($event)" title="Add contact point">➕</button>
   `,
   styleUrls: ['./contacts.component.css'],
@@ -23,18 +19,21 @@ import { ContactComponent } from './contact/contact.component';
   viewProviders: [{ provide: ControlContainer, useExisting: NgModelGroup }],
 })
 export class ContactsComponent {
-  @Input() contacts!: SampleDataContactDetail[];
+  readonly contacts = model.required<SampleDataContactDetail[]>();
 
   delete(contact: SampleDataContactDetail) {
-    this.contacts.splice(this.contacts.indexOf(contact), 1);
+    this.contacts.update((contacts) => contacts.filter((c) => c !== contact));
   }
 
   add(ev: Event) {
-    this.contacts.push({
-      type: SampleDataContactDetailType.Email,
-      value: ' ',
-      priority: 0,
-    });
+    this.contacts.update((contacts) => [
+      ...contacts,
+      {
+        type: SampleDataContactDetailType.Email,
+        value: ' ',
+        priority: 0,
+      },
+    ]);
     ev.preventDefault();
   }
 }

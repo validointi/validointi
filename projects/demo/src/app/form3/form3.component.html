@@ -1,13 +1,13 @@
 <h1>form3 works!</h1>
 <button (click)="fieldValidation = !fieldValidation">{{ fieldValidation ? 'Field' : 'form' }}-level</button>
-<ng-container *ngIf="data$ | async as data">
+@if (data$ | async; as data) {
   <form
     validationId="sample-data"
     (ngSubmit)="submit($any(data))"
     #form="ngForm"
     [validateOnFieldChanges]="fieldValidation"
     #validointi="validointi"
-  >
+    >
     <input type="hidden" name="id" [(ngModel)]="data.id" />
     <label for="name">
       <span>Name</span>
@@ -17,7 +17,6 @@
       <legend>Contact info</legend>
       <app-contacts [contacts]="data.contacts" ngModelGroup="contacts"></app-contacts>
     </fieldset>
-
     <label>
       <span>Date of Birth</span>
       <input
@@ -26,7 +25,7 @@
         placeholder="Your date of birth"
         [ngModel]="data.dob | date: 'yyyy-MM-dd'"
         (ngModel)="data.dob = $any($event).target.valueAsDate"
-      />
+        />
     </label>
     <label>
       <span>Password</span>
@@ -59,7 +58,9 @@
       <legend>tags</legend>
       <button class="action" type="button" (click)="data.tags.push('')">➕</button>
       <!-- notice the label[tag][index] is the selector for the tag component -->
-      <label *ngFor="let tag of data.tags; let index = index" [tag]="tag" [index]="index"> </label>
+      @for (tag of data.tags; track index; let index = $index) {
+        <label [tag]="tag" [index]="index"> </label>
+      }
     </fieldset>
     <input type="submit" value="Submit" [disabled]="form.invalid" />
     <button type="button" (click)="inspect(data, form, $event); validointi.validate()">
@@ -68,4 +69,4 @@
     <button type="reset" (click)="clear(data, form, $event)">Empty all fields</button>
     <button type="button" (click)="reset(data, form)">Reset to initial values</button>
   </form>
-</ng-container>
+}

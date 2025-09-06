@@ -63,9 +63,8 @@ function isEmpty(obj: Object) {
 }
 
 async function checkValueOnEndpoint(item: any) {
-  const response = await fetch('https://swapi.dev/api/people');
-  const data = await response.json();
-  const items = data.results as Result[];
+  const response = await fetch('https://swapi.info/api/people');
+  const items: SwapiPeople[] = await response.json();
   const results = items.map((person, index) => ({
     id: index,
     name: person.name,
@@ -78,28 +77,31 @@ async function checkValueOnEndpoint(item: any) {
   /** Everything is ok! Doing nothing here will return undefined */
 }
 
-export interface StarwarsDTO {
-  count: number;
-  next: string;
-  previous: any;
-  results: Result[];
-}
 
-export interface Result {
-  name: string;
-  height: string;
-  mass: string;
+export interface SwapiPeople {
+  name:       string;
+  height:     string;
+  mass:       string;
   hair_color: string;
   skin_color: string;
-  eye_color: string;
+  eye_color:  string;
   birth_year: string;
-  gender: string;
-  homeworld: string;
-  films: string[];
-  species: string[];
-  vehicles: string[];
-  starships: string[];
-  created: string;
-  edited: string;
-  url: string;
+  gender:     Gender;
+  homeworld:  string;
+  films:      string[];
+  species:    string[];
+  vehicles:   string[];
+  starships:  string[];
+  created:    Date;
+  edited:     Date;
+  url:        string;
 }
+
+export enum Gender {
+  Female = "female",
+  Hermaphrodite = "hermaphrodite",
+  Male = "male",
+  NA = "n/a",
+  None = "none",
+}
+
