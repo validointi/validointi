@@ -26,11 +26,14 @@ export class ContactsComponent {
   }
 
   add(ev: Event) {
-    this.contacts().push({
-      type: SampleDataContactDetailType.Email,
-      value: ' ',
-      priority: 0,
-    });
+    this.contacts.update((contacts) => [
+      ...contacts,
+      {
+        type: SampleDataContactDetailType.Email,
+        value: ' ',
+        priority: 0,
+      },
+    ]);
     ev.preventDefault();
   }
 }
