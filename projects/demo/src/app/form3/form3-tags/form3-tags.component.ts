@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { ControlContainer, FormsModule, NgForm } from '@angular/forms';
 import { VldntiControlDirective } from '@validointi/core';
 import { ValidationErrorHookUpDirective } from '../../form1/validationErrorHookUp.directive';
@@ -8,8 +8,9 @@ import { ValidationErrorHookUpDirective } from '../../form1/validationErrorHookU
   standalone: true,
   imports: [FormsModule, ValidationErrorHookUpDirective, VldntiControlDirective],
   template: `
-    <span>Tag-{{ index }}</span>
-    <input type="text" [name]="'tags[' + index + ']'" placeholder="Your tag" [(ngModel)]="tag" />
+    <span>Tag-{{ index() }}</span>
+    <input type="text" [name]="'tags[' + index() + ']'" placeholder="Your tag" [ngModel]="tag()" />
+    changeDetection: ChangeDetectionStrategy.OnPush,
   `,
   styles: [
     `
@@ -21,6 +22,6 @@ import { ValidationErrorHookUpDirective } from '../../form1/validationErrorHookU
   viewProviders: [{ provide: ControlContainer, useExisting: NgForm }],
 })
 export class Form3TagsComponent {
-  @Input() tag?: string;
-  @Input() index?: number;
+  readonly tag = input<string>();
+  readonly index = input<number>();
 }
