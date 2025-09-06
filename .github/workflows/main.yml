@@ -8,7 +8,8 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 24
-      - uses: google/wireit@setup-github-actions-caching/v2
+      # temporary disable caching until we can figure out why it breaks the build
+      # - uses: google/wireit@setup-github-actions-caching/v2
       - name: 👷 install
         run: |
           npm ci
