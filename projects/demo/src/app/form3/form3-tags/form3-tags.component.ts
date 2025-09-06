@@ -1,4 +1,4 @@
-import { Component, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { ControlContainer, FormsModule, NgForm } from '@angular/forms';
 import { VldntiControlDirective } from '@validointi/core';
 import { ValidationErrorHookUpDirective } from '../../form1/validationErrorHookUp.directive';
@@ -10,8 +10,8 @@ import { ValidationErrorHookUpDirective } from '../../form1/validationErrorHookU
   template: `
     <span>Tag-{{ index() }}</span>
     <input type="text" [name]="'tags[' + index() + ']'" placeholder="Your tag" [ngModel]="tag()" />
+    `,
     changeDetection: ChangeDetectionStrategy.OnPush,
-  `,
   styles: [
     `
       :host {
