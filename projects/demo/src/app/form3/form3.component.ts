@@ -7,7 +7,6 @@ import { ValidationErrorHookUpDirective } from '../form1/validationErrorHookUp.d
 import { clearObject } from './clearObject';
 import { ContactsComponent } from './contacts/contacts.component';
 import { Form3TagsComponent } from './form3-tags/form3-tags.component';
-import { chai } from 'vitest';
 
 @Component({
   selector: 'app-form3',
