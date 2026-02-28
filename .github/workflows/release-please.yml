@@ -21,16 +21,19 @@ jobs:
         # these if statements ensure that a publication only occurs when
         # a new release is created:
         if: ${{ steps.release.outputs.release_created }}
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+        if: ${{ steps.release.outputs.release_created }}
       - uses: actions/setup-node@v1
         with:
           node-version: 18
           registry-url: 'https://registry.npmjs.org'
+          cache: 'pnpm'
         if: ${{ steps.release.outputs.release_created }}
-      - run: npm ci
+      - run: pnpm install --frozen-lockfile
         if: ${{ steps.release.outputs.release_created }}
-      - run: npm run build
-        if: ${{ steps.release.outputs.release_created }}
-      - run: npm run build
+      - run: pnpm run build
         if: ${{ steps.release.outputs.release_created }}
       - run: cd dist/validointi/core/
         if: ${{ steps.release.outputs.release_created }}

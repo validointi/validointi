@@ -17,7 +17,6 @@
     "module": "Preserve",
     "importHelpers": true,
     "target": "ES2022",
-    "lib": ["es2020", "dom"],
     "allowJs": true,
     "paths": {
       "@validointi/*": ["dist/validointi/core/*"],

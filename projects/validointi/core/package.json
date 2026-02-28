@@ -30,5 +30,9 @@
     "template",
     "model"
   ],
-  "schematics": "./schematics/collection.json"
+  "schematics": "./schematics/collection.json",
+  "devDependencies": {
+    "@angular-devkit/schematics": "^21.2.0",
+    "@angular-devkit/schematics-cli": "^21.2.0"
+  }
 }

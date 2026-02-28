@@ -1,4 +1,4 @@
-<ng-container *ngIf="data$ | async as data">
+@if (data$ | async; as data) {
   <form validationId="sample-data" (ngSubmit)="submit($any(data))" #form="ngForm">
     <input type="hidden" name="id" [(ngModel)]="data.id" />
     <label for="name">
@@ -17,7 +17,7 @@
         placeholder="Your date of birth"
         [ngModel]="data.dob | date: 'yyyy-MM-dd'"
         (ngModel)="data.dob = $any($event).target.valueAsDate"
-      />
+        />
     </label>
     <label>
       <span>Password entropy:{{ entropy(data.password) }}</span>
@@ -30,4 +30,4 @@
     <input type="submit" value="Submit" [disabled]="form.invalid" />
     <button type="reset">Reset</button>
   </form>
-</ng-container>
+}

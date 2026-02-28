@@ -1,7 +1,7 @@
-import { Tree } from '@angular-devkit/schematics';
-import { SchematicTestRunner } from '@angular-devkit/schematics/testing';
 import * as path from 'path';
 import { beforeEach, describe, expect, it } from 'vitest';
+import { Tree } from '@angular-devkit/schematics';
+import { SchematicTestRunner } from '@angular-devkit/schematics/testing';
 
 
 describe('validointi', () => {
