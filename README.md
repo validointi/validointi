@@ -17,7 +17,7 @@ This is a library to help you validate your template driven forms.
 To install this library, run:
 
 ```bash
-$ npm install @validointi/core --save
+$ pnpm add @validointi/core
 ```
 
 ## Using it in your project.

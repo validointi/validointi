@@ -1,1 +1,1 @@
-npm run hooks:pre-commit
+pnpm run hooks:pre-commit

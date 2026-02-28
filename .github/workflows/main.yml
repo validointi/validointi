@@ -5,19 +5,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v3
         with:
           node-version: 24
+          cache: 'pnpm'
       - uses: google/wireit@setup-github-actions-caching/v2
       - name: 👷 install
         run: |
-          npm ci
+          pnpm install --frozen-lockfile
       - name: 🕵️‍♂️ lint our lib
         run: |
-          npm run lint:lib
+          pnpm run lint:lib
       - name: 🧪 test
         run: |
-          npm test -- --no-watch
+          pnpm test -- --no-watch
       - name: 🏗️ build
         run: |
-          npm run build
+          pnpm run build
